@@ -16,14 +16,14 @@ export default function BackgroundEffect() {
     const gl = canvas.getContext('webgl');
     if (!gl) return;
 
-    const vertexShaderSource = \`
+    const vertexShaderSource = `
       attribute vec2 a_position;
       void main() {
         gl_Position = vec4(a_position, 0.0, 1.0);
       }
-    \`;
+    `;
 
-    const fragmentShaderSource = \`
+    const fragmentShaderSource = `
       precision mediump float;
       uniform float u_time;
       uniform vec2 u_resolution;
@@ -65,7 +65,7 @@ export default function BackgroundEffect() {
         float alpha = smoothstep(0.4, 0.7, n);
         gl_FragColor = vec4(vec3(n * 0.8 + 0.2), alpha);
       }
-    \`;
+    `;
 
     function compileShader(type, source) {
       const shader = gl.createShader(type);
