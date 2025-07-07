@@ -22,14 +22,14 @@ export default function BackgroundEffect() {
     canvas.height = window.innerHeight
     gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight)
 
-    const vertexShaderSource = \`
+    const vertexShaderSource = `
       attribute vec4 a_position;
       void main() {
         gl_Position = a_position;
       }
-    \`
+    `
 
-    const fragmentShaderSource = \`
+    const fragmentShaderSource = `
       precision mediump float;
       uniform float u_time;
       uniform vec2 u_resolution;
@@ -46,7 +46,7 @@ export default function BackgroundEffect() {
         }
         gl_FragColor = vec4(vec3(r), 1.0);
       }
-    \`
+    `
 
     const compileShader = (type, source) => {
       const shader = gl.createShader(type)
