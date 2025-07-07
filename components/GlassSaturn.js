@@ -24,16 +24,21 @@ export default function GlassSaturn(props) {
       <mesh>
         <sphereGeometry args={[1, 64, 64]} />
         <meshPhysicalMaterial
-          transmission={1}
-          roughness={0}
-          thickness={0.5}
-          clearcoat={1}
-          clearcoatRoughness={0}
+          transmission={1} // стеклянная прозрачность
+          thickness={1} // толщина стекла
+          roughness={0.05} // почти гладкий
+          metalness={0}
+          ior={1.52} // индекс преломления стекла
           reflectivity={1}
-          ior={1.5}
-          color="#aaccff"
-          side={2}
+          transparent
+          opacity={0.7}
+          attenuationDistance={0.5}
+          attenuationColor="#88ccff"
         />
+      </mesh>
+      <mesh rotation={[Math.PI / 2.5, 0, 0]} position={[0, 0, 0]}>
+        <ringGeometry args={[1.5, 2.2, 64]} />
+        <meshBasicMaterial color="#88ccff" opacity={0.2} transparent side={DoubleSide} />
       </mesh>
     </group>
   )
