@@ -54,7 +54,7 @@ export default function BackgroundEffect() {
         gx -= tx;
         vec3 t = max(0.5 - vec3(dot(p0, p0), dot(p1, p1), dot(p2, p2)), 0.0);
         t = t * t;
-        return 70.0 * dot(t * t, vec3(dot(gx, p0.xy), dot(gx.yz, p1.xy), dot(gx.zw, p2.xy)));
+        return 70.0 * dot(t * t, vec3(dot(gx.xz, p0.xy), dot(gx.yz, p1.xy), dot(gx.xz, p2.xy)));
       }
 
       void main() {
