@@ -51,11 +51,13 @@ export default function BackgroundEffect() {
       gl.shaderSource(shader, source)
       gl.compileShader(shader)
       if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-        console.error(gl.getShaderInfoLog(shader))
+        const errType = type === gl.VERTEX_SHADER ? 'VERTEX' : 'FRAGMENT'
+        console.error(`[${errType} SHADER COMPILE ERROR]:\n`, gl.getShaderInfoLog(shader))
         return null
       }
       return shader
     }
+
 
     const vs = compile(gl.VERTEX_SHADER, vertexShaderSource)
     const fs = compile(gl.FRAGMENT_SHADER, fragmentShaderSource)
