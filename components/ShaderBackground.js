@@ -31,24 +31,37 @@ export default function ShaderBackground() {
     uniform float time;
     uniform vec2 resolution;
 
-    float noise(vec2 p) {
-      return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
+    float random(vec2 p) {
+      return fract(sin(dot(p ,vec2(127.1, 311.7))) * 43758.5453123);
+    }
+
+    float noise(vec2 p){
+      vec2 i = floor(p);
+      vec2 f = fract(p);
+      float a = random(i);
+      float b = random(i + vec2(1.0, 0.0));
+      float c = random(i + vec2(0.0, 1.0));
+      float d = random(i + vec2(1.0, 1.0));
+      vec2 u = f * f * (3.0 - 2.0 * f);
+      return mix(a, b, u.x) + (c - a)* u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
     }
 
     void main() {
-      vec2 uv = gl_FragCoord.xy / resolution;
-      vec2 pos = uv * 2.0 - 1.0;
+      vec2 uv = gl_FragCoord.xy / resolution.xy;
+      vec2 p = uv * 10.0;
 
-      float len = length(pos);
-      float glow = 0.1 / len;
+      float starField = pow(noise(p + time * 0.5), 20.0);
+      float swirl = 0.5 + 0.5 * sin(length(uv - 0.5) * 20.0 - time);
 
-      vec3 color = vec3(
-        0.05 + 0.1 * sin(time + len * 10.0),
-        0.2 + 0.2 * cos(time + len * 5.0),
-        0.4 + 0.1 * sin(time + len * 2.0)
+      vec3 baseColor = vec3(
+        0.15 + 0.1 * sin(time + uv.x * 3.0),
+        0.2 + 0.1 * sin(time + uv.y * 4.0),
+        0.25 + 0.1 * sin(time * 1.3)
       );
 
-      O = vec4(color * glow, 1.0);
+      vec3 finalColor = baseColor + vec3(starField) + swirl * 0.05;
+
+      O = vec4(finalColor, 1.0);
     }`
 
     const compile = (type, source) => {
