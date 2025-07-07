@@ -53,8 +53,10 @@ function Starfield() {
   // Параллакс
   useEffect(() => {
     const onMouseMove = (e) => {
-      mouse.current.x = (e.clientX / window.innerWidth - 0.5) * 2
-      mouse.current.y = -(e.clientY / window.innerHeight - 0.5) * 2
+      const targetX = (e.clientX / window.innerWidth - 0.5) * 2
+      const targetY = -(e.clientY / window.innerHeight - 0.5) * 2
+      mouse.current.x += (targetX - mouse.current.x) * 0.05
+      mouse.current.y += (targetY - mouse.current.y) * 0.05
     }
     window.addEventListener('mousemove', onMouseMove)
     return () => window.removeEventListener('mousemove', onMouseMove)
@@ -66,13 +68,49 @@ function Starfield() {
 
     if (pointsRef.current) {
       const s = pointsRef.current.material
-      s.size = 0.15 + 0.05 * Math.sin(t * 2.0)
+      s.size = 0.15 + 0.05 * Math.sin(t * 1.2)
 
-      pointsRef.current.rotation.y = t * 0.05
-      pointsRef.current.rotation.x = mouse.current.y * 0.1
-      pointsRef.current.rotation.z = mouse.current.x * 0.1
+      // Плавное вращение с инерцией от мыши
+      pointsRef.current.rotation.x = mouse.current.y * 0.05
+      pointsRef.current.rotation.y = t * 0.015 + mouse.current.x * 0.05
+
+      // 🌌 WARP C УСКОРЕНИЕМ
+      const positions = pointsRef.current.geometry.attributes.position.array
+
+      for (let i = 0; i < positions.length; i += 3) {
+        let x = positions[i]
+        let y = positions[i + 1]
+        let z = positions[i + 2]
+
+        // расстояние до центра по XY
+        const dx = x
+        const dy = y
+        const dist = Math.sqrt(dx * dx + dy * dy)
+
+        // коэффициент ускорения
+        const speed = 0.02 + dist * 0.015 // чем дальше — тем быстрее
+
+        // летим к камере (по Z)
+        z += speed
+
+        // сбрасываем звёзду назад
+        if (z > 10) {
+          z = -100 + Math.random() * -50
+          // перегенерируем позицию XY, чтобы не было линейности
+          x = (Math.random() - 0.5) * 50
+          y = (Math.random() - 0.5) * 50
+        }
+
+        // обновляем позицию
+        positions[i] = x
+        positions[i + 1] = y
+        positions[i + 2] = z
+      }
+
+      pointsRef.current.geometry.attributes.position.needsUpdate = true
     }
   })
+
 
   return (
     <Points ref={pointsRef} positions={positions} colors={colors} stride={3}>
