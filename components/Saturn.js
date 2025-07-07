@@ -61,5 +61,5 @@ export default function Saturn() {
     }
   }, [])
 
-  return <div ref={containerRef} className="fixed inset-0 z-0 pointer-events-none" />
+  return <div ref={containerRef} className="fixed inset-0 z-12 pointer-events-none" />
 }
