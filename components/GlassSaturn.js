@@ -11,6 +11,9 @@ import {
   Color
 } from 'three'
 
+import * as THREE from 'three'
+
+
 export default function GlassSaturn() {
   const ref = useRef()
   const ringRef = useRef()
