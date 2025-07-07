@@ -544,5 +544,3 @@ particlesJS("stars-js", {
     
  
 });
-
-}
