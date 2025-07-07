@@ -1,16 +1,17 @@
 // components/GlassSaturn.js
 import React, { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { useGLTF } from '@react-three/drei'
+// Стало:
 import {
   DoubleSide,
   MeshPhysicalMaterial,
   MeshTransmissionMaterial,
   TextureLoader,
   AdditiveBlending,
-  Color,
-  Environment
+  Color
 } from 'three'
+
+import { Environment } from '@react-three/drei' 
 
 import * as THREE from 'three'
 
