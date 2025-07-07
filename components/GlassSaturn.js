@@ -1,8 +1,14 @@
 // components/GlassSaturn.js
 import React, { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { MeshPhysicalMaterial } from 'three'
 import { useGLTF } from '@react-three/drei'
+import {
+  DoubleSide,
+  MeshPhysicalMaterial,
+  TextureLoader,
+  AdditiveBlending,
+  Color
+} from 'three'
 
 export default function GlassSaturn(props) {
   const saturnRef = useRef()

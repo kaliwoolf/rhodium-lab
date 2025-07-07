@@ -8,7 +8,7 @@ import * as THREE from 'three'
 
 function Starfield({ mouse }) {
   const pointsRef = useRef()
-  const count = 2000
+  const count = 4000
   const clock = useRef({ elapsedTime: 0 })
   const offsets = useRef([])
 
@@ -108,7 +108,7 @@ function Starfield({ mouse }) {
         transparent
         vertexColors
         size={0.2}
-        sizeAttenuation
+        sizeAttenuation={false}
         depthWrite={false}
       />
     </Points>
