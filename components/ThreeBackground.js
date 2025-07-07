@@ -147,12 +147,9 @@ export default function ThreeBackground() {
       {/* 💡 Свет */}
       <ambientLight intensity={0.5} />
       <pointLight position={[5, 5, 5]} intensity={3} color="#88ccff" />
-
-      {/* 🌅 Окружение для стекла */}
-      <Environment preset="sunset" background={false} blur={0.7} />
       
       <Starfield />
-      <GlassSaturn />
+      <GlassSaturn mouse={mouse} />
 
       <EffectComposer>
         <Bloom
