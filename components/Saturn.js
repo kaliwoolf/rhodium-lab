@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import '../styles/saturn.css' // Не забудь создать этот файл
+
 
 export default function Saturn() {
   useEffect(() => {
