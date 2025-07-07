@@ -10,42 +10,59 @@ import {
   Color
 } from 'three'
 
-export default function GlassSaturn(props) {
-  const saturnRef = useRef()
+export default function GlassSaturn() {
+  const ref = useRef()
+  const ringRef = useRef()
+  const mouse = useRef({ x: 0, y: 0 })
 
-  useFrame(({ clock }) => {
+  // Покачивание
+  useFrame(({ clock, mouse: m }) => {
     const t = clock.getElapsedTime()
-    if (saturnRef.current) {
-      saturnRef.current.rotation.y = t * 0.05
+    if (ref.current && ringRef.current) {
+      mouse.current.x += (m.x - mouse.current.x) * 0.05
+      mouse.current.y += (m.y - mouse.current.y) * 0.05
+
+      const tilt = 0.15
+      ref.current.rotation.x = mouse.current.y * tilt
+      ref.current.rotation.y = mouse.current.x * tilt
+
+      ringRef.current.rotation.x = Math.PI / 2.2
+      ringRef.current.rotation.z = t * 0.02
     }
   })
 
   return (
-    <group
-      ref={saturnRef}
-      position={[2, 1.5, 0]}
-      rotation={[Math.PI / 6, Math.PI / 4, 0]} // наклон оси
-      scale={[2.5, 2.5, 2.5]} // увеличенный размер
-    >
-      <mesh>
-        <sphereGeometry args={[1, 64, 64]} />
-        <meshPhysicalMaterial
-          transmission={1} // стеклянная прозрачность
-          thickness={1} // толщина стекла
-          roughness={0.05} // почти гладкий
-          metalness={0}
-          ior={1.52} // индекс преломления стекла
-          reflectivity={1}
-          transparent
-          opacity={0.7}
-          attenuationDistance={0.5}
-          attenuationColor="#88ccff"
+    <group position={[2.5, 1.6, -2]} scale={[1.2, 1.2, 1.2]}>
+      {/* Сфера (Сатурн) */}
+      <mesh ref={ref}>
+        <sphereGeometry args={[0.45, 64, 64]} />
+        <MeshTransmissionMaterial
+          resolution={1024}
+          thickness={1.5}
+          roughness={0}
+          transmission={1}
+          ior={1.3}
+          chromaticAberration={0.08}
+          anisotropy={0.1}
+          distortion={0.1}
+          distortionScale={0.3}
+          temporalDistortion={0.2}
+          backside
         />
       </mesh>
-      <mesh rotation={[Math.PI / 2.5, 0, 0]} position={[0, 0, 0]}>
-        <ringGeometry args={[1.5, 2.2, 64]} />
-        <meshBasicMaterial color="#88ccff" opacity={0.2} transparent side={DoubleSide} />
+
+      {/* Кольца */}
+      <mesh ref={ringRef} rotation={[Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[0.55, 1.1, 64]} />
+        <meshStandardMaterial
+          color="#222"
+          opacity={0.4}
+          transparent
+          side={THREE.DoubleSide}
+        />
       </mesh>
+
+      <Environment preset="sunset" background={false} />
     </group>
   )
 }

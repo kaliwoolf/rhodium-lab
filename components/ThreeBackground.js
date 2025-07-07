@@ -107,8 +107,8 @@ function Starfield({ mouse }) {
       <PointMaterial
         transparent
         vertexColors
-        size={0.2}
-        sizeAttenuation={false}
+        size={0.1}
+        sizeAttenuation
         depthWrite={false}
       />
     </Points>
