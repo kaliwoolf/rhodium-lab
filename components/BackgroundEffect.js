@@ -4,51 +4,52 @@ export default function BackgroundEffect() {
   useEffect(() => {
     const canvas = document.createElement('canvas')
     Object.assign(canvas.style, {
-      position: 'absolute',
+      position: 'fixed',
       top: 0,
       left: 0,
-      width: '100%',
-      height: '100%',
-      zIndex: '-20',
+      width: '100vw',
+      height: '100vh',
+      zIndex: '-1',
       pointerEvents: 'none',
     })
-    const container = document.getElementById('__next')
-    container.style.position = 'relative'
-    container.prepend(canvas)
+    document.body.appendChild(canvas)
 
     const gl = canvas.getContext('webgl')
-    if (!gl) {
-      console.error('WebGL not supported')
-      return
-    }
+    if (!gl) return
 
-    const vsSource = `
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+    gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight)
+
+    const vertexShaderSource = `
       attribute vec4 a_position;
       void main() {
         gl_Position = a_position;
       }
     `
 
-    const fsSource = `
+    const fragmentShaderSource = `
       precision mediump float;
-      uniform vec2 u_resolution;
       uniform float u_time;
+      uniform vec2 u_resolution;
 
-      float circle(vec2 uv, vec2 pos, float r) {
-        return smoothstep(r, r - 0.01, length(uv - pos));
+      vec3 palette(float t) {
+        return vec3(
+          0.09 + 0.09 * cos(6.2831 * (t + 0.2)),
+          0.1 + 0.3 * cos(6.2831 * (t + 0.5)),
+          0.2 + 0.5 * cos(6.2831 * (t + 0.9))
+        );
       }
 
       void main() {
-        vec2 uv = gl_FragCoord.xy / u_resolution.xy;
-        uv -= 0.5;
+        vec2 uv = (gl_FragCoord.xy / u_resolution.xy) * 2.0 - 1.0;
         uv.x *= u_resolution.x / u_resolution.y;
-
-        float d = sin(u_time + length(uv) * 10.0) * 0.5 + 0.5;
-        float glow = 0.02 / length(uv + 0.05*sin(u_time*0.7));
-        float crystal = step(0.98, fract(sin(dot(uv * 40.0, vec2(12.9898,78.233))) * 43758.5453));
-        vec3 color = mix(vec3(0.05, 0.1, 0.2), vec3(0.2, 0.3, 0.4), d);
-        color += glow * 0.2;
-        color += crystal * 0.1;
+        float t = u_time * 0.1;
+        float d = length(uv);
+        float a = atan(uv.y, uv.x);
+        float r = sin(8.0 * a + t) + cos(6.0 * d - t * 1.5);
+        float m = smoothstep(0.0, 1.0, r);
+        vec3 color = palette(m + d * 0.4 + t * 0.05);
         gl_FragColor = vec4(color, 1.0);
       }
     `
@@ -64,8 +65,8 @@ export default function BackgroundEffect() {
       return shader
     }
 
-    const vs = compile(gl.VERTEX_SHADER, vsSource)
-    const fs = compile(gl.FRAGMENT_SHADER, fsSource)
+    const vs = compile(gl.VERTEX_SHADER, vertexShaderSource)
+    const fs = compile(gl.FRAGMENT_SHADER, fragmentShaderSource)
 
     const program = gl.createProgram()
     gl.attachShader(program, vs)
@@ -76,37 +77,30 @@ export default function BackgroundEffect() {
     const positionLoc = gl.getAttribLocation(program, 'a_position')
     const buffer = gl.createBuffer()
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-      -1, -1, 1, -1, -1, 1,
-      -1, 1, 1, -1, 1, 1
-    ]), gl.STATIC_DRAW)
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]),
+      gl.STATIC_DRAW
+    )
     gl.enableVertexAttribArray(positionLoc)
     gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0)
 
-    const uTime = gl.getUniformLocation(program, 'u_time')
-    const uResolution = gl.getUniformLocation(program, 'u_resolution')
-
-    const resize = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
-      gl.viewport(0, 0, canvas.width, canvas.height)
-    }
-    window.addEventListener('resize', resize)
-    resize()
+    const timeLoc = gl.getUniformLocation(program, 'u_time')
+    const resLoc = gl.getUniformLocation(program, 'u_resolution')
 
     let start = performance.now()
     const render = () => {
       const now = (performance.now() - start) / 1000
-      gl.uniform1f(uTime, now)
-      gl.uniform2f(uResolution, canvas.width, canvas.height)
+      gl.uniform1f(timeLoc, now)
+      gl.uniform2f(resLoc, canvas.width, canvas.height)
       gl.drawArrays(gl.TRIANGLES, 0, 6)
       requestAnimationFrame(render)
     }
+
     render()
 
     return () => {
-      window.removeEventListener('resize', resize)
-      container.removeChild(canvas)
+      document.body.removeChild(canvas)
     }
   }, [])
 
