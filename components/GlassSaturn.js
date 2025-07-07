@@ -5,6 +5,7 @@ import { useGLTF } from '@react-three/drei'
 import {
   DoubleSide,
   MeshPhysicalMaterial,
+  MeshTransmissionMaterial,
   TextureLoader,
   AdditiveBlending,
   Color
