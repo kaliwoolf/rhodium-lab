@@ -10,7 +10,6 @@ function Starfield({ mouse }) {
   const pointsRef = useRef()
   const count = 2000
   const clock = useRef({ elapsedTime: 0 })
-  const mouse = useRef({ x: 0, y: 0 })
   const offsets = useRef([])
 
   // Генерация звёзд и цветов
@@ -51,21 +50,7 @@ function Starfield({ mouse }) {
     }
   }, [count])
 
-  // Параллакс
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-
-    const handleMouseMove = (e) => {
-      const targetX = (e.clientX / window.innerWidth - 0.5) * 2
-      const targetY = -(e.clientY / window.innerHeight - 0.5) * 2
-      mouse.current.x += (targetX - mouse.current.x) * 0.05
-      mouse.current.y += (targetY - mouse.current.y) * 0.05
-    }
-
-    window.addEventListener('mousemove', handleMouseMove)
-    return () => window.removeEventListener('mousemove', handleMouseMove)
-  }, [])
-
+  
   // Анимация
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime()
@@ -133,6 +118,22 @@ function Starfield({ mouse }) {
 
 
 export default function ThreeBackground() {
+  const mouse = useRef({ x: 0, y: 0 })
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const handleMouseMove = (e) => {
+      const targetX = (e.clientX / window.innerWidth - 0.5) * 2
+      const targetY = -(e.clientY / window.innerHeight - 0.5) * 2
+      mouse.current.x += (targetX - mouse.current.x) * 0.05
+      mouse.current.y += (targetY - mouse.current.y) * 0.05
+    }
+
+    window.addEventListener('mousemove', handleMouseMove)
+    return () => window.removeEventListener('mousemove', handleMouseMove)
+  }, [])
+
   return (
     <Canvas
       style={{
