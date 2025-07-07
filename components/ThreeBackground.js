@@ -1,4 +1,5 @@
 // components/ThreeBackground.js
+import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { useRef, useMemo } from 'react'
 import { Points, PointMaterial, Stars } from '@react-three/drei'
