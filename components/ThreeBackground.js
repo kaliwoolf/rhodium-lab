@@ -3,7 +3,7 @@ import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { useRef, useMemo, useEffect } from 'react'
 import { Points, PointMaterial, Stars } from '@react-three/drei'
-import GlassSaturn from '@/components/GlassSaturn'
+import GlassSaturn from '../components/GlassSaturn'
 import * as THREE from 'three'
 
 function Starfield() {
@@ -148,7 +148,7 @@ export default function ThreeBackground() {
 
       <Starfield />
       <GlassSaturn />
-        
+
       <EffectComposer>
         <Bloom
           intensity={1.8}
