@@ -88,7 +88,8 @@ function Starfield() {
         const dist = Math.sqrt(dx * dx + dy * dy)
 
         // коэффициент ускорения
-        const speed = 0.02 + dist * 0.015 // чем дальше — тем быстрее
+        const baseSpeed = Math.min(0.005 + t * 0.0002, 0.02) // медленно растёт со временем
+        const speed = baseSpeed + dist * 0.005
 
         // летим к камере (по Z)
         z += speed
