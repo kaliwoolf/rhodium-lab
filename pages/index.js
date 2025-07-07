@@ -1,6 +1,24 @@
+'use client'
+
 import { useEffect } from 'react'
 
 export default function Home() {
+  useEffect(() => {
+    const canvas = document.getElementById('test-canvas')
+    const gl = canvas?.getContext('webgl')
+    if (!gl) {
+      console.error('No WebGL!')
+      return
+    }
+
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+    gl.viewport(0, 0, canvas.width, canvas.height)
+    gl.clearColor(1.0, 0.0, 0.0, 1.0)
+    gl.clear(gl.COLOR_BUFFER_BIT)
+    console.log('RED OK')
+  }, [])
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
       <canvas
@@ -20,19 +38,3 @@ export default function Home() {
     </main>
   )
 }
-
-useEffect(() => {
-  const canvas = document.getElementById('test-canvas')
-  const gl = canvas.getContext('webgl')
-  if (!gl) {
-    console.error('No WebGL!')
-    return
-  }
-
-  canvas.width = window.innerWidth
-  canvas.height = window.innerHeight
-  gl.viewport(0, 0, canvas.width, canvas.height)
-  gl.clearColor(1.0, 0.0, 0.0, 1.0)
-  gl.clear(gl.COLOR_BUFFER_BIT)
-  console.log('RED OK')
-}, [])
