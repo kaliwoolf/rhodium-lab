@@ -9,7 +9,7 @@ export default function BackgroundEffect() {
       left: 0,
       width: '100%',
       height: '100%',
-      zIndex: '0',
+      zIndex: '-20',
       pointerEvents: 'none',
     })
     const container = document.getElementById('__next')
@@ -46,7 +46,7 @@ export default function BackgroundEffect() {
         float d = sin(u_time + length(uv) * 10.0) * 0.5 + 0.5;
         float glow = 0.02 / length(uv + 0.05*sin(u_time*0.7));
         float crystal = step(0.98, fract(sin(dot(uv * 40.0, vec2(12.9898,78.233))) * 43758.5453));
-        vec3 color = mix(vec3(0.2, 0.4, 0.6), vec3(1.0, 0.9, 0.8), d);
+        vec3 color = mix(vec3(0.05, 0.1, 0.2), vec3(0.2, 0.3, 0.4), d);
         color += glow * 0.2;
         color += crystal * 0.1;
         gl_FragColor = vec4(color, 1.0);
