@@ -7,12 +7,16 @@ export default function BackgroundEffect() {
       position: 'fixed',
       top: 0,
       left: 0,
-      width: '100vw',
-      height: '100vh',
+      width: '100%',
+      height: '100%',
       zIndex: '-1',
       pointerEvents: 'none',
+      background: 'transparent',
     });
     document.body.appendChild(canvas);
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
     const gl = canvas.getContext('webgl');
     if (!gl) {
@@ -20,9 +24,7 @@ export default function BackgroundEffect() {
       return;
     }
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    gl.viewport(0, 0, canvas.width, canvas.height);
+    gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 
     const vertexShaderSource = `
       attribute vec2 a_position;
@@ -33,13 +35,8 @@ export default function BackgroundEffect() {
 
     const fragmentShaderSource = `
       precision mediump float;
-      uniform vec2 u_resolution;
-
       void main() {
-        vec2 uv = gl_FragCoord.xy / u_resolution;
-        float d = distance(uv, vec2(0.5));
-        float circle = smoothstep(0.3, 0.25, d);
-        gl_FragColor = vec4(circle, 0.0, 1.0, 1.0);
+        gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); // Ярко-красный цвет
       }
     `;
 
@@ -48,7 +45,7 @@ export default function BackgroundEffect() {
       gl.shaderSource(shader, source);
       gl.compileShader(shader);
       if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-        console.error(gl.getShaderInfoLog(shader));
+        console.error('Shader compile error:', gl.getShaderInfoLog(shader));
         return null;
       }
       return shader;
@@ -57,38 +54,33 @@ export default function BackgroundEffect() {
     const vertexShader = compileShader(gl.VERTEX_SHADER, vertexShaderSource);
     const fragmentShader = compileShader(gl.FRAGMENT_SHADER, fragmentShaderSource);
 
+    if (!vertexShader || !fragmentShader) return;
+
     const program = gl.createProgram();
     gl.attachShader(program, vertexShader);
     gl.attachShader(program, fragmentShader);
     gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      console.error('Program link error:', gl.getProgramInfoLog(program));
+      return;
+    }
+
     gl.useProgram(program);
 
     const positionLocation = gl.getAttribLocation(program, 'a_position');
     const buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    gl.bufferData(
-      gl.ARRAY_BUFFER,
-      new Float32Array([
-        -1, -1,
-         1, -1,
-        -1,  1,
-        -1,  1,
-         1, -1,
-         1,  1
-      ]),
-      gl.STATIC_DRAW
-    );
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+      -1, -1,
+       1, -1,
+      -1,  1,
+      -1,  1,
+       1, -1,
+       1,  1
+    ]), gl.STATIC_DRAW);
+
     gl.enableVertexAttribArray(positionLocation);
     gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
 
-    const uRes = gl.getUniformLocation(program, 'u_resolution');
-    gl.uniform2f(uRes, gl.drawingBufferWidth, gl.drawingBufferHeight);
-    gl.drawArrays(gl.TRIANGLES, 0, 6);
-
-    return () => {
-      document.body.removeChild(canvas);
-    };
-  }, []);
-
-  return null;
-}
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COL
