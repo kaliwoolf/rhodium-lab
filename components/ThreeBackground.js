@@ -52,30 +52,17 @@ function Starfield() {
   })
 
   return (
-    <points ref={pointsRef}>
-      <bufferGeometry attach="geometry">
-        <bufferAttribute
-          attach="attributes-position"
-          array={positions}
-          count={positions.length / 3}
-          itemSize={3}
-        />
-        <bufferAttribute
-          attach="attributes-color"
-          array={colors}
-          count={colors.length / 3}
-          itemSize={3}
-        />
-      </bufferGeometry>
-      <pointsMaterial
-        size={0.15}
-        sizeAttenuation
-        vertexColors
-        depthWrite={false}
+    <Points ref={pointsRef} positions={positions} colors={colors} stride={3}>
+      <PointMaterial
         transparent
+        vertexColors
+        size={0.25}
+        sizeAttenuation
+        depthWrite={false}
       />
-    </points>
+    </Points>
   )
+
 }
 
 
@@ -100,9 +87,9 @@ export default function ThreeBackground() {
 
       <EffectComposer>
         <Bloom
-          intensity={1.2}
-          luminanceThreshold={0.15}
-          luminanceSmoothing={0.9}
+          intensity={1.8}
+          luminanceThreshold={0.1}
+          luminanceSmoothing={0.75}
           mipmapBlur={true}
         />
       </EffectComposer>
