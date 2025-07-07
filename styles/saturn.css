@@ -1,0 +1,35 @@
+.saturn-wrapper {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.saturn {
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle at center, #ccc, #444);
+  border-radius: 50%;
+  position: relative;
+  animation: spin 120s linear infinite;
+  box-shadow: 0 0 30px rgba(255,255,255,0.2);
+}
+
+.ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300px;
+  height: 300px;
+  transform: translate(-50%, -50%);
+  border: 6px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  box-shadow: 0 0 60px rgba(255,255,255,0.15);
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
