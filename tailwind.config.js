@@ -13,6 +13,9 @@ module.exports = {
       },
       boxShadow: {
         neon: "0 0 10px #ff003c, 0 0 20px #ff003c"
+      },
+      zIndex: {
+        '-50': '-50',
       }
     },
   },

@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { Renderer } from '@/lib/renderer'
-import { PointerHandler } from '@/lib/pointerHandler'
+import { Renderer } from '../lib/renderer'
+import { PointerHandler } from '../lib/pointerHandler'
 
 export default function Anomaly() {
   const canvasRef = useRef(null)
@@ -52,5 +52,5 @@ export default function Anomaly() {
     }
   }, [])
 
-  return <canvas ref={canvasRef} className="fixed inset-0 w-full h-full z-0" />
+  return <canvas ref={canvasRef} className="fixed inset-0 w-full h-full z-[-50]" />
 }
