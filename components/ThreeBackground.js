@@ -8,15 +8,41 @@ function Starfield() {
   const pointsRef = useRef()
   const count = 2000
 
-  const positions = useMemo(() => {
+  const { positions, colors } = useMemo(() => {
     const pos = []
+    const col = []
     for (let i = 0; i < count; i++) {
       const x = (Math.random() - 0.5) * 50
       const y = (Math.random() - 0.5) * 50
       const z = -Math.random() * 100
       pos.push(x, y, z)
+
+      // Цвета: серебро, золото, сапфир
+      const roll = Math.random()
+      let r, g, b
+
+      if (roll < 0.7) {
+        // серебро
+        r = g = b = 0.85 + Math.random() * 0.1
+      } else if (roll < 0.9) {
+        // золото
+        r = 1.0
+        g = 0.85 + Math.random() * 0.1
+        b = 0.4 + Math.random() * 0.1
+      } else {
+        // сапфир
+        r = 0.3 + Math.random() * 0.2
+        g = 0.5 + Math.random() * 0.2
+        b = 1.0
+      }
+
+      col.push(r, g, b)
     }
-    return new Float32Array(pos)
+
+    return {
+      positions: new Float32Array(pos),
+      colors: new Float32Array(col)
+    }
   }, [count])
 
   useFrame((_, delta) => {
@@ -26,17 +52,32 @@ function Starfield() {
   })
 
   return (
-    <Points ref={pointsRef} positions={positions} stride={3}>
-      <PointMaterial
-        transparent
-        color="#b7f0ff"
+    <points ref={pointsRef}>
+      <bufferGeometry attach="geometry">
+        <bufferAttribute
+          attach="attributes-position"
+          array={positions}
+          count={positions.length / 3}
+          itemSize={3}
+        />
+        <bufferAttribute
+          attach="attributes-color"
+          array={colors}
+          count={colors.length / 3}
+          itemSize={3}
+        />
+      </bufferGeometry>
+      <pointsMaterial
         size={0.15}
-        sizeAttenuation={true}
+        sizeAttenuation
+        vertexColors
         depthWrite={false}
+        transparent
       />
-    </Points>
+    </points>
   )
 }
+
 
 export default function ThreeBackground() {
   return (
@@ -54,8 +95,17 @@ export default function ThreeBackground() {
       <color attach="background" args={['#050510']} />
       <ambientLight intensity={0.3} />
       <pointLight position={[10, 10, 10]} intensity={1} color="#9999ff" />
+
       <Starfield />
-      <Stars radius={80} depth={50} count={5000} factor={4} fade />
+
+      <EffectComposer>
+        <Bloom
+          intensity={1.2}
+          luminanceThreshold={0.15}
+          luminanceSmoothing={0.9}
+          mipmapBlur={true}
+        />
+      </EffectComposer>
     </Canvas>
   )
 }
