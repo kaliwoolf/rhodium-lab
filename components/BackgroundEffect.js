@@ -5,7 +5,8 @@ export default function BackgroundEffect() {
 
   useEffect(() => {
     const canvas = canvasRef.current
-    const gl = canvas.getContext('webgl')
+    const gl = canvas.getContext('webgl', { alpha: true })
+
 
     if (!gl) {
       console.error('WebGL not supported')
@@ -45,7 +46,7 @@ export default function BackgroundEffect() {
         vec2 st = gl_FragCoord.xy / u_resolution.xy;
         float t = u_time * 0.2;
         float fog = rand(st * 10.0 + t);
-        gl_FragColor = vec4(vec3(fog * 0.15), 1.0);
+        gl_FragColor = vec4(vec3(fog * 0.15), 0.3);
       }
     `
 
