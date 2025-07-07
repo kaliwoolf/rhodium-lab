@@ -20,10 +20,19 @@ export default function BackgroundEffect() {
       return;
     }
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    gl.viewport(0, 0, canvas.width, canvas.height);
+    // 🔧 Функция, которая правильно масштабирует холст и viewport
+    const resizeCanvas = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      gl.viewport(0, 0, canvas.width, canvas.height);
+    };
 
+    resizeCanvas(); // первый вызов
+    window.addEventListener('resize', resizeCanvas); // при изменении окна
+
+    // ...тут потом твой WebGL код
+
+   
     const vertex = `
       attribute vec2 a_position;
       void main() {
@@ -75,6 +84,7 @@ export default function BackgroundEffect() {
     gl.drawArrays(gl.TRIANGLES, 0, 6);
 
     return () => {
+      window.removeEventListener('resize', resizeCanvas);
       document.body.removeChild(canvas);
     };
   }, []);
