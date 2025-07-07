@@ -7,7 +7,7 @@ export default function Home() {
       <Head>
         <title>RHODIUM LAB</title>
       </Head>
-      <main className="bg-dark min-h-screen flex flex-col items-center justify-center text-white font-sans">
+      <main className="bg-transparent min-h-screen flex flex-col items-center justify-center text-white font-sans">
         <motion.h1
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
