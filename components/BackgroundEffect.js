@@ -10,14 +10,14 @@ export default function BackgroundEffect() {
     const gl = canvas.getContext('webgl');
     if (!gl) return;
 
-    const vertexShaderSource = \`
+    const vertexShaderSource = `
       attribute vec2 position;
       void main() {
         gl_Position = vec4(position, 0.0, 1.0);
       }
-    \`;
+    `;
 
-    const fragmentShaderSource = \`
+    const fragmentShaderSource = `
       precision mediump float;
       uniform float time;
       uniform vec2 resolution;
@@ -45,7 +45,7 @@ export default function BackgroundEffect() {
         vec3 color = mix(vec3(0.05, 0.05, 0.08), vec3(0.2, 0.4, 0.7), n);
         gl_FragColor = vec4(color, 0.35);
       }
-    \`;
+    `;
 
     const compileShader = (type, source) => {
       const shader = gl.createShader(type);
@@ -66,18 +66,14 @@ export default function BackgroundEffect() {
     const positionLocation = gl.getAttribLocation(program, "position");
     const positionBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-    gl.bufferData(
-      gl.ARRAY_BUFFER,
-      new Float32Array([
-        -1, -1,
-        1, -1,
-        -1, 1,
-        -1, 1,
-        1, -1,
-        1, 1,
-      ]),
-      gl.STATIC_DRAW
-    );
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+      -1, -1,
+       1, -1,
+      -1,  1,
+      -1,  1,
+       1, -1,
+       1,  1,
+    ]), gl.STATIC_DRAW);
     gl.enableVertexAttribArray(positionLocation);
     gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
 
@@ -111,13 +107,13 @@ export default function BackgroundEffect() {
     <canvas
       ref={canvasRef}
       style={{
-        position: 'fixed',
+        position: "fixed",
         top: 0,
         left: 0,
-        width: '100%',
-        height: '100%',
+        width: "100%",
+        height: "100%",
         zIndex: -1,
-        pointerEvents: 'none',
+        pointerEvents: "none",
       }}
     />
   );
