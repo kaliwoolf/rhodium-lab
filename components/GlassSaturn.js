@@ -1,5 +1,6 @@
 import { useRef, useEffect } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
+import { MeshTransmissionMaterial } from '@react-three/drei'
 import * as THREE from 'three'
 
 export default function GlassSaturn() {
@@ -44,22 +45,26 @@ export default function GlassSaturn() {
   })
 
   return (
-    <group position={[1.5, 1.5, 0]}>
+    <group position={[1.5, 1.5, 0]} rotation={[THREE.MathUtils.degToRad(25), 0.3, 0]}>
       {/* Основная сфера */}
       <mesh ref={saturnRef}>
         <icosahedronGeometry args={[0.6, 6]} />
-        <meshPhysicalMaterial
+        <MeshTransmissionMaterial
+          resolution={512}
+          samples={16}
+          thickness={1.2}
           transmission={1}
-          thickness={0.8}
-          roughness={0}
-          metalness={0}
-          clearcoat={1}
-          clearcoatRoughness={0.05}
-          reflectivity={1}
-          ior={1.5}
-          color={'#88ccff'}
-          attenuationColor="#aaffff"
+          anisotropy={0.5}
+          chromaticAberration={0.05}
+          distortion={0.15}
+          distortionScale={0.3}
+          temporalDistortion={0.2}
+          roughness={0.15}
+          ior={1.4}
+          backside={true}
+          attenuationColor="#88ccff"
           attenuationDistance={2}
+          toneMapped={true}
         />
       </mesh>
 
