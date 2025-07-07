@@ -6,7 +6,7 @@ import { Points, PointMaterial, Stars } from '@react-three/drei'
 import GlassSaturn from '../components/GlassSaturn'
 import * as THREE from 'three'
 
-function Starfield() {
+function Starfield({ mouse }) {
   const pointsRef = useRef()
   const count = 2000
   const clock = useRef({ elapsedTime: 0 })
@@ -151,7 +151,7 @@ export default function ThreeBackground() {
       <ambientLight intensity={0.5} />
       <pointLight position={[5, 5, 5]} intensity={3} color="#88ccff" />
       
-      <Starfield />
+      <Starfield mouse={mouse} />
       <GlassSaturn mouse={mouse} />
 
       <EffectComposer>
