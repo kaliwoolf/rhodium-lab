@@ -5,10 +5,10 @@ import Saturn from '../components/Saturn'
 export default function Home() {
   return (
     <>
-      <Saturn />
       <Head>
         <title>RHODIUM LAB</title>
       </Head>
+      <Saturn />
       <main className="bg-transparent min-h-screen flex flex-col items-center justify-center text-white font-sans">
         <motion.h1
           initial={{ opacity: 0, y: -20 }}
