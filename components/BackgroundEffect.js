@@ -44,8 +44,15 @@ export default function BackgroundEffect() {
       const shader = gl.createShader(type);
       gl.shaderSource(shader, source);
       gl.compileShader(shader);
+
+      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        console.error('Shader compile error:', gl.getShaderInfoLog(shader));
+        return null;
+      }
+
       return shader;
     };
+
 
     const vertexShader = compileShader(gl.VERTEX_SHADER, vertexShaderSource);
     const fragmentShader = compileShader(gl.FRAGMENT_SHADER, fragmentShaderSource);
