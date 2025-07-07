@@ -51,20 +51,20 @@ export default function GlassSaturn() {
         <icosahedronGeometry args={[0.6, 6]} />
         <MeshTransmissionMaterial
           resolution={512}
-          samples={16}
+          samples={8}
           thickness={1.2}
           transmission={1}
-          anisotropy={0.5}
-          chromaticAberration={0.05}
-          distortion={0.15}
-          distortionScale={0.3}
+          ior={1.45}
+          chromaticAberration={0.03}
+          distortion={0.05}
+          distortionScale={0.2}
           temporalDistortion={0.2}
-          roughness={0.15}
-          ior={1.4}
-          backside={true}
+          roughness={0}
+          backside
+          clearcoat={1}
+          clearcoatRoughness={0}
           attenuationColor="#88ccff"
           attenuationDistance={2}
-          toneMapped={true}
         />
       </mesh>
 
@@ -73,11 +73,12 @@ export default function GlassSaturn() {
         <ringGeometry args={[0.8, 1.4, 64]} />
         <meshPhysicalMaterial
           transparent
-          opacity={0.4}
-          roughness={0.2}
-          metalness={0.2}
-          transmission={0.7}
-          thickness={0.5}
+          opacity={0.3}
+          roughness={0.1}
+          metalness={0.1}
+          transmission={0.6}
+          thickness={0.3}
+          clearcoat={0.2}
           color={'#c0e0ff'}
         />
       </mesh>

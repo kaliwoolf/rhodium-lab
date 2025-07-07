@@ -2,7 +2,7 @@
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { useRef, useMemo, useEffect } from 'react'
-import { Points, PointMaterial, Stars } from '@react-three/drei'
+import { Points, PointMaterial, Stars, Environment } from '@react-three/drei'
 import GlassSaturn from '../components/GlassSaturn'
 import * as THREE from 'three'
 
@@ -143,9 +143,14 @@ export default function ThreeBackground() {
       camera={{ position: [0, 0, 10], fov: 60 }}
     >
       <color attach="background" args={['#050510']} />
-      <ambientLight intensity={0.3} />
-      <pointLight position={[10, 10, 10]} intensity={1} color="#9999ff" />
+      
+      {/* 💡 Свет */}
+      <ambientLight intensity={0.5} />
+      <pointLight position={[5, 5, 5]} intensity={3} color="#88ccff" />
 
+      {/* 🌅 Окружение для стекла */}
+      <Environment preset="sunset" background={false} />
+      
       <Starfield />
       <GlassSaturn />
 
