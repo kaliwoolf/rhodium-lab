@@ -83,4 +83,13 @@ export default function BackgroundEffect() {
     gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
 
     gl.clearColor(0, 0, 0, 0);
-    gl.clear(gl.COL
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+    return () => {
+      document.body.removeChild(canvas);
+    };
+  }, []);
+
+  return null;
+}
