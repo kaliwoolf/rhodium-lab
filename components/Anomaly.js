@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import { Renderer } from '@/lib/renderer'
+import { PointerHandler } from '@/lib/pointerHandler'
 
 export default function Anomaly() {
   const canvasRef = useRef(null)
@@ -8,25 +10,17 @@ export default function Anomaly() {
   useEffect(() => {
     if (typeof window === 'undefined') return
 
-    let resolution = 0.5
-    let dpr = Math.max(1, resolution * window.devicePixelRatio)
-    let renderer, pointers, frameId
-
     const canvas = canvasRef.current
     if (!canvas) return
 
-    class Renderer { /* твой Renderer как есть */ }
-    class PointerHandler { /* как есть */ }
-
-    const loadShader = async () => {
-      const res = await fetch('/shaders/anomaly.glsl')
-      return await res.text()
-    }
+    let frameId
+    let resolution = 0.5
+    let dpr = Math.max(1, resolution * window.devicePixelRatio)
 
     const resize = () => {
       canvas.width = window.innerWidth * dpr
       canvas.height = window.innerHeight * dpr
-      if (renderer) renderer.updateScale(dpr)
+      renderer?.updateScale(dpr)
     }
 
     const loop = (now) => {
@@ -38,19 +32,19 @@ export default function Anomaly() {
       frameId = requestAnimationFrame(loop)
     }
 
-    loadShader().then((shader) => {
-      renderer = new Renderer(canvas, dpr)
-      pointers = new PointerHandler(canvas, dpr)
+    let renderer, pointers
 
-      renderer.shaderSource = shader
-      renderer.setup()
-      renderer.init()
-      renderer.updateShader(shader)
+    fetch('/shaders/anomaly.glsl')
+      .then(res => res.text())
+      .then(shader => {
+        renderer = new Renderer(canvas, dpr)
+        pointers = new PointerHandler(canvas, dpr)
+        renderer.updateShader(shader)
 
-      resize()
-      window.addEventListener('resize', resize)
-      loop(0)
-    })
+        resize()
+        loop(0)
+        window.addEventListener('resize', resize)
+      })
 
     return () => {
       cancelAnimationFrame(frameId)
@@ -58,10 +52,5 @@ export default function Anomaly() {
     }
   }, [])
 
-  return (
-    <canvas
-      ref={canvasRef}
-      className="fixed top-0 left-0 w-full h-full z-0"
-    />
-  )
+  return <canvas ref={canvasRef} className="fixed inset-0 w-full h-full z-0" />
 }
