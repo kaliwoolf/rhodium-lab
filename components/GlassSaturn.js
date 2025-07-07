@@ -8,7 +8,8 @@ import {
   MeshTransmissionMaterial,
   TextureLoader,
   AdditiveBlending,
-  Color
+  Color,
+  Environment
 } from 'three'
 
 import * as THREE from 'three'
