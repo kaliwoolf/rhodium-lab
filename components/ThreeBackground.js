@@ -149,7 +149,7 @@ export default function ThreeBackground() {
       <pointLight position={[5, 5, 5]} intensity={3} color="#88ccff" />
 
       {/* 🌅 Окружение для стекла */}
-      <Environment preset="sunset" background={false} />
+      <Environment preset="sunset" background={false} blur={0.7} />
       
       <Starfield />
       <GlassSaturn />

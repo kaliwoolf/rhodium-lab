@@ -45,7 +45,7 @@ export default function GlassSaturn() {
   })
 
   return (
-    <group position={[1.5, 1.5, 0]} rotation={[THREE.MathUtils.degToRad(25), 0.3, 0]}>
+    <group position={[1.5, 1.5, 0]} rotation={[THREE.MathUtils.degToRad(25), 0.3, 0]} scale={3}>
       {/* Основная сфера */}
       <mesh ref={saturnRef}>
         <icosahedronGeometry args={[0.6, 6]} />
@@ -73,13 +73,12 @@ export default function GlassSaturn() {
         <ringGeometry args={[0.8, 1.4, 64]} />
         <meshPhysicalMaterial
           transparent
-          opacity={0.3}
-          roughness={0.1}
+          opacity={0.15}
+          roughness={0.2}
           metalness={0.1}
-          transmission={0.6}
-          thickness={0.3}
-          clearcoat={0.2}
-          color={'#c0e0ff'}
+          color={'#88ccff'}
+          emissive={'#88ccff'}
+          emissiveIntensity={0.5}
         />
       </mesh>
 
