@@ -115,8 +115,15 @@ export default function Home() {
   }, [])
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center">
-      <h1 className="text-4xl font-bold text-white z-10">RHODIUM LAB</h1>
+    <main className="flex min-h-screen flex-col items-center justify-center text-white font-sans">
+      <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-widest">
+        RHODIUM LAB
+      </h1>
+      <div className="px-6 py-2 rounded-full border border-crimson text-sm md:text-base tracking-wider flex items-center gap-4 shadow-neon">
+        <span>WORK</span>
+        <div className="w-6 h-px bg-crimson"></div>
+        <span>CONTACT</span>
+      </div>
     </main>
   )
 }
