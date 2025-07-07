@@ -2,7 +2,7 @@
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { useRef, useMemo, useEffect } from 'react'
-import { Points, PointMaterial, Stars, Environment } from '@react-three/drei'
+import { Points, PointMaterial, Stars } from '@react-three/drei'
 import GlassSaturn from '../components/GlassSaturn'
 import * as THREE from 'three'
 
@@ -53,14 +53,17 @@ function Starfield() {
 
   // Параллакс
   useEffect(() => {
-    const onMouseMove = (e) => {
+    if (typeof window === 'undefined') return
+
+    const handleMouseMove = (e) => {
       const targetX = (e.clientX / window.innerWidth - 0.5) * 2
       const targetY = -(e.clientY / window.innerHeight - 0.5) * 2
       mouse.current.x += (targetX - mouse.current.x) * 0.05
       mouse.current.y += (targetY - mouse.current.y) * 0.05
     }
-    window.addEventListener('mousemove', onMouseMove)
-    return () => window.removeEventListener('mousemove', onMouseMove)
+
+    window.addEventListener('mousemove', handleMouseMove)
+    return () => window.removeEventListener('mousemove', handleMouseMove)
   }, [])
 
   // Анимация
