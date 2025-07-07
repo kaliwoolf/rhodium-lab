@@ -3,6 +3,7 @@ import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { useRef, useMemo, useEffect } from 'react'
 import { Points, PointMaterial, Stars } from '@react-three/drei'
+import GlassSaturn from '@/components/GlassSaturn'
 import * as THREE from 'three'
 
 function Starfield() {
@@ -88,8 +89,8 @@ function Starfield() {
         const dist = Math.sqrt(dx * dx + dy * dy)
 
         // коэффициент ускорения
-        const baseSpeed = Math.min(0.005 + t * 0.0002, 0.02) // медленно растёт со временем
-        const speed = baseSpeed + dist * 0.005
+        const baseSpeed = Math.min(0.002 + t * 0.0002, 0.02) // медленно растёт со временем
+        const speed = baseSpeed + dist * 0.003
 
         // летим к камере (по Z)
         z += speed
@@ -146,7 +147,8 @@ export default function ThreeBackground() {
       <pointLight position={[10, 10, 10]} intensity={1} color="#9999ff" />
 
       <Starfield />
-
+      <GlassSaturn />
+        
       <EffectComposer>
         <Bloom
           intensity={1.8}
