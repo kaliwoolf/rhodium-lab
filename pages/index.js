@@ -1,9 +1,11 @@
 import Head from 'next/head'
 import { motion } from 'framer-motion'
+import Saturn from '../components/Saturn'
 
 export default function Home() {
   return (
     <>
+      <Saturn />
       <Head>
         <title>RHODIUM LAB</title>
       </Head>
