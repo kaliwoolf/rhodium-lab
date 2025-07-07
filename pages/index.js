@@ -1,33 +1,37 @@
-
-import Head from 'next/head'
-import { motion } from 'framer-motion'
+import { useEffect } from 'react'
 
 export default function Home() {
+  useEffect(() => {
+    const canvas = document.createElement('canvas')
+    Object.assign(canvas.style, {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      width: '100vw',
+      height: '100vh',
+      zIndex: '-1',
+      pointerEvents: 'none',
+    })
+    document.body.appendChild(canvas)
+
+    const gl = canvas.getContext('webgl')
+    if (!gl) {
+      console.error('No WebGL context!')
+      return
+    }
+
+    // TEST: красный фон
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+    gl.viewport(0, 0, canvas.width, canvas.height)
+    gl.clearColor(1.0, 0.0, 0.0, 1.0)
+    gl.clear(gl.COLOR_BUFFER_BIT)
+    console.log('Red background rendered')
+  }, [])
+
   return (
-    <div className="bg-dark min-h-screen flex flex-col items-center justify-center text-white font-sans">
-      <Head>
-        <title>RHODIUM LAB</title>
-      </Head>
-
-      <motion.h1
-        className="text-5xl md:text-7xl font-bold mb-6 tracking-widest"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1 }}
-      >
-        RHODIUM LAB
-      </motion.h1>
-
-      <motion.div
-        className="px-6 py-2 rounded-full border border-crimson text-sm md:text-base tracking-wider flex items-center gap-4 shadow-neon"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6, duration: 0.8 }}
-      >
-        <span>WORK</span>
-        <div className="w-6 h-px bg-crimson" />
-        <span>CONTACT</span>
-      </motion.div>
-    </div>
+    <main className="flex min-h-screen flex-col items-center justify-center">
+      <h1 className="text-4xl font-bold text-white">RHODIUM LAB</h1>
+    </main>
   )
 }
