@@ -42,14 +42,18 @@ export default function GlassSaturn() {
           clearcoat={1}
           clearcoatRoughness={0}
           metalness={0}
-          envMapIntensity={0.4}
+          envMapIntensity={0.6}
           transparent
           attenuationColor="#ffffff"
           attenuationDistance={0.6}
         />
       </mesh>
 
-
+      <pointLight
+        position={[0, 0, 0]}
+        intensity={1.2}
+        color="#ccddee"
+      />
 
       {/* Кольца */}
       <group position={[0, 0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]} renderOrder={4} ref={ringRef}>
