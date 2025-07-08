@@ -140,7 +140,6 @@ export default function ThreeBackground() {
       <Environment
         background={false}
         blur={0.6}
-        preset="sunset"
         files="/env/rogland_clear_night_1k.hdr"
       />
       
