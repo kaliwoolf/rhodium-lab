@@ -70,6 +70,7 @@ export default function GlassSaturn() {
           <ringGeometry args={[0.6, 0.9, 128]} />
           <meshPhysicalMaterial
             envMap={hdrTexture}
+            color="#c0d8ff"
             transmission={1}
             thickness={0.2}
             roughness={0.3}
@@ -79,7 +80,7 @@ export default function GlassSaturn() {
             clearcoatRoughness={0.4}
             transparent
             side={DoubleSide}
-            envMapIntensity={0.2}
+            envMapIntensity={1.2}
             depthWrite={true}
           />
         </mesh>
@@ -97,7 +98,7 @@ export default function GlassSaturn() {
             clearcoatRoughness={0.4}
             transparent
             side={DoubleSide}
-            envMapIntensity={0}
+            envMapIntensity={1}
             depthWrite={true}
           />
         </mesh>

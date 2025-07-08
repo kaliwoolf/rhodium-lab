@@ -70,25 +70,25 @@ function Starfield({ mouse }) {
 
   
   // Анимация
- useFrame(({ clock }) => {
-    const t = clock.getElapsedTime()
-    const pos = pointsRef.current.geometry.attributes.position.array
-    const o = offsets.current
+    useFrame(({ clock }) => {
+      if (!pointsRef.current || !pointsRef.current.geometry) return
+      const posAttr = pointsRef.current.geometry.attributes.position
+      if (!posAttr) return
 
-    for (let i = 0; i < count; i++) {
-      const i3 = i * 3
+      const t = clock.getElapsedTime()
+      const pos = posAttr.array
+      const o = offsets.current
 
-      // Смещение звезды по синусоиде
-      const dx = 0.05 * Math.sin(t * 0.25 + o[i])
-      const dy = 0.05 * Math.cos(t * 0.25 + o[i])
+      for (let i = 0; i < count; i++) {
+        const i3 = i * 3
+        const dx = 0.05 * Math.sin(t * 0.25 + o[i])
+        const dy = 0.05 * Math.cos(t * 0.25 + o[i])
+        pos[i3] += dx * 0.005 + mouse.current.x * 0.002
+        pos[i3 + 1] += dy * 0.005 + mouse.current.y * 0.002
+      }
 
-      pos[i3] += dx * 0.005 + mouse.current.x * 0.002
-      pos[i3 + 1] += dy * 0.005 + mouse.current.y * 0.002
-      // Z — остаётся на месте
-    }
-
-    pointsRef.current.geometry.attributes.position.needsUpdate = true
-  })
+      posAttr.needsUpdate = true
+    })
 
 
 
