@@ -1,6 +1,5 @@
 import React, { useRef, useEffect } from 'react'
 import { useFrame, useThree, useLoader } from '@react-three/fiber'
-import { RGBELoader } from 'three-stdlib'
 import * as THREE from 'three'
 
 export default function GlassSaturn() {
@@ -31,57 +30,20 @@ export default function GlassSaturn() {
         <sphereGeometry args={[0.52, 128, 128]} />
         <meshPhysicalMaterial
           transmission={1}
-          thickness={2.0}
+          thickness={1.6}
           roughness={0.01}
           ior={1.52}
           reflectivity={0.05}
           clearcoat={1}
           clearcoatRoughness={0.2}
           metalness={0}
-          envMapIntensity={0.3}
-          opacity={0.05}
+          envMapIntensity={0.6}
+          opacity={0.2}
           transparent
           attenuationColor="#0b1118"
           attenuationDistance={0.35}
         />
       </mesh>
-
-      <mesh scale={[1.015, 1.015, 1.015]}>
-        <sphereGeometry args={[0.52, 128, 128]} />
-        <meshBasicMaterial
-          color="#aaffff"
-          transparent
-          opacity={0.025}
-          depthWrite={false}
-        />
-      </mesh>
-
-      {/* Внутренний свет */}
-      <pointLight
-        position={[0, 0, 0]}
-        intensity={2.5}
-        distance={2}
-        decay={2}
-        color="#aaffff"
-      />
-
-      <spotLight
-        position={[2, 3, 3]}
-        angle={0.5}
-        penumbra={1}
-        intensity={0.8}
-        decay={2}
-        color="#99ccff"
-      />
-
-      <pointLight
-        position={[-2, 1.5, 2]}
-        intensity={2.0}
-        distance={5}
-        decay={2}
-        color="#aaccff"
-      />
-
 
       {/* Объёмные кольца (торы) */}
      <group ref={ringRef} renderOrder={1} position={[0, 0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]}>
