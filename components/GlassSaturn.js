@@ -54,7 +54,12 @@ export default function GlassSaturn() {
           />
       </mesh>
 
-      <pointLight position={[0, 0, 0]} intensity={2.5} decay={1.5} distance={3} color="#77aaff" />
+      <directionalLight
+        position={[3, 4, 5]} // сверху и сбоку
+        intensity={1.2}
+        color="#88aaff"
+        castShadow={false}
+      />
 
       {/* Внутренняя текстурированная сфера */}
       <mesh renderOrder={2}>
