@@ -55,9 +55,9 @@ export default function GlassSaturn() {
         <MeshTransmissionMaterial
           resolution={1024}
           thickness={1.5}
-          roughness={0}
-          transmission={1}
-          ior={1.3}
+          roughness={0.15}
+          transmission={0.95}
+          ior={1.15}
           chromaticAberration={0.08}
           anisotropy={0.1}
           distortion={0.1}
@@ -81,8 +81,8 @@ export default function GlassSaturn() {
 
       {/* Свет */}
       <Environment background={false} resolution={512}>
-        {/* <Lightformer intensity={0.8} position={[5, 5, -5]} scale={[4, 4, 1]} color="#aaaaff" /> */}
-        <Lightformer intensity={0.5} position={[-5, -5, 5]} scale={[5, 5, 1]} color="#555577" />
+        <Lightformer intensity={0.8} position={[5, 5, -5]} scale={[4, 4, 1]} color="#aaaaff" /> 
+        {/* <Lightformer intensity={0.5} position={[-5, -5, 5]} scale={[5, 5, 1]} color="#555577" /> */}
       </Environment>
     </group>
   )
