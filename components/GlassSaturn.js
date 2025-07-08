@@ -59,7 +59,7 @@ export default function GlassSaturn() {
         <sphereGeometry args={[0.515, 64, 64]} />
         <meshStandardMaterial
           map={colorMap}
-          color="#444"
+          color="#111"
           emissive="#000"
           emissiveIntensity={0.01}
           roughness={0.9}
