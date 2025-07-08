@@ -37,30 +37,30 @@ export default function GlassSaturn() {
         <sphereGeometry args={[0.52, 128, 128]} />
         <meshPhysicalMaterial
           transmission={1}
-          thickness={1.8}
-          roughness={0.005}
-          ior={1.52}
-          reflectivity={0.05}
+          thickness={2.5}
+          roughness={0.05}
+          ior={1.5}
+          reflectivity={0.2}
           clearcoat={1}
           clearcoatRoughness={0}
           metalness={0}
-          envMapIntensity={1.0}
-          opacity={0.125}
+          envMapIntensity={0.6}
+          opacity={0.08}
           transparent
           attenuationColor="#0b1118"
-          attenuationDistance={0.25}
+          attenuationDistance={0.15}
         />
       </mesh>
 
       {/* 💡 Краевой боковой свет — для линзы */}
         <spotLight
-          position={[3, 1, 2]}     // справа сверху
-          angle={0.45}
-          penumbra={1}
-          intensity={0.9}          // не слишком яркий
+          position={[2, 2, 2]}     // справа сверху
+          angle={0.3}
+          penumbra={0.5}
+          intensity={1}          // не слишком яркий
           distance={5}
-          decay={2}
-          color="#88ccff"
+          decay={1}
+          color="#aaccee"
         />
 
       {/* Объёмные кольца (торы) */}

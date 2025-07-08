@@ -153,8 +153,10 @@ export default function ThreeBackground() {
       <ambientLight intensity={0.5} />
       <pointLight position={[5, 5, 5]} intensity={3} color="#1d1f22" />
       
-      <mesh position={[0, 0, -9.9]}>
-        <planeGeometry args={[200, 200]} />
+      <Starfield mouse={mouse} />
+
+      //<mesh position={[0, 0, -9.9]}>
+      //  <planeGeometry args={[200, 200]} />
         <meshBasicMaterial
           color="#0b0f17"
           transparent
@@ -165,9 +167,7 @@ export default function ThreeBackground() {
 
 
       <GlassSaturn mouse={mouse} />
-
-      <Starfield mouse={mouse} />
-
+   
 
       <EffectComposer>
         <Bloom
