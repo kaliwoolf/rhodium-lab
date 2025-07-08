@@ -47,7 +47,7 @@ export default function GlassSaturn() {
          <meshStandardMaterial
             color="black"
             transparent
-            opacity={0.01}
+            opacity={0.3}
             depthWrite={true}
             depthTest={true}
             toneMapped={false}
@@ -61,7 +61,7 @@ export default function GlassSaturn() {
         <sphereGeometry args={[0.515, 64, 64]} />
         <meshStandardMaterial
           map={colorMap}
-          сolor="#444"
+          color="#444"
           emissive="#222"
           emissiveIntensity={0.2}
           roughness={0.9}
@@ -74,14 +74,14 @@ export default function GlassSaturn() {
         <sphereGeometry args={[0.52, 64, 64]} />
         <meshPhysicalMaterial
           transmission={1}
-          thickness={1.2}
-          roughness={0.1}
-          ior={1.2}
+          thickness={1.5}
+          roughness={0.05}
+          ior={1.3}
           reflectivity={0.1}
           clearcoat={1}
-          clearcoatRoughness={0.2}
-          attenuationColor={'#1a1d1e'}
-          attenuationDistance={0.6}
+          clearcoatRoughness={0.1}
+          attenuationColor={'445'}
+          attenuationDistance={0.4}
           toneMapped={false}
           transparent
         />
