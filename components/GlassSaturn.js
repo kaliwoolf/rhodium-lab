@@ -10,7 +10,7 @@ import {
   Color
 } from 'three'
 
-import { Environment, MeshTransmissionMaterial } from '@react-three/drei' 
+import { Environment, Lightformer, MeshTransmissionMaterial } from '@react-three/drei' 
 
 import * as THREE from 'three'
 
@@ -43,15 +43,15 @@ export default function GlassSaturn() {
         <sphereGeometry args={[0.45, 64, 64]} />
         <MeshTransmissionMaterial
           resolution={1024}
-          thickness={1.5}
-          roughness={0}
+          thickness={2}
+          roughness={0.05}
           transmission={1}
-          ior={1.3}
-          chromaticAberration={0.08}
-          anisotropy={0.1}
-          distortion={0.1}
-          distortionScale={0.3}
-          temporalDistortion={0.2}
+          ior={1.4}
+          chromaticAberration={0.1}
+          anisotropy={0.2}
+          distortion={0.15}
+          distortionScale={0.5}
+          temporalDistortion={0.3}
           backside
         />
       </mesh>
@@ -67,7 +67,10 @@ export default function GlassSaturn() {
         />
       </mesh>
 
-      <Environment preset="sunset" background={false} />
+      <Environment background={false} resolution={512}>
+        <Lightformer intensity={4} position={[5, 5, -5]} scale={[10, 10, 1]} color="#ffffff" />
+        <Lightformer intensity={2} position={[-5, -5, 5]} scale={[10, 10, 1]} color="#88aaff" />
+      </Environment>
     </group>
   )
 }
