@@ -34,22 +34,37 @@ export default function GlassSaturn({ mouse }) {
     <group position={[2.5, 1.6, -2]} scale={[7, 7, 7]} rotation={[0.45, 0, 0.46]}>
 
       {/* Сатурн */}
+
+      <mesh scale={[1.01, 1.01, 1.01]}>
+        <sphereGeometry args={[0.52, 128, 128]} />
+        <meshStandardMaterial
+          emissive="#aaffff"
+          emissiveIntensity={0.05}
+          transparent
+          opacity={0.05}
+          depthWrite={false}
+          toneMapped={false}
+        />
+      </mesh>
+
+
       <mesh ref={ref}>
         <sphereGeometry args={[0.52, 128, 128]} />
         <meshPhysicalMaterial
           transmission={1}
-          thickness={2}
+          thickness={2.5}
           roughness={0.05}
-          ior={1.5}
+          ior={1.52}
           reflectivity={0.2}
           clearcoat={1}
           clearcoatRoughness={0.1}
           metalness={0}
-          envMapIntensity={0.6}
+          envMapIntensity={1.0}
           opacity={0.08}
           transparent
           attenuationColor="#0b1118"
           attenuationDistance={0.2}
+          toneMapped={false}
         />
       </mesh>
 
@@ -59,17 +74,17 @@ export default function GlassSaturn({ mouse }) {
         {/* Тонкий стеклянный тор */}
         <mesh>
           <torusGeometry args={[0.6, 0.015, 64, 256]} />
-          <meshPhysicalMaterial
-            transmission={1}
-            thickness={0.5}
-            roughness={0.15}
-            ior={1.52}
+          <meshStandardMaterial
+            transmission={0.6}
+            thickness={0.3}
+            roughness={0.2}
+            ior={1.3}
             reflectivity={0.1}
             clearcoat={1}
             clearcoatRoughness={0.2}
-            envMapIntensity={0.2}
+            envMapIntensity={0.1}
             transparent
-            opacity={0.35}
+            opacity={0.2}
             side={THREE.DoubleSide}
           />
         </mesh>
