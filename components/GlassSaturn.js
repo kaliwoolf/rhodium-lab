@@ -35,7 +35,7 @@ export default function GlassSaturn({ mouse }) {
 
       {/* Сатурн */}
 
-      <mesh scale={[1.01, 1.01, 1.01]}>
+      <mesh scale={[0.99, 0.99, 0.99]}>
         <sphereGeometry args={[0.52, 128, 128]} />
         <meshStandardMaterial
           emissive="#aaffff"
@@ -44,6 +44,7 @@ export default function GlassSaturn({ mouse }) {
           opacity={0.05}
           depthWrite={false}
           toneMapped={false}
+          depthTest={true}
         />
       </mesh>
 
@@ -75,19 +76,13 @@ export default function GlassSaturn({ mouse }) {
         <mesh>
           <torusGeometry args={[0.6, 0.015, 64, 256]} />
           <meshStandardMaterial
-            transmission={0.6}
-            thickness={0.3}
+            color="#0a1a22"
+            metalness={0.3}
             roughness={0.2}
-            ior={1.3}
-            reflectivity={0.1}
-            clearcoat={1}
-            clearcoatRoughness={0.2}
-            envMapIntensity={0.1}
-            transparent
             opacity={0.2}
+            transparent
             side={THREE.DoubleSide}
           />
-        </mesh>
 
         {/* Плоское кольцо с текстурой */}
         <mesh position={[0, 0, -0.001]}>
