@@ -83,6 +83,7 @@ export default function GlassSaturn({ mouse }) {
             transparent
             side={THREE.DoubleSide}
           />
+        </mesh>
 
         {/* Плоское кольцо с текстурой */}
         <mesh position={[0, 0, -0.001]}>
