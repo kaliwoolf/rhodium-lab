@@ -62,10 +62,10 @@ export default function GlassSaturn() {
           ior={1.3}
           reflectivity={0.02}
           envMapIntensity={0.0}
-          attenuationColor={'#212323'}
+          attenuationColor={'#4a4a4a'}
           attenuationDistance={0.5}
           clearcoat={1}
-          clearcoatRoughness={0.2}
+          clearcoatRoughness={0.1}
           depthWrite={true}
           depthTest={true} 
         />
@@ -74,7 +74,7 @@ export default function GlassSaturn() {
       {/* Кольца — двойной слой для псевдо-объёма */}
         <group rotation={[Math.PI / 2.2, 0, 0]} renderOrder={3}>
           {/* Нижнее кольцо */}
-          <mesh position={[0, 0, -0.02]}>
+          <mesh>
             <ringGeometry args={[0.55, 0.85, 128]} />
             <meshPhysicalMaterial
               color="#212323"
