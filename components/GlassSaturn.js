@@ -61,8 +61,8 @@ export default function GlassSaturn() {
 
       {/* Объёмные кольца (торы) */}
       <group position={[0, 0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]} renderOrder={4} ref={ringRef}>
-        <mesh>
-          <torusGeometry args={[1.88, 0.012, 64, 256]} />
+        <mesh scale={[1.8, 1.8, 0.4]}>
+          <torusGeometry args={[0.85, 0.012, 64, 256]} />
           <meshPhysicalMaterial
             transmission={1}
             thickness={0.55}                  
