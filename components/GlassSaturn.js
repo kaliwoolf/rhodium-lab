@@ -40,7 +40,7 @@ export default function GlassSaturn() {
     <group position={[2.5, 1.6, -2]} scale={[7, 7, 7]} rotation={[0.45, 0, 0.46]}>
       {/* Маска чтобы звезды не просвечивали */}
       <mesh renderOrder={1}>
-        <sphereGeometry args={[0.44, 64, 64]} />
+        <sphereGeometry args={[0.51, 64, 64]} />
          <meshStandardMaterial
             color="black"
             transparent
@@ -52,9 +52,9 @@ export default function GlassSaturn() {
 
       {/* Стеклянная сфера */}
       <mesh renderOrder={2}>
-        <sphereGeometry args={[0.45, 64, 64]} />
+        <sphereGeometry args={[0.52, 64, 64]} />
         <meshPhysicalMaterial
-          color="#212323"          
+          color="#333333"          
           transmission={1}
           transparent
           thickness={1.5}
@@ -75,7 +75,7 @@ export default function GlassSaturn() {
         <group rotation={[Math.PI / 2.2, 0, 0]} renderOrder={3}>
           {/* Нижнее кольцо */}
           <mesh>
-            <ringGeometry args={[0.5, 0.95, 128]} />
+            <ringGeometry args={[0.55, 0.85, 128]} />
             <meshPhysicalMaterial
               color="#212323"
               transmission={1}
@@ -94,7 +94,7 @@ export default function GlassSaturn() {
 
           {/* Верхнее кольцо, чуть ближе к камере */}
           <mesh position={[0, 0, 0.005]}>
-            <ringGeometry args={[0.5, 0.95, 128]} />
+            <ringGeometry args={[0.55, 0.85, 128]} />
             <meshPhysicalMaterial
               color="#212323"
               transmission={1}
