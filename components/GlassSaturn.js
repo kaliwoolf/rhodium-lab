@@ -5,13 +5,12 @@ import { useFrame } from '@react-three/fiber'
 import {
   DoubleSide,
   MeshPhysicalMaterial,
-  MeshTransmissionMaterial,
   TextureLoader,
   AdditiveBlending,
   Color
 } from 'three'
 
-import { Environment } from '@react-three/drei' 
+import { Environment, MeshTransmissionMaterial } from '@react-three/drei' 
 
 import * as THREE from 'three'
 
