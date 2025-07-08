@@ -149,10 +149,7 @@ export default function ThreeBackground() {
         files="/env/satara_night_no_lamps_1k.hdr"
       />
       
-      {/* 💡 Свет */}
-      <ambientLight intensity={0.5} />
-      <pointLight position={[5, 5, 5]} intensity={3} color="#1d1f22" />
-      
+    
       <Starfield mouse={mouse} />
 
       //<mesh position={[0, 0, -9.9]}>
@@ -167,6 +164,17 @@ export default function ThreeBackground() {
 
 
       <GlassSaturn mouse={mouse} />
+
+      {/* 💡 Краевой боковой свет — для линзы */}
+      <spotLight
+          position={[2, 2, 2]}     // справа сверху
+          angle={0.3}
+          penumbra={0.5}
+          intensity={1}          // не слишком яркий
+          distance={5}
+          decay={1}
+          color="#aaccee"
+      />
    
 
       <EffectComposer>

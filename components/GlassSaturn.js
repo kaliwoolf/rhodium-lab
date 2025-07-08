@@ -1,8 +1,13 @@
 import React, { useRef, useEffect } from 'react'
 import { useFrame, useThree, useLoader } from '@react-three/fiber'
 import * as THREE from 'three'
+import { TextureLoader } from 'three'
 
 export default function GlassSaturn({ mouse }) {
+
+  const ringTexture = useLoader(TextureLoader, '/textures/saturn_ring_texture.png')
+  const ringAlphaMap = useLoader(TextureLoader, '/textures/saturn_ring_alpha_map.png')
+
   const ref = useRef()
   const ringRef = useRef()
 
@@ -20,7 +25,7 @@ export default function GlassSaturn({ mouse }) {
       ref.current.rotation.y = mouse.current.x * tilt
 
       // 💡 Добавим мягкую "пульсацию" от мыши
-      const scalePulse = baseScale + 0.015 * (mouse.current.x ** 2 + mouse.current.y ** 2)
+      const scalePulse = baseScale + 0.15 * (mouse.current.x ** 2 + mouse.current.y ** 2)
       ref.current.scale.set(scalePulse, scalePulse, scalePulse)
 
       ringRef.current.rotation.x = Math.PI / 2.2
@@ -52,48 +57,38 @@ export default function GlassSaturn({ mouse }) {
       </mesh>
 
       
-      {/* Объёмные кольца (торы) */}
-     <group ref={ringRef} renderOrder={1} position={[0, 0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]}>
-      {/* Внешний тор — шире */}
-      <mesh scale={[1.08, 1.08, 0.15]}>
-        <torusGeometry args={[0.61, 0.025, 64, 256]} />
-        <meshPhysicalMaterial
-          transmission={1}
-          thickness={0.6}
-          roughness={0.1}
-          ior={1.52}
-          reflectivity={0.1}
-          clearcoat={1}
-          clearcoatRoughness={0.2}
-          envMapIntensity={0.1}
-          attenuationColor="#0a0d12"
-          attenuationDistance={0.25}
-          transparent
-          opacity={0.4}
-          side={THREE.DoubleSide}
-        />
-      </mesh>
+      <group ref={ringRef} position={[0, 0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]}>
+        {/* Внутреннее стеклянное кольцо */}
+        <mesh>
+          <torusGeometry args={[0.6, 0.025, 64, 256]} />
+          <meshPhysicalMaterial
+            transmission={1}
+            thickness={0.6}
+            roughness={0.1}
+            ior={1.52}
+            reflectivity={0.1}
+            clearcoat={1}
+            clearcoatRoughness={0.2}
+            envMapIntensity={0.2}
+            transparent
+            opacity={0.4}
+            side={THREE.DoubleSide}
+          />
+        </mesh>
 
-      {/* Внутренний тор — ближе к планете */}
-      <mesh scale={[1.0, 1.0, 0.15]}>
-        <torusGeometry args={[0.57, 0.025, 64, 256]} />
-        <meshPhysicalMaterial
-          transmission={1}
-          thickness={0.6}
-          roughness={0.1}
-          ior={1.52}
-          reflectivity={0.1}
-          clearcoat={1}
-          clearcoatRoughness={0.2}
-          envMapIntensity={0.1}
-          attenuationColor="#0a0d12"
-          attenuationDistance={0.25}
-          transparent
-          opacity={0.4}
-          side={THREE.DoubleSide}
-        />
-      </mesh>
-    </group>
+        {/* Внешнее реалистичное кольцо */}
+        <mesh>
+          <ringGeometry args={[0.65, 0.95, 128]} />
+          <meshStandardMaterial
+            map={ringTexture}
+            alphaMap={ringAlphaMap}
+            transparent
+            side={THREE.DoubleSide}
+            depthWrite={false}
+          />
+        </mesh>
+      </group>
+
 
     </group>
   )
