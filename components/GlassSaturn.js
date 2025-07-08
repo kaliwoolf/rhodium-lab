@@ -41,7 +41,7 @@ export default function GlassSaturn() {
       position={[3.3, 2, -2]}
       scale={[4.8, 4.8, 4.8]}
       rotation={[Math.PI / 5, Math.PI / 12, Math.PI / 32]}
-    />
+    >
       {/* Сфера (Сатурн) */}
       <mesh ref={ref}>
         <sphereGeometry args={[0.45, 64, 64]} />
