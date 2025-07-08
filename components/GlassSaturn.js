@@ -39,8 +39,6 @@ export default function GlassSaturn() {
   return (
     <group position={[2.5, 1.6, -2]} scale={[7, 7, 7]} rotation={[0.45, 0, 0.46]}>
       
-      <pointLight position={[0, 0, 0]} intensity={1} decay={2} distance={2} color="#212323" />
-
       {/* Маска чтобы звезды не просвечивали */}
       <mesh renderOrder={1}>
         <sphereGeometry args={[0.51, 64, 64]} />
@@ -53,22 +51,26 @@ export default function GlassSaturn() {
           />
       </mesh>
 
+      <pointLight position={[0, 0, 0]} intensity={0.15} decay={2} distance={1.5} color="#1d2024" />
+
       {/* Стеклянная сфера */}
       <mesh renderOrder={2}>
         <sphereGeometry args={[0.52, 64, 64]} />
         <meshPhysicalMaterial
-          color="#333333"          
+          color="#1a1d23"          
           transmission={1}
           transparent
           thickness={1.5}
           roughness={0.25}
-          ior={1.3}
-          reflectivity={0.02}
-          envMapIntensity={0.1}
-          attenuationColor={'#4a4a4a'}
-          attenuationDistance={0.5}
+          ior={1.25}
+          reflectivity={0.01}
+          attenuationColor={'#1a1b1e'}
+          attenuationDistance={0.3}
           clearcoat={1}
-          clearcoatRoughness={0.1}
+          clearcoatRoughness={0.15}
+          envMapIntensity={0.3}
+          emissive="#1a1a1a"
+          emissiveIntensity={0.6}
           depthWrite={true}
           depthTest={true} 
         />
@@ -131,7 +133,8 @@ export default function GlassSaturn() {
       {/* Свет */}
       <Environment background={false} resolution={512}>
         <Lightformer intensity={0.8} position={[5, 5, -5]} scale={[4, 4, 1]} color="#aaaaff" /> 
-        <Lightformer intensity={0.5} position={[4, 4, -2]} scale={[2, 2, 1]} color="#77ffff" /> 
+        <Lightformer intensity={0.5} position={[4, 4, -2]} scale={[2, 2, 1]} color="#77ffff" />
+        <Lightformer intensity={0.15} position={[0, -3, -4]} scale={[2, 2, 1]} color="#334455" />  
       </Environment>
     </group>
   )
