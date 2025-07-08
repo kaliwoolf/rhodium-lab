@@ -67,19 +67,22 @@ export default function GlassSaturn() {
       {/* Внешняя стеклянная оболочка */}
       <mesh renderOrder={3}>
         <sphereGeometry args={[0.52, 64, 64]} />
-        <meshPhysicalMaterial
+        <MeshTransmissionMaterial
+          backside
+          samples={10}
+          resolution={512}
+          thickness={1.2}
           transmission={1}
-          thickness={2}
           roughness={0.1}
+          chromaticAberration={0.03}
+          anisotropy={0.2}
+          distortion={0.2}
+          distortionScale={0.5}
+          temporalDistortion={0.15}
           ior={1.4}
-          reflectivity={0.1}
-          clearcoat={1}
-          clearcoatRoughness={0.05}
-          attenuationColor={'#444466'}
+          attenuationColor="#8899aa"
           attenuationDistance={0.25}
           toneMapped={false}
-          transparent
-          envMapIntensity={0.1}
         />
       </mesh>
 
@@ -88,7 +91,7 @@ export default function GlassSaturn() {
         <meshBasicMaterial
           color="#667799"
           transparent
-          opacity={0.05}
+          opacity={0.01}
           blending={AdditiveBlending}
           side={DoubleSide}
         />
@@ -101,7 +104,7 @@ export default function GlassSaturn() {
           <mesh>
             <ringGeometry args={[0.6, 0.9, 128]} />
             <meshPhysicalMaterial
-              color="#212323"
+              color="#12161C"
               transmission={1}
               thickness={0.2}
               roughness={0.3}
@@ -120,7 +123,7 @@ export default function GlassSaturn() {
           <mesh position={[0, 0, 0.02]}>
             <ringGeometry args={[0.6, 0.9, 128]} />
             <meshPhysicalMaterial
-              color="#212322"
+              color="#12161C"
               transmission={1}
               thickness={0.2}
               roughness={0.3}
@@ -140,7 +143,7 @@ export default function GlassSaturn() {
             <ringGeometry args={[0.55, 0.9, 128]} />
             <meshBasicMaterial
               color="black"
-              opacity={0.2} // ← можно регулировать силу тени
+              opacity={0.5} // ← можно регулировать силу тени
               transparent
               side={DoubleSide}
               depthWrite={false}

@@ -144,12 +144,12 @@ export default function ThreeBackground() {
       
       <GlassSaturn mouse={mouse} />
       <Starfield mouse={mouse} />
-      
+
       <EffectComposer>
         <Bloom
-          intensity={1.8}
-          luminanceThreshold={0.1}
-          luminanceSmoothing={0.75}
+          intensity={2.8}
+          luminanceThreshold={0.05}
+          luminanceSmoothing={0.65}
           mipmapBlur={true}
         />
       </EffectComposer>
