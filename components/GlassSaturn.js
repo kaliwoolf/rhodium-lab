@@ -73,44 +73,33 @@ export default function GlassSaturn() {
 
       {/* Кольца */}
       <group rotation={[Math.PI / 2.2, 0, 0]} renderOrder={3}>
-        {/* Нижнее кольцо */}
+        {/* Нижнее кольцо (основное) */}
         <mesh>
           <ringGeometry args={[0.52, 0.9, 128]} />
           <meshPhysicalMaterial
             color="#1a1a1a"
-            transmission={1}
-            thickness={0.1}
-            roughness={0.4}
-            ior={1.25}
-            clearcoat={1}
-            clearcoatRoughness={0.3}
             transparent
             opacity={0.3}
             side={DoubleSide}
             depthWrite={true}
-            depthTest={true} 
+            depthTest={true}
           />
         </mesh>
 
-        {/* Верхнее кольцо, чуть ближе к камере */}
+        {/* Верхнее кольцо, чуть ближе к камере — добавляет лёгкий объём */}
         <mesh position={[0, 0, 0.003]}>
           <ringGeometry args={[0.52, 0.9, 128]} />
           <meshPhysicalMaterial
             color="#1a1a1a"
-            transmission={1}
-            thickness={0.1}
-            roughness={0.4}
-            ior={1.25}
-            clearcoat={1}
-            clearcoatRoughness={0.3}
             transparent
             opacity={0.3}
             side={DoubleSide}
             depthWrite={true}
-            depthTest={true} 
+            depthTest={true}
           />
         </mesh>
       </group>
+
 
 
       {/* Свет */}
