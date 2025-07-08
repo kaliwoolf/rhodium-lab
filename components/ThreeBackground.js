@@ -133,6 +133,7 @@ export default function ThreeBackground() {
         height: '100%',
       }}
       camera={{ position: [0, 0, 10], fov: 60 }}
+      gl={{ antialias: true, alpha: true, premultipliedAlpha: false }}
     >
       <color attach="background" args={['#12161C']} />
 
@@ -163,14 +164,7 @@ export default function ThreeBackground() {
       <GlassSaturn mouse={mouse} />
 
 
-      <EffectComposer>
-        <Bloom
-          intensity={0.6}
-          luminanceThreshold={0.3}
-          luminanceSmoothing={0.5}
-          mipmapBlur={true}
-        />
-      </EffectComposer>
+      
     </Canvas>
   )
 }

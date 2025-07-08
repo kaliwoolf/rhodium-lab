@@ -51,8 +51,10 @@ export default function GlassSaturn() {
 
       <pointLight
         position={[0, 0, 0]}
-        intensity={1.2}
-        color="#ccddee"
+        intensity={2.5}
+        distance={2}
+        decay={2}
+        color="#aaffff"
       />
 
       {/* Кольца */}
