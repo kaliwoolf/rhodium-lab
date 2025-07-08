@@ -81,7 +81,7 @@ export default function GlassSaturn() {
             transparent
             opacity={0.3}
             side={DoubleSide}
-            depthWrite={true}
+            depthWrite={false}
             depthTest={true}
           />
         </mesh>
@@ -94,7 +94,7 @@ export default function GlassSaturn() {
             transparent
             opacity={0.3}
             side={DoubleSide}
-            depthWrite={true}
+            depthWrite={false}
             depthTest={true}
           />
         </mesh>
