@@ -4,6 +4,8 @@ import { RGBELoader } from 'three-stdlib'
 import {
   DoubleSide
 } from 'three'
+import * as THREE from 'three'
+
 
 export default function GlassSaturn() {
   const ref = useRef()
