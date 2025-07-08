@@ -60,7 +60,7 @@ export default function GlassSaturn() {
           ior={1.3}
           reflectivity={0.05}
           envMapIntensity={0.0}
-          attenuationColor={'#aaffff'}
+          attenuationColor={'#212323'}
           clearcoat={1}
           clearcoatRoughness={0.2}
         />
