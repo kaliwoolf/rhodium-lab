@@ -69,19 +69,6 @@ function Starfield({ mouse }) {
     }
   }, [count])
 
-
-function BackgroundSphere() {
-  return (
-    <mesh scale={[50, 50, 50]}>
-      <sphereGeometry args={[1, 64, 64]} />
-      <meshBasicMaterial
-        color="#20242C" // тёмно-серый с холодным оттенком
-        side={THREE.BackSide}
-      />
-    </mesh>
-  )
-}
-
   
   // Анимация
  useFrame(({ clock }) => {
@@ -154,7 +141,6 @@ export default function ThreeBackground() {
       <ambientLight intensity={0.5} />
       <pointLight position={[5, 5, 5]} intensity={3} color="#1d1f22" />
       
-      <BackgroundSphere />
       <GlassSaturn mouse={mouse} />
       <Starfield mouse={mouse} />
 

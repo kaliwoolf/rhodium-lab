@@ -39,18 +39,18 @@ export default function GlassSaturn() {
   return (
     <group position={[2.5, 1.6, -2]} scale={[7, 7, 7]} rotation={[0.45, 0, 0.46]}>
       
-      {/* Маска чтобы звезды не просвечивали */}
-      <mesh renderOrder={1}>
-        <sphereGeometry args={[0.51, 64, 64]} />
-         <meshStandardMaterial
-            color="black"
-            transparent
-            opacity={0.3}
-            depthWrite={true}
-            depthTest={true}
-            toneMapped={false}
-          />
-      </mesh>
+    //  {/* Маска чтобы звезды не просвечивали */}
+    //  <mesh renderOrder={1}>
+    //    <sphereGeometry args={[0.51, 64, 64]} />
+    //     <meshStandardMaterial
+    //        color="black"
+    //        transparent
+    //        opacity={0.3}
+    //        depthWrite={true}
+    //        depthTest={true}
+    //        toneMapped={false}
+    //     />
+    //  </mesh>
 
       {/* Внутренняя текстурированная сфера */}
       <mesh renderOrder={2}>
