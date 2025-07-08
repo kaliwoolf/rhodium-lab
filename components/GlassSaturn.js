@@ -43,7 +43,7 @@ export default function GlassSaturn() {
           metalness={0}
           envMap={hdrTexture}
           envMapIntensity={1}
-          opacity={0.3}
+          opacity={0.2}
           transparent
           attenuationColor="#0f1015"
           attenuationDistance={0.2}
@@ -62,10 +62,10 @@ export default function GlassSaturn() {
       {/* Объёмные кольца (торы) */}
       <group position={[0, 0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]} renderOrder={4} ref={ringRef}>
         <mesh>
-          <torusGeometry args={[0.8, 0.015, 64, 256]} />
+          <torusGeometry args={[0.8, 0.03, 64, 256]} />
           <meshPhysicalMaterial
             transmission={1}
-            thickness={0.8}                  // ← как у планеты
+            thickness={0.8}                  
             roughness={0.12}
             ior={1.5}
             reflectivity={0.2}
@@ -75,11 +75,22 @@ export default function GlassSaturn() {
             side={THREE.DoubleSide}
             envMap={hdrTexture}
             envMapIntensity={0.3}
-            opacity={0.35}                     // ← ключевое! Чуть выше, чем у планеты
+            opacity={0.4}                     // ← ключевое! Чуть выше, чем у планеты
             attenuationColor="#0d1118"
             attenuationDistance={0.25}
           />
         </mesh>
+
+        <mesh>
+          <torusGeometry args={[0.805, 0.035, 32, 64]} />
+          <meshBasicMaterial
+            color="#c0eaff"
+            opacity={0.02}
+            transparent
+            side={THREE.DoubleSide}
+          />
+        </mesh>
+
       </group>
 
     </group>
