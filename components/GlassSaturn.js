@@ -112,7 +112,7 @@ export default function GlassSaturn() {
 
       {/* Внутренний тор — ближе к планете */}
       <mesh scale={[1.2, 1.2, 0.15]}>
-        <torusGeometry args={[0.56, 0.02, 64, 256]} />>
+        <torusGeometry args={[0.56, 0.02, 64, 256]} />
         <meshPhysicalMaterial
           transmission={1}
           thickness={0.6}
