@@ -2,10 +2,9 @@ import React, { useRef, useEffect } from 'react'
 import { useFrame, useThree, useLoader } from '@react-three/fiber'
 import * as THREE from 'three'
 
-export default function GlassSaturn() {
+export default function GlassSaturn({ mouse }) {
   const ref = useRef()
   const ringRef = useRef()
-  const mouse = useRef({ x: 0, y: 0 })
 
   const baseScale = 1
 
@@ -52,17 +51,7 @@ export default function GlassSaturn() {
         />
       </mesh>
 
-      {/* 💡 Краевой боковой свет — для линзы */}
-        <spotLight
-          position={[2, 2, 2]}     // справа сверху
-          angle={0.3}
-          penumbra={0.5}
-          intensity={1}          // не слишком яркий
-          distance={5}
-          decay={1}
-          color="#aaccee"
-        />
-
+      
       {/* Объёмные кольца (торы) */}
      <group ref={ringRef} renderOrder={1} position={[0, 0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]}>
       {/* Внешний тор — шире */}
