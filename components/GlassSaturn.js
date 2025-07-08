@@ -58,10 +58,10 @@ export default function GlassSaturn() {
       <mesh renderOrder={2}>
         <sphereGeometry args={[0.515, 64, 64]} />
         <meshStandardMaterial
-          map={colorMap}
-          color="#111"
-          emissive="#223344"
-          emissiveIntensity={0.4}
+          // map={colorMap}
+          color="#0a0a0a"
+          emissive="#111"
+          emissiveIntensity={0.1}
           roughness={0.95}
           metalness={0}
         />
@@ -72,14 +72,14 @@ export default function GlassSaturn() {
         <sphereGeometry args={[0.52, 64, 64]} />
         <meshPhysicalMaterial
           transmission={1}
-          thickness={1.5}
-          roughness={0.05}
-          ior={1.3}
-          reflectivity={0.1}
+          thickness={2.5}
+          roughness={0.08}
+          ior={1.5}
+          reflectivity={0.05}
           clearcoat={1}
-          clearcoatRoughness={0.1}
-          attenuationColor={'#445'}
-          attenuationDistance={0.4}
+          clearcoatRoughness={0.05}
+          attenuationColor={'#222233'}
+          attenuationDistance={0.15}
           toneMapped={false}
           transparent
           envMapIntensity={0}
@@ -144,7 +144,7 @@ export default function GlassSaturn() {
       {/* Свет */}
       <Environment background={false}>
         <Lightformer intensity={0.8} position={[5, 5, -5]} scale={[4, 4, 1]} color="#aaaaff" />
-        <Lightformer intensity={0.8} position={[-6, -2, -5]} scale={[6, 6, 1]} color="#334455" />  
+        <Lightformer intensity={1.5} position={[-3, 0, -4]} scale={[5, 5, 1]} color="#334455" />  
       </Environment>
     </group>
   )
