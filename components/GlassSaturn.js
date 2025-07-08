@@ -1,26 +1,17 @@
 // components/GlassSaturn.js
 import React, { useRef } from 'react'
-import { useFrame, useLoader } from '@react-three/fiber'
-// Стало:
+import { useFrame } from '@react-three/fiber'
 import {
   DoubleSide,
-  MeshPhysicalMaterial,
-  TextureLoader,
-  AdditiveBlending,
-  Color
+  MeshPhysicalMaterial
 } from 'three'
-
-import { Environment, Lightformer, MeshTransmissionMaterial } from '@react-three/drei' 
-
-import * as THREE from 'three'
-
+import { Environment, Lightformer } from '@react-three/drei'
 
 export default function GlassSaturn() {
   const ref = useRef()
   const ringRef = useRef()
   const mouse = useRef({ x: 0, y: 0 })
 
-  // Покачивание
   useFrame(({ clock, mouse: m }) => {
     const t = clock.getElapsedTime()
     if (ref.current && ringRef.current) {
@@ -38,85 +29,80 @@ export default function GlassSaturn() {
 
   return (
     <group position={[2.5, 1.6, -2]} scale={[7, 7, 7]} rotation={[0.45, 0, 0.46]}>
-      
-      {/* Внешняя стеклянная оболочка */}
-      <mesh renderOrder={1}>
-        <sphereGeometry args={[0.52, 64, 64]} />
-          <meshPhysicalMaterial
-            transparent
-            transmission={1}
-            thickness={1.6}
-            roughness={0}
-            ior={1.52}
-            reflectivity={0.8}
-            clearcoat={1}
-            clearcoatRoughness={0}
-            metalness={0}
-            envMapIntensity={1.2}
-            color="#ffffff"
-            attenuationDistance={0.5}
-            attenuationColor="#ffffff"
-          />
+
+      {/* Стеклянный Сатурн */}
+      <mesh renderOrder={1} ref={ref}>
+        <sphereGeometry args={[0.52, 128, 128]} />
+        <meshPhysicalMaterial
+          transmission={1}
+          thickness={1.6}
+          roughness={0.05}
+          ior={1.52}
+          reflectivity={0.6}
+          clearcoat={1}
+          clearcoatRoughness={0}
+          metalness={0}
+          envMapIntensity={0.5}
+          transparent
+          color="#ffffff"
+          attenuationColor="#ddeeff"
+          attenuationDistance={0.6}
+        />
       </mesh>
 
-      {/* Кольца — двойной слой для псевдо-объёма */}
-        <group position={[0, 0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]} renderOrder={4}>
-          {/* Нижнее кольцо */}
-          <mesh>
-            <ringGeometry args={[0.6, 0.9, 128]} />
-            <meshPhysicalMaterial
-              color="#12161C"
-              transmission={1}
-              thickness={0.2}
-              roughness={0.3}
-              ior={1.3}
-              reflectivity={0.05}
-              clearcoat={1}
-              clearcoatRoughness={0.4}
-              transparent
-              side={DoubleSide}
-              envMapIntensity={0.2}
-              depthWrite={true}
-            />
-          </mesh>
+      {/* Кольца */}
+      <group position={[0, 0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]} renderOrder={4} ref={ringRef}>
+        <mesh>
+          <ringGeometry args={[0.6, 0.9, 128]} />
+          <meshPhysicalMaterial
+            color="#12161C"
+            transmission={1}
+            thickness={0.2}
+            roughness={0.3}
+            ior={1.3}
+            reflectivity={0.05}
+            clearcoat={1}
+            clearcoatRoughness={0.4}
+            transparent
+            side={DoubleSide}
+            envMapIntensity={0.2}
+            depthWrite={true}
+          />
+        </mesh>
 
-          {/* Верхнее кольцо, чуть ближе к камере */}
-          <mesh position={[0, 0, 0.02]}>
-            <ringGeometry args={[0.6, 0.9, 128]} />
-            <meshPhysicalMaterial
-              color="#12161C"
-              transmission={1}
-              thickness={0.2}
-              roughness={0.3}
-              ior={1.3}
-              reflectivity={0.05}
-              clearcoat={1}
-              clearcoatRoughness={0.4}
-              transparent
-              side={DoubleSide}
-              envMapIntensity={0}
-              depthWrite={true}
-            />
-          </mesh>
+        <mesh position={[0, 0, 0.02]}>
+          <ringGeometry args={[0.6, 0.9, 128]} />
+          <meshPhysicalMaterial
+            color="#12161C"
+            transmission={1}
+            thickness={0.2}
+            roughness={0.3}
+            ior={1.3}
+            reflectivity={0.05}
+            clearcoat={1}
+            clearcoatRoughness={0.4}
+            transparent
+            side={DoubleSide}
+            envMapIntensity={0}
+            depthWrite={true}
+          />
+        </mesh>
 
-          {/* "Тень" под кольцами от планеты */}
-          <mesh position={[0, 0, -0.005]} renderOrder={0}>
-            <ringGeometry args={[0.55, 0.9, 128]} />
-            <meshBasicMaterial
-              color="black"
-              opacity={0.5} // ← можно регулировать силу тени
-              transparent
-              side={DoubleSide}
-              depthWrite={false}
-            />
-          </mesh>
+        <mesh position={[0, 0, -0.005]} renderOrder={0}>
+          <ringGeometry args={[0.55, 0.9, 128]} />
+          <meshBasicMaterial
+            color="black"
+            opacity={0.5}
+            transparent
+            side={DoubleSide}
+            depthWrite={false}
+          />
+        </mesh>
+      </group>
 
-        </group>
-
-      {/* Свет */}
-      <Environment background={true}>
-        <Lightformer intensity={2.5} position={[6, 4, -4]} scale={[5, 5, 1]} color="#445566" />
-        <Lightformer intensity={3} position={[0, 0, 5]} scale={[4, 4, 1]} color="#ffffff" />
+      {/* Свет для бликов */}
+      <Environment background={false}>
+        <Lightformer intensity={1.5} position={[6, 4, -4]} scale={[5, 5, 1]} color="#445566" />
       </Environment>
     </group>
   )
