@@ -61,7 +61,7 @@ export default function GlassSaturn() {
           map={colorMap}
           color="#444"
           emissive="#000"
-          emissiveIntensity={0.2}
+          emissiveIntensity={0.01}
           roughness={0.9}
           metalness={0}
         />
