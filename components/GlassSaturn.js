@@ -53,7 +53,7 @@ export default function GlassSaturn() {
       <mesh renderOrder={2}>
         <sphereGeometry args={[0.45, 64, 64]} />
         <meshPhysicalMaterial
-          color="#212323"          
+          color="#111111"          
           transmission={1}
           transparent
           thickness={1.5}
@@ -69,20 +69,45 @@ export default function GlassSaturn() {
       </mesh>
 
       {/* Кольца */}
-      <mesh rotation={[Math.PI / 2.2, 0, 0]} renderOrder={3}>
-        <ringGeometry args={[0.6, 1.2, 128]} />
-        <meshStandardMaterial
-          color="#aaa"
-          roughness={0.5}
-          metalness={0.3}
-          opacity={0.5}
-          transparent
-          depthWrite={true}
-          depthTest={true}
-          side={DoubleSide}
-        />
+      <group rotation={[Math.PI / 2.2, 0, 0]} renderOrder={3}>
+        {/* Нижнее кольцо (для псевдо-объёма) */}
+        <mesh>
+          <ringGeometry args={[0.5, 0.95, 128]} />
+          <meshPhysicalMaterial
+            color="#212323"
+            transmission={1}
+            thickness={0.2}
+            roughness={0.3}
+            ior={1.3}
+            reflectivity={0.05}
+            clearcoat={1}
+            clearcoatRoughness={0.4}
+            transparent
+            side={DoubleSide}
+            envMapIntensity={0}
+            depthWrite={true}
+          />
+        </mesh>
 
-      </mesh>
+        {/* Верхнее кольцо чуть смещено — создаёт лёгкий объём */}
+        <mesh position={[0, 0, 0.005]}>
+          <ringGeometry args={[0.5, 0.95, 128]} />
+          <meshPhysicalMaterial
+            color="#212323"
+            transmission={1}
+            thickness={0.2}
+            roughness={0.3}
+            ior={1.3}
+            reflectivity={0.05}
+            clearcoat={1}
+            clearcoatRoughness={0.4}
+            transparent
+            side={DoubleSide}
+            envMapIntensity={0}
+            depthWrite={true}
+          />
+        </mesh>
+      </group>
 
       {/* Свет */}
       <Environment background={false} resolution={512}>
