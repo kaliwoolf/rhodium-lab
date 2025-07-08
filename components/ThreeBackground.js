@@ -141,6 +141,7 @@ export default function ThreeBackground() {
         background={false}
         blur={0.6}
         preset="sunset"
+        files="/env/rogland_clear_night_1k.hdr"
       />
       
       {/* 💡 Свет */}
