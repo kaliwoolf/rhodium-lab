@@ -30,19 +30,6 @@ export default function GlassSaturn() {
   return (
     <group position={[2.5, 1.6, -2]} scale={[7, 7, 7]} rotation={[0.45, 0, 0.46]}>
 
-     {/* Внутренний объем — псевдослой света */}
-      <mesh scale={[0.99, 0.99, 0.99]}>
-        <sphereGeometry args={[0.52, 128, 128]} />
-        <meshStandardMaterial
-          color="#ffffff"
-          roughness={1}
-          metalness={0}
-          transparent
-          opacity={0.05}
-          depthWrite={false}
-        />
-      </mesh>
-
      {/* Стеклянный Сатурн */}
       <mesh renderOrder={1} ref={ref}>
         <sphereGeometry args={[0.52, 128, 128]} />
@@ -57,7 +44,6 @@ export default function GlassSaturn() {
           metalness={0}
           envMapIntensity={0.4}
           transparent
-          color="#ffffff"
           attenuationColor="#ffffff"
           attenuationDistance={0.6}
         />
