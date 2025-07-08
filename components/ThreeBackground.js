@@ -137,44 +137,6 @@ function Starfield({ mouse }) {
   )
 }
 
-function BackgroundGradient() {
-  const shaderRef = useRef()
-
-  const { viewport } = useThree()
-
-  const fragment = `
-    varying vec2 vUv;
-    void main() {
-      vec3 top = vec3(0.02, 0.02, 0.03);
-      vec3 bottom = vec3(0.005, 0.007, 0.01);
-      vec3 color = mix(bottom, top, vUv.y);
-      gl_FragColor = vec4(color, 1.0);
-    }
-  `
-
-  const vertex = `
-    varying vec2 vUv;
-    void main() {
-      vUv = uv;
-      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    }
-  `
-
-  return (
-    <mesh scale={[1, 1, 1]} position={[0, 0, -50]}>
-      <planeGeometry args={[viewport.width * 2, viewport.height * 2]} />
-      <shaderMaterial
-        ref={shaderRef}
-        fragmentShader={fragment}
-        vertexShader={vertex}
-        side={THREE.DoubleSide}
-        depthWrite={false}
-      />
-    </mesh>
-  )
-}
-
-
 export default function ThreeBackground() {
   const mouse = useRef({ x: 0, y: 0 })
 
@@ -208,9 +170,8 @@ export default function ThreeBackground() {
       
       {/* 💡 Свет */}
       <ambientLight intensity={0.5} />
-      <pointLight position={[5, 5, 5]} intensity={3} color="#88ccff" />
+      <pointLight position={[5, 5, 5]} intensity={3} color="#1d1f22" />
       
-      <BackgroundGradient />
       <GlassSaturn mouse={mouse} />
       <Starfield mouse={mouse} />
 
