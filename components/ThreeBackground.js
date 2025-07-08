@@ -144,7 +144,7 @@ export default function ThreeBackground() {
 
       {/* 💫 Окружение для прозрачности */}
       <Environment
-        background={true}
+        background={false}
         blur={0.6}
         files="/env/satara_night_no_lamps_1k.hdr"
       />
