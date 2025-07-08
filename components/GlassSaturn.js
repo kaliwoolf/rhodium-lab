@@ -55,48 +55,33 @@ export default function GlassSaturn() {
 
       <pointLight position={[0, 0, 0]} intensity={0.15} decay={2} distance={1.5} color="#1d2024" />
 
-      {/* Стеклянная сфера */}
-      <mesh renderOrder={2}>
-        <sphereGeometry args={[0.52, 64, 64]} />
-        <meshPhysicalMaterial
-          map={colorMap}
-          color="#1a1d23"          
-          transmission={1}
-          transparent
-          thickness={1.5}
-          roughness={0.25}
-          ior={1.25}
-          reflectivity={0.01}
-          attenuationColor={'#1a1b1e'}
-          attenuationDistance={0.3}
-          clearcoat={1}
-          clearcoatRoughness={0.15}
-          envMapIntensity={0.3}
-          emissive="#1a1a1a"
-          emissiveIntensity={0.6}
-          depthWrite={true}
-          depthTest={true} 
-        />
-      </mesh>
-
-      {/* Кольца — двойной слой для псевдо-объёма */}
-        <group position={[0, 0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]} renderOrder={3}>
-          {/* Нижнее кольцо */}
+      {/* Внутренняя текстурированная сфера */}
           <mesh>
-            <ringGeometry args={[0.6, 0.9, 128]} />
-            <meshPhysicalMaterial
-              color="#212323"
-              transmission={1}
-              thickness={0.2}
-              roughness={0.3}
-              ior={1.3}
-              reflectivity={0.05}
-              clearcoat={1}
-              clearcoatRoughness={0.4}
+            <sphereGeometry args={[0.515, 64, 64]} />
+            <meshStandardMaterial
+              map={colorMap}
+              color="#222223"
               transparent
-              side={DoubleSide}
-              envMapIntensity={0}
-              depthWrite={true}
+              opacity={0.8}
+              roughness={1}
+              metalness={0}
+            />
+          </mesh>
+
+          {/* Внешняя стеклянная оболочка */}
+          <mesh>
+            <sphereGeometry args={[0.52, 64, 64]} />
+            <meshPhysicalMaterial
+              transmission={1}
+              thickness={1.2}
+              roughness={0.1}
+              ior={1.2}
+              reflectivity={0.1}
+              clearcoat={1}
+              clearcoatRoughness={0.2}
+              attenuationColor={'#1a1d1e'}
+              attenuationDistance={0.3}
+              transparent
             />
           </mesh>
 
