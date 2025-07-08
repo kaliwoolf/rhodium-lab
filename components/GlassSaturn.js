@@ -42,7 +42,7 @@ export default function GlassSaturn() {
           clearcoatRoughness={0.2}
           metalness={0}
           envMap={hdrTexture}
-          envMapIntensity={1.3}
+          envMapIntensity={0.15}
           opacity={0.1}
           transparent
           attenuationColor="#0b1118"
@@ -88,38 +88,49 @@ export default function GlassSaturn() {
 
 
       {/* Объёмные кольца (торы) */}
-      <group position={[0, 0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]} renderOrder={4} ref={ringRef}>
-        <mesh scale={[1.8, 1.8, 0.25]}>
-          <torusGeometry args={[0.5, 0.012, 64, 256]} />
-          <meshPhysicalMaterial
-            transmission={1}
-            thickness={0.55}                  
-            roughness={0.12}
-            ior={1.5}
-            reflectivity={0.1}
-            clearcoat={1}
-            clearcoatRoughness={0.35}
-            metalness={0}
-            side={THREE.DoubleSide}
-            envMap={hdrTexture}
-            envMapIntensity={0.2}
-            opacity={0.4}                     // ← ключевое! Чуть выше, чем у планеты
-            attenuationColor="#0d1118"
-            attenuationDistance={0.28}
-          />
-        </mesh>
+     <group ref={ringRef} position={[0, 0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]}>
+      {/* Внешний тор — шире */}
+      <mesh scale={[1.8, 1.8, 0.2]}>
+        <torusGeometry args={[0.72, 0.03, 64, 256]} />
+        <meshPhysicalMaterial
+          transmission={1}
+          thickness={0.6}
+          roughness={0.1}
+          ior={1.52}
+          reflectivity={0.1}
+          clearcoat={1}
+          clearcoatRoughness={0.2}
+          envMap={hdrTexture}
+          envMapIntensity={0.1}
+          attenuationColor="#0a0d12"
+          attenuationDistance={0.25}
+          transparent
+          opacity={0.4}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
 
-        <mesh>
-          <torusGeometry args={[0.805, 0.035, 32, 64]} />
-          <meshBasicMaterial
-            color="#0A0023"
-            opacity={0.02}
-            transparent
-            side={THREE.DoubleSide}
-          />
-        </mesh>
-
-      </group>
+      {/* Внутренний тор — ближе к планете */}
+      <mesh scale={[1.7, 1.7, 0.15]}>
+        <torusGeometry args={[0.63, 0.02, 64, 256]} />
+        <meshPhysicalMaterial
+          transmission={1}
+          thickness={0.6}
+          roughness={0.1}
+          ior={1.52}
+          reflectivity={0.1}
+          clearcoat={1}
+          clearcoatRoughness={0.2}
+          envMap={hdrTexture}
+          envMapIntensity={0.1}
+          attenuationColor="#0a0d12"
+          attenuationDistance={0.25}
+          transparent
+          opacity={0.4}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
+    </group>
 
     </group>
   )
