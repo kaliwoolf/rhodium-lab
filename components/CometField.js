@@ -19,16 +19,16 @@ export default function CometField() {
         position: new THREE.Vector3(
           (Math.random() - 0.5) * 20,
           (Math.random() - 0.5) * 20,
-          -50
+          -5
         ),
         direction: dir,
-        speed: 0.2 + Math.random() * 0.4,
-        size: 0.02 + Math.random() * 0.05,
+        speed: 0.006 + Math.random() * 0.004,
+        size: 0.04 + Math.random() * 0.05,
         life: 0,
       }
 
       setComets((prev) => [...prev, comet])
-    }, 3000) // раз в 3 секунды новая комета
+    }, 10000) // раз в 3 секунды новая комета
 
     return () => clearInterval(interval)
   }, [])
@@ -50,7 +50,7 @@ export default function CometField() {
       {comets.map((comet, idx) => (
         <mesh key={idx} position={comet.position}>
           <sphereGeometry args={[comet.size, 8, 8]} />
-          <meshBasicMaterial color="#fff" />
+          <meshBasicMaterial color="#fff" toneMapped={false} />
         </mesh>
       ))}
     </group>
