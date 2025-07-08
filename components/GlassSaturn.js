@@ -1,6 +1,6 @@
 // components/GlassSaturn.js
 import React, { useRef } from 'react'
-import { useFrame } from '@react-three/fiber'
+import { useFrame, useLoader } from '@react-three/fiber'
 // Стало:
 import {
   DoubleSide,
