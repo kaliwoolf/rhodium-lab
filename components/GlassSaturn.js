@@ -8,9 +8,6 @@ export default function GlassSaturn() {
   const ringRef = useRef()
   const mouse = useRef({ x: 0, y: 0 })
 
-  const hdrTexture = useLoader(RGBELoader, '/env/satara_night_no_lamps_1k.hdr')
-  hdrTexture.mapping = THREE.EquirectangularReflectionMapping
-
   useFrame(({ clock, mouse: m }) => {
     const t = clock.getElapsedTime()
     if (ref.current && ringRef.current) {
@@ -41,7 +38,6 @@ export default function GlassSaturn() {
           clearcoat={1}
           clearcoatRoughness={0.2}
           metalness={0}
-          envMap={hdrTexture}
           envMapIntensity={0.3}
           opacity={0.05}
           transparent
@@ -91,7 +87,7 @@ export default function GlassSaturn() {
      <group ref={ringRef} renderOrder={1} position={[0, 0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]}>
       {/* Внешний тор — шире */}
       <mesh scale={[1.35, 1.35, 0.2]}>
-        <torusGeometry args={[0.65, 0.03, 64, 256]} />
+        <torusGeometry args={[0.63, 0.25, 64, 256]} />
         <meshPhysicalMaterial
           transmission={1}
           thickness={0.6}
@@ -100,7 +96,6 @@ export default function GlassSaturn() {
           reflectivity={0.1}
           clearcoat={1}
           clearcoatRoughness={0.2}
-          envMap={hdrTexture}
           envMapIntensity={0.1}
           attenuationColor="#0a0d12"
           attenuationDistance={0.25}
@@ -111,8 +106,8 @@ export default function GlassSaturn() {
       </mesh>
 
       {/* Внутренний тор — ближе к планете */}
-      <mesh scale={[1.2, 1.2, 0.15]}>
-        <torusGeometry args={[0.56, 0.02, 64, 256]} />
+      <mesh scale={[1.32, 1.32, 0.2]}>
+        <torusGeometry args={[0.60, 0.25, 64, 256]} />
         <meshPhysicalMaterial
           transmission={1}
           thickness={0.6}
@@ -121,7 +116,6 @@ export default function GlassSaturn() {
           reflectivity={0.1}
           clearcoat={1}
           clearcoatRoughness={0.2}
-          envMap={hdrTexture}
           envMapIntensity={0.1}
           attenuationColor="#0a0d12"
           attenuationDistance={0.25}
