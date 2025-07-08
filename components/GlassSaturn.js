@@ -37,16 +37,27 @@ export default function GlassSaturn() {
           thickness={1.6}
           roughness={0.01}
           ior={1.52}
-          reflectivity={0.6}
+          reflectivity={0.1}
           clearcoat={1}
-          clearcoatRoughness={0}
+          clearcoatRoughness={0.2}
           metalness={0}
           envMap={hdrTexture}
-          envMapIntensity={1}
+          envMapIntensity={1.3}
           opacity={0.1}
           transparent
-          attenuationColor="#00050a"
-          attenuationDistance={0.08}
+          attenuationColor="#0b1118"
+          attenuationDistance={0.15}
+          color="#e6faff"
+        />
+      </mesh>
+
+      <mesh scale={[1.015, 1.015, 1.015]}>
+        <sphereGeometry args={[0.52, 128, 128]} />
+        <meshBasicMaterial
+          color="#aaffff"
+          transparent
+          opacity={0.025}
+          depthWrite={false}
         />
       </mesh>
 
@@ -57,6 +68,15 @@ export default function GlassSaturn() {
         distance={2}
         decay={2}
         color="#aaffff"
+      />
+
+      <spotLight
+        position={[2, 3, 3]}
+        angle={0.5}
+        penumbra={1}
+        intensity={0.8}
+        decay={2}
+        color="#99ccff"
       />
 
       <pointLight
