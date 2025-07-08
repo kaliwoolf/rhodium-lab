@@ -82,6 +82,7 @@ export default function GlassSaturn() {
           attenuationDistance={0.4}
           toneMapped={false}
           transparent
+          envMapIntensity={0}
         />
       </mesh>
 
