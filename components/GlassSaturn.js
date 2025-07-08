@@ -107,10 +107,6 @@ export default function GlassSaturn() {
         </mesh>
       </group>
 
-      {/* Свет для бликов */}
-      <Environment background={false}>
-        <Lightformer intensity={1.5} position={[6, 4, -4]} scale={[5, 5, 1]} color="#445566" />
-      </Environment>
-    </group>
+  </group>
   )
 }
