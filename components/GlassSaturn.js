@@ -7,9 +7,8 @@ export default function GlassSaturn({ mouse }) {
   const ref = useRef()
   const ringRef = useRef()
 
-  // Загрузка текстур для внешнего кольца
-  const ringTexture = useLoader(TextureLoader, '/textures/saturn_ring_texture.png')
-  const ringAlphaMap = useLoader(TextureLoader, '/textures/saturn_ring_alpha_map.png')
+  const ringTexture = useLoader(TextureLoader, '/textures/saturn_ring.png')
+  const ringAlpha = useLoader(TextureLoader, '/textures/saturn_ring_alpha.png')
 
   const baseScale = 1
 
@@ -24,72 +23,67 @@ export default function GlassSaturn({ mouse }) {
       ref.current.rotation.x = mouse.current.y * tilt
       ref.current.rotation.y = mouse.current.x * tilt
 
-      // Пульсация от мыши
       const scalePulse = baseScale + 0.015 * (mouse.current.x ** 2 + mouse.current.y ** 2)
       ref.current.scale.set(scalePulse, scalePulse, scalePulse)
 
-      // Плавное вращение колец
-      ringRef.current.rotation.x = Math.PI / 2.2
       ringRef.current.rotation.z = t * 0.02
     }
   })
 
   return (
     <group position={[2.5, 1.6, -2]} scale={[7, 7, 7]} rotation={[0.45, 0, 0.46]}>
-      
-      {/* Стеклянный Сатурн */}
-      <mesh ref={ref} renderOrder={2}>
+
+      {/* Сатурн */}
+      <mesh ref={ref}>
         <sphereGeometry args={[0.52, 128, 128]} />
         <meshPhysicalMaterial
           transmission={1}
-          thickness={2.5}
+          thickness={2}
           roughness={0.05}
           ior={1.5}
           reflectivity={0.2}
           clearcoat={1}
-          clearcoatRoughness={0}
+          clearcoatRoughness={0.1}
           metalness={0}
           envMapIntensity={0.6}
           opacity={0.08}
           transparent
           attenuationColor="#0b1118"
-          attenuationDistance={0.15}
+          attenuationDistance={0.2}
         />
       </mesh>
 
-      {/* Гибридное кольцо */}
+      {/* Гибридные кольца */}
       <group ref={ringRef} position={[0, 0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]}>
-        
-        {/* Внутренний стеклянный тор */}
+
+        {/* Тонкий стеклянный тор */}
         <mesh>
-          <torusGeometry args={[0.6, 0.02, 64, 256]} />
+          <torusGeometry args={[0.6, 0.015, 64, 256]} />
           <meshPhysicalMaterial
             transmission={1}
-            thickness={0.6}
-            roughness={0.1}
+            thickness={0.5}
+            roughness={0.15}
             ior={1.52}
             reflectivity={0.1}
             clearcoat={1}
             clearcoatRoughness={0.2}
             envMapIntensity={0.2}
             transparent
-            opacity={0.4}
+            opacity={0.35}
             side={THREE.DoubleSide}
           />
         </mesh>
 
-        {/* Внешнее NASA-кольцо */}
-        <mesh rotation={[-Math.PI / 2, 0, 0]}>
-          <ringGeometry args={[0.62, 0.95, 128]} />
+        {/* Плоское кольцо с текстурой */}
+        <mesh position={[0, 0, -0.001]}>
+          <ringGeometry args={[0.62, 0.92, 128]} />
           <meshStandardMaterial
             map={ringTexture}
-            alphaMap={ringAlphaMap}
+            alphaMap={ringAlpha}
             transparent
-            side={THREE.DoubleSide}
             depthWrite={false}
+            side={THREE.DoubleSide}
             toneMapped={true}
-            emissive="#222"
-            emissiveIntensity={0.1}
           />
         </mesh>
       </group>
