@@ -10,14 +10,6 @@ export default function GlassSaturn() {
   const { scene } = useThree()
   const mouse = useRef({ x: 0, y: 0 })
 
-  // Принудительно передаём envMap в материал после загрузки HDR
-  useEffect(() => {
-    if (ref.current?.material && scene.environment) {
-      ref.current.material.envMap = scene.environment
-      ref.current.material.needsUpdate = true
-    }
-  }, [scene.environment])
-
   // Покачивание
   useFrame(({ clock, mouse: m }) => {
     const t = clock.getElapsedTime()

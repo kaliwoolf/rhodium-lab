@@ -133,13 +133,18 @@ export default function ThreeBackground() {
         height: '100%',
       }}
       camera={{ position: [0, 0, 10], fov: 60 }}
-      gl={{ antialias: true, alpha: true, premultipliedAlpha: false }}
+      gl={{
+        antialias: true,
+        alpha: true,
+        toneMapping: THREE.ACESFilmicToneMapping, // ← это критично
+        outputEncoding: THREE.sRGBEncoding          // ← и это
+      }}
     >
       <color attach="background" args={['#12161C']} />
 
       {/* 💫 Окружение для прозрачности */}
       <Environment
-        background={false}
+        background={true}
         blur={0.6}
         files="/env/rogland_clear_night_1k.hdr"
       />
