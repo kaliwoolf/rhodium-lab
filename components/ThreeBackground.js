@@ -99,7 +99,7 @@ function Starfield({ mouse }) {
         vertexColors
         size={0.1}
         sizeAttenuation
-        depthWrite={false}
+        depthWrite={true}
       />
     </Points>
   )
@@ -164,7 +164,14 @@ export default function ThreeBackground() {
       <GlassSaturn mouse={mouse} />
 
 
-      
+      <EffectComposer>
+        <Bloom
+          intensity={0.6}
+          luminanceThreshold={0.3}
+          luminanceSmoothing={0.5}
+          mipmapBlur={true}
+        />
+      </EffectComposer>
     </Canvas>
   )
 }
