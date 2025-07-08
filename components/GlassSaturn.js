@@ -74,7 +74,7 @@ export default function GlassSaturn() {
       {/* Кольца — двойной слой для псевдо-объёма */}
         <group rotation={[Math.PI / 2.2, 0, 0]} renderOrder={3}>
           {/* Нижнее кольцо */}
-          <mesh>
+          <mesh position={[0, 0, -0.02]}>
             <ringGeometry args={[0.55, 0.85, 128]} />
             <meshPhysicalMaterial
               color="#212323"
@@ -93,7 +93,7 @@ export default function GlassSaturn() {
           </mesh>
 
           {/* Верхнее кольцо, чуть ближе к камере */}
-          <mesh position={[0, 0, 0.005]}>
+          <mesh position={[0, 0, 0.02]}>
             <ringGeometry args={[0.55, 0.85, 128]} />
             <meshPhysicalMaterial
               color="#212323"
