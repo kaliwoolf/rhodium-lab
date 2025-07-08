@@ -20,7 +20,7 @@ export default function GlassSaturn() {
   const ringRef = useRef()
   const mouse = useRef({ x: 0, y: 0 })
 
-  const colorMap = useLoader(TextureLoader, '../public/textures/2k_saturn.jpg')
+  const colorMap = useLoader(TextureLoader, '/textures/2k_saturn.jpg')
 
   // Покачивание
   useFrame(({ clock, mouse: m }) => {
