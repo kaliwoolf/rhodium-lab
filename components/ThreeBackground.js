@@ -81,6 +81,9 @@ function Starfield({ mouse }) {
       // Плавное вращение с инерцией от мыши
       pointsRef.current.rotation.x = mouse.current.y * 0.05
       pointsRef.current.rotation.y = t * 0.015 + mouse.current.x * 0.05
+      pointsRef.current.position.x = Math.sin(t * 0.2) * 0.1
+      pointsRef.current.position.y = Math.cos(t * 0.2) * 0.1
+
 
       // 🌌 WARP C УСКОРЕНИЕМ
       const positions = pointsRef.current.geometry.attributes.position.array
@@ -96,7 +99,7 @@ function Starfield({ mouse }) {
         const dist = Math.sqrt(dx * dx + dy * dy)
 
         // коэффициент ускорения
-        const baseSpeed = Math.min(0.002 + t * 0.0002, 0.02) // медленно растёт со временем
+        const baseSpeed = Math.min(0.0005 + t * 0.00005, 0.005) // медленно растёт со временем
         const speed = baseSpeed + dist * 0.003
 
         // летим к камере (по Z)
@@ -134,6 +137,40 @@ function Starfield({ mouse }) {
   )
 }
 
+function BackgroundGradient() {
+  const shaderRef = useRef()
+
+  const fragment = `
+    varying vec2 vUv;
+    void main() {
+      vec3 top = vec3(0.07, 0.08, 0.1);     // Верх — тёмно-серый
+      vec3 bottom = vec3(0.015, 0.02, 0.04); // Низ — почти чёрный
+      vec3 color = mix(bottom, top, vUv.y);
+      gl_FragColor = vec4(color, 1.0);
+    }
+  `
+
+  const vertex = `
+    varying vec2 vUv;
+    void main() {
+      vUv = uv;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `
+
+  return (
+    <mesh scale={[100, 100, 1]}>
+      <planeGeometry args={[2, 2]} />
+      <shaderMaterial
+        ref={shaderRef}
+        fragmentShader={fragment}
+        vertexShader={vertex}
+        side={THREE.DoubleSide}
+        depthWrite={false}
+      />
+    </mesh>
+  )
+}
 
 
 export default function ThreeBackground() {
@@ -171,6 +208,7 @@ export default function ThreeBackground() {
       <ambientLight intensity={0.5} />
       <pointLight position={[5, 5, 5]} intensity={3} color="#88ccff" />
       
+      <BackgroundGradient />
       <GlassSaturn mouse={mouse} />
       <Starfield mouse={mouse} />
 

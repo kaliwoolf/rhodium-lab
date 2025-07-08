@@ -70,49 +70,48 @@ export default function GlassSaturn() {
 
       {/* Кольца */}
       <group rotation={[Math.PI / 2.2, 0, 0]} renderOrder={3}>
-        {/* Нижнее кольцо (для псевдо-объёма) */}
+        {/* Нижнее кольцо */}
         <mesh>
-          <ringGeometry args={[0.5, 0.95, 128]} />
+          <ringGeometry args={[0.52, 0.9, 128]} />
           <meshPhysicalMaterial
-            color="#212323"
+            color="#1a1a1a"
             transmission={1}
-            thickness={0.2}
-            roughness={0.3}
-            ior={1.3}
-            reflectivity={0.05}
+            thickness={0.1}
+            roughness={0.4}
+            ior={1.25}
             clearcoat={1}
-            clearcoatRoughness={0.4}
+            clearcoatRoughness={0.3}
             transparent
+            opacity={0.3}
             side={DoubleSide}
-            envMapIntensity={0}
-            depthWrite={true}
+            depthWrite
           />
         </mesh>
 
-        {/* Верхнее кольцо чуть смещено — создаёт лёгкий объём */}
-        <mesh position={[0, 0, 0.005]}>
-          <ringGeometry args={[0.5, 0.95, 128]} />
+        {/* Верхнее кольцо, чуть ближе к камере */}
+        <mesh position={[0, 0, 0.003]}>
+          <ringGeometry args={[0.52, 0.9, 128]} />
           <meshPhysicalMaterial
-            color="#212323"
+            color="#1a1a1a"
             transmission={1}
-            thickness={0.2}
-            roughness={0.3}
-            ior={1.3}
-            reflectivity={0.05}
+            thickness={0.1}
+            roughness={0.4}
+            ior={1.25}
             clearcoat={1}
-            clearcoatRoughness={0.4}
+            clearcoatRoughness={0.3}
             transparent
+            opacity={0.3}
             side={DoubleSide}
-            envMapIntensity={0}
-            depthWrite={true}
+            depthWrite
           />
         </mesh>
       </group>
 
+
       {/* Свет */}
       <Environment background={false} resolution={512}>
         <Lightformer intensity={0.8} position={[5, 5, -5]} scale={[4, 4, 1]} color="#aaaaff" /> 
-        {/* <Lightformer intensity={0.5} position={[-5, -5, 5]} scale={[5, 5, 1]} color="#555577" /> */}
+        <Lightformer intensity={0.5} position={[4, 4, -2]} scale={[2, 2, 1]} color="#77ffff" /> 
       </Environment>
     </group>
   )
