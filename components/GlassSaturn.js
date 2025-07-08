@@ -69,7 +69,6 @@ export default function GlassSaturn() {
         <mesh>
           <ringGeometry args={[0.6, 0.9, 128]} />
           <meshPhysicalMaterial
-            envMap={hdrTexture}
             color="#c0d8ff"
             transmission={1}
             thickness={0.2}
@@ -88,7 +87,6 @@ export default function GlassSaturn() {
         <mesh position={[0, 0, 0.02]}>
           <ringGeometry args={[0.6, 0.9, 128]} />
           <meshPhysicalMaterial
-            envMap={hdrTexture}
             transmission={1}
             thickness={0.2}
             roughness={0.3}
