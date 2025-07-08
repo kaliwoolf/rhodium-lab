@@ -72,13 +72,16 @@ export default function GlassSaturn() {
       <mesh rotation={[Math.PI / 2.2, 0, 0]} renderOrder={3}>
         <ringGeometry args={[0.6, 1.2, 128]} />
         <meshStandardMaterial
-          color="#111"
-          opacity={0.3}
+          color="#aaa"
+          roughness={0.5}
+          metalness={0.3}
+          opacity={0.5}
           transparent
           depthWrite={true}
-          depthTest={false}
+          depthTest={true}
           side={DoubleSide}
         />
+
       </mesh>
 
       {/* Свет */}
