@@ -144,7 +144,6 @@ export default function ThreeBackground() {
       
       <GlassSaturn mouse={mouse} />
       <Starfield mouse={mouse} />
-      <CometField />
       
       <EffectComposer>
         <Bloom
