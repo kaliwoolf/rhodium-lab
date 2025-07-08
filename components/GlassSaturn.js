@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react'
-import { useFrame, useThree } from '@react-three/fiber'
+import { useFrame, useThree, useLoader } from '@react-three/fiber'
+import { RGBELoader } from 'three-stdlib'
 import {
   DoubleSide
 } from 'three'
@@ -9,6 +10,9 @@ export default function GlassSaturn() {
   const ringRef = useRef()
   const { scene } = useThree()
   const mouse = useRef({ x: 0, y: 0 })
+
+  const hdrTexture = useLoader(RGBELoader, '/env/satara_night_no_lamps_1k.hdr')
+  hdrTexture.mapping = THREE.EquirectangularReflectionMapping
 
   // Покачивание
   useFrame(({ clock, mouse: m }) => {
@@ -45,7 +49,7 @@ export default function GlassSaturn() {
           opacity={0.3}
           transparent
           attenuationColor="#0f1015"
-          attenuationDistance={0.3}
+          attenuationDistance={0.2}
         />
       </mesh>
 
@@ -63,7 +67,7 @@ export default function GlassSaturn() {
         <mesh>
           <ringGeometry args={[0.6, 0.9, 128]} />
           <meshPhysicalMaterial
-            color="#12161C"
+            envMap={hdrTexture}
             transmission={1}
             thickness={0.2}
             roughness={0.3}
@@ -81,7 +85,7 @@ export default function GlassSaturn() {
         <mesh position={[0, 0, 0.02]}>
           <ringGeometry args={[0.6, 0.9, 128]} />
           <meshPhysicalMaterial
-            color="#12161C"
+            envMap={hdrTexture}
             transmission={1}
             thickness={0.2}
             roughness={0.3}
