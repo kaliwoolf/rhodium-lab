@@ -4,7 +4,6 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useRef, useMemo, useEffect } from 'react'
 import { Points, PointMaterial, Stars } from '@react-three/drei'
 import GlassSaturn from '../components/GlassSaturn'
-import BackgroundSphere from '../components/BackgroundSphere'
 import * as THREE from 'three'
 
 function Starfield({ mouse }) {
