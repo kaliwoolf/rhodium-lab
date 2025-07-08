@@ -1,17 +1,24 @@
-// components/GlassSaturn.js
-import React, { useRef } from 'react'
-import { useFrame } from '@react-three/fiber'
+import React, { useRef, useEffect } from 'react'
+import { useFrame, useThree } from '@react-three/fiber'
 import {
-  DoubleSide,
-  MeshPhysicalMaterial
+  DoubleSide
 } from 'three'
-import { Environment, Lightformer } from '@react-three/drei'
 
 export default function GlassSaturn() {
   const ref = useRef()
   const ringRef = useRef()
+  const { scene } = useThree()
   const mouse = useRef({ x: 0, y: 0 })
 
+  // Принудительно передаём envMap в материал после загрузки HDR
+  useEffect(() => {
+    if (ref.current?.material && scene.environment) {
+      ref.current.material.envMap = scene.environment
+      ref.current.material.needsUpdate = true
+    }
+  }, [scene.environment])
+
+  // Покачивание
   useFrame(({ clock, mouse: m }) => {
     const t = clock.getElapsedTime()
     if (ref.current && ringRef.current) {
@@ -30,8 +37,8 @@ export default function GlassSaturn() {
   return (
     <group position={[2.5, 1.6, -2]} scale={[7, 7, 7]} rotation={[0.45, 0, 0.46]}>
 
-     {/* Стеклянный Сатурн */}
-      <mesh renderOrder={1} ref={ref}>
+      {/* Стеклянный Сатурн */}
+      <mesh ref={ref} renderOrder={1}>
         <sphereGeometry args={[0.52, 128, 128]} />
         <meshPhysicalMaterial
           transmission={1}
@@ -49,6 +56,7 @@ export default function GlassSaturn() {
         />
       </mesh>
 
+      {/* Внутренний свет */}
       <pointLight
         position={[0, 0, 0]}
         intensity={2.5}
@@ -95,6 +103,7 @@ export default function GlassSaturn() {
           />
         </mesh>
 
+        {/* Тень от планеты */}
         <mesh position={[0, 0, -0.005]} renderOrder={0}>
           <ringGeometry args={[0.55, 0.9, 128]} />
           <meshBasicMaterial
@@ -106,7 +115,6 @@ export default function GlassSaturn() {
           />
         </mesh>
       </group>
-
-  </group>
+    </group>
   )
 }
