@@ -4,6 +4,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useRef, useMemo, useEffect } from 'react'
 import { Points, PointMaterial, Stars } from '@react-three/drei'
 import GlassSaturn from '../components/GlassSaturn'
+import CometField from '../components/CometField'
 import * as THREE from 'three'
 
 function Starfield({ mouse }) {
@@ -143,7 +144,8 @@ export default function ThreeBackground() {
       
       <GlassSaturn mouse={mouse} />
       <Starfield mouse={mouse} />
-
+      <CometField />
+      
       <EffectComposer>
         <Bloom
           intensity={1.8}

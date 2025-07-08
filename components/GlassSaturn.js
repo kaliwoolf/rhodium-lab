@@ -20,6 +20,8 @@ export default function GlassSaturn() {
   const ringRef = useRef()
   const mouse = useRef({ x: 0, y: 0 })
 
+  const colorMap = useLoader(TextureLoader, '../public/textures/2k_saturn.jpg')
+
   // Покачивание
   useFrame(({ clock, mouse: m }) => {
     const t = clock.getElapsedTime()
@@ -57,6 +59,7 @@ export default function GlassSaturn() {
       <mesh renderOrder={2}>
         <sphereGeometry args={[0.52, 64, 64]} />
         <meshPhysicalMaterial
+          map={colorMap}
           color="#1a1d23"          
           transmission={1}
           transparent
