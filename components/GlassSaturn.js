@@ -52,18 +52,17 @@ export default function GlassSaturn() {
       {/* Стеклянная сфера */}
       <mesh renderOrder={2}>
         <sphereGeometry args={[0.45, 64, 64]} />
-        <MeshTransmissionMaterial
-          resolution={1024}
+        <meshPhysicalMaterial
+          transmission={1}
+          transparent
           thickness={1.5}
-          roughness={0.15}
-          transmission={0.95}
-          ior={1.15}
-          chromaticAberration={0.08}
-          anisotropy={0.1}
-          distortion={0.1}
-          distortionScale={0.3}
-          temporalDistortion={0.2}
-          backside
+          roughness={0.25}
+          ior={1.3}
+          reflectivity={0.05}
+          envMapIntensity={0.0}
+          attenuationColor={'#aaffff'}
+          clearcoat={1}
+          clearcoatRoughness={0.2}
         />
       </mesh>
 

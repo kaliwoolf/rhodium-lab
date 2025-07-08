@@ -28,16 +28,34 @@ function Starfield({ mouse }) {
       const roll = Math.random()
       let r, g, b
 
-      if (roll < 0.7) {
+      if (roll < 0.65) {
+        // 65% — бело-серые
         r = g = b = 0.85 + Math.random() * 0.1
-      } else if (roll < 0.9) {
+      } else if (roll < 0.80) {
+        // 15% — жёлто-оранжевые
         r = 1.0
         g = 0.85 + Math.random() * 0.1
         b = 0.4 + Math.random() * 0.1
-      } else {
+      } else if (roll < 0.90) {
+        // 10% — синие
         r = 0.3 + Math.random() * 0.2
         g = 0.5 + Math.random() * 0.2
         b = 1.0
+      } else if (roll < 0.95) {
+        // 5% — фиолетовые
+        r = 0.8 + Math.random() * 0.2
+        g = 0.3 + Math.random() * 0.2
+        b = 1.0
+      } else if (roll < 0.975) {
+        // 2.5% — красные
+        r = 1.0
+        g = 0.2 + Math.random() * 0.2
+        b = 0.2
+      } else {
+        // 2.5% — зелёные
+        r = 0.3
+        g = 1.0
+        b = 0.5
       }
 
       col.push(r, g, b)
@@ -49,6 +67,7 @@ function Starfield({ mouse }) {
       colors: new Float32Array(col)
     }
   }, [count])
+
 
   
   // Анимация
@@ -109,7 +128,7 @@ function Starfield({ mouse }) {
         vertexColors
         size={0.1}
         sizeAttenuation
-        depthWrite={false}
+        depthWrite={true}
       />
     </Points>
   )
@@ -152,8 +171,8 @@ export default function ThreeBackground() {
       <ambientLight intensity={0.5} />
       <pointLight position={[5, 5, 5]} intensity={3} color="#88ccff" />
       
-      <Starfield mouse={mouse} />
       <GlassSaturn mouse={mouse} />
+      <Starfield mouse={mouse} />
 
       <EffectComposer>
         <Bloom
