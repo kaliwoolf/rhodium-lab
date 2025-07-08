@@ -144,7 +144,7 @@ export default function ThreeBackground() {
 
       {/* 💫 Окружение для прозрачности */}
       <Environment
-        background={true}
+        background={false}
         blur={0.6}
         files="/env/rogland_clear_night_1k.hdr"
       />
