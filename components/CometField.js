@@ -50,7 +50,12 @@ export default function CometField() {
       {comets.map((comet, idx) => (
         <mesh key={idx} position={comet.position}>
           <sphereGeometry args={[comet.size, 8, 8]} />
-          <meshBasicMaterial color="#fff" toneMapped={false} />
+          <meshStandardMaterial
+            color="#ffffff"
+            emissive="#ffffff"
+            emissiveIntensity={2}
+            toneMapped={false}
+          />
         </mesh>
       ))}
     </group>

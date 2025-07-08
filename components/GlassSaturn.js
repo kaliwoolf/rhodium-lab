@@ -47,9 +47,11 @@ export default function GlassSaturn() {
          <meshStandardMaterial
             color="black"
             transparent
-            opacity={0.99}
+            opacity={0}
             depthWrite={true}
             depthTest={true}
+            toneMapped={false}
+            colorWrite={false}
           />
       </mesh>
 
