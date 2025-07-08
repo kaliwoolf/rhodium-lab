@@ -65,7 +65,7 @@ export default function GlassSaturn() {
           emissive="#222"
           emissiveIntensity={0.2}
           roughness={0.9}
-          metalness={0}}
+          metalness={0}
         />
       </mesh>
 
@@ -82,7 +82,7 @@ export default function GlassSaturn() {
           clearcoatRoughness={0.2}
           attenuationColor={'#1a1d1e'}
           attenuationDistance={0.6}
-          toneMapped={false
+          toneMapped={false}
           transparent
         />
       </mesh>
