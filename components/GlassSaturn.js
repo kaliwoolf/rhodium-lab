@@ -20,8 +20,6 @@ export default function GlassSaturn() {
   const ringRef = useRef()
   const mouse = useRef({ x: 0, y: 0 })
 
-  const colorMap = useLoader(TextureLoader, 'textures/2k_saturn.jpg')
-
   // Покачивание
   useFrame(({ clock, mouse: m }) => {
     const t = clock.getElapsedTime()
@@ -58,11 +56,10 @@ export default function GlassSaturn() {
       <mesh renderOrder={2}>
         <sphereGeometry args={[0.515, 64, 64]} />
         <meshStandardMaterial
-          // map={colorMap}
-          color="#0a0a0a"
-          emissive="#111"
+          color="#12161C"
+          emissive="#12161C"
           emissiveIntensity={0.1}
-          roughness={0.95}
+          roughness={1}
           metalness={0}
         />
       </mesh>
@@ -72,17 +69,28 @@ export default function GlassSaturn() {
         <sphereGeometry args={[0.52, 64, 64]} />
         <meshPhysicalMaterial
           transmission={1}
-          thickness={2.5}
-          roughness={0.08}
-          ior={1.5}
-          reflectivity={0.05}
+          thickness={2}
+          roughness={0.1}
+          ior={1.4}
+          reflectivity={0.1}
           clearcoat={1}
           clearcoatRoughness={0.05}
-          attenuationColor={'#222233'}
-          attenuationDistance={0.15}
+          attenuationColor={'#444466'}
+          attenuationDistance={0.25}
           toneMapped={false}
           transparent
-          envMapIntensity={0}
+          envMapIntensity={0.1}
+        />
+      </mesh>
+
+      <mesh renderOrder={4}>
+        <sphereGeometry args={[0.53, 64, 64]} />
+        <meshBasicMaterial
+          color="#667799"
+          transparent
+          opacity={0.05}
+          blending={AdditiveBlending}
+          side={DoubleSide}
         />
       </mesh>
 
@@ -143,7 +151,7 @@ export default function GlassSaturn() {
 
       {/* Свет */}
       <Environment background={false}>
-        <Lightformer intensity={0.5} position={[5, 5, -5]} scale={[4, 4, 1]} color="#aaaaff" />
+        <Lightformer intensity={2} position={[6, 4, -4]} scale={[5, 5, 1]} color="#445566" />
       </Environment>
     </group>
   )
