@@ -47,31 +47,30 @@ export default function GlassSaturn() {
          <meshStandardMaterial
             color="black"
             transparent
-            opacity={0}
+            opacity={0.01}
             depthWrite={true}
             depthTest={true}
             toneMapped={false}
-            colorWrite={false}
           />
       </mesh>
 
-      <pointLight position={[0, 0, 0]} intensity={0.15} decay={2} distance={1.5} color="#1d2024" />
+      <pointLight position={[0, 0, 0]} intensity={1.5} decay={1.5} distance={5} color="#444" />
 
       {/* Внутренняя текстурированная сфера */}
-      <mesh>
+      <mesh renderOrder={2}>
         <sphereGeometry args={[0.515, 64, 64]} />
         <meshStandardMaterial
           map={colorMap}
-          color="#222223"
-          transparent
-          opacity={0.8}
-          roughness={1}
-          metalness={0}
+          сolor="#444"
+          emissive="#222"
+          emissiveIntensity={0.2}
+          roughness={0.9}
+          metalness={0}}
         />
       </mesh>
 
       {/* Внешняя стеклянная оболочка */}
-      <mesh>
+      <mesh renderOrder={3}>
         <sphereGeometry args={[0.52, 64, 64]} />
         <meshPhysicalMaterial
           transmission={1}
@@ -82,14 +81,15 @@ export default function GlassSaturn() {
           clearcoat={1}
           clearcoatRoughness={0.2}
           attenuationColor={'#1a1d1e'}
-          attenuationDistance={0.3}
+          attenuationDistance={0.6}
+          toneMapped={false
           transparent
         />
       </mesh>
 
 
       {/* Кольца — двойной слой для псевдо-объёма */}
-        <group position={[0, 0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]} renderOrder={3}>
+        <group position={[0, 0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]} renderOrder={4}>
           {/* Нижнее кольцо */}
           <mesh>
             <ringGeometry args={[0.6, 0.9, 128]} />
