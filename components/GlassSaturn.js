@@ -37,15 +37,15 @@ export default function GlassSaturn() {
   })
 
   return (
-    <group position={[2.5, 1.6, -2]} scale={[4, 4, 4]} rotation={[0.4, -0.5, 0]}>
+    <group position={[2.5, 1.6, -2]} scale={[7, 7, 7]} rotation={[0.45, 0, 0.46]}>
       {/* Маска чтобы звезды не просвечивали */}
-      <mesh>
+      <mesh renderOrder={1}>
         <sphereGeometry args={[0.44, 64, 64]} />
         <meshStandardMaterial color="black" depthWrite />
       </mesh>
 
       {/* Стеклянная сфера */}
-      <mesh>
+      <mesh renderOrder={2}>
         <sphereGeometry args={[0.45, 64, 64]} />
         <MeshTransmissionMaterial
           resolution={1024}
@@ -63,21 +63,21 @@ export default function GlassSaturn() {
       </mesh>
 
       {/* Кольца */}
-      <mesh rotation={[Math.PI / 2.2, 0, 0]}>
+      <mesh rotation={[Math.PI / 2.2, 0, 0]} renderOrder={3}>
         <ringGeometry args={[0.6, 1.2, 128]} />
-        <meshStandardMaterial
+        <meshBasicMaterial
           color="#111"
-          transparent
           opacity={0.4}
+          transparent={true}
+          depthWrite={true}
           side={DoubleSide}
-          depthWrite
         />
       </mesh>
 
       {/* Свет */}
       <Environment background={false} resolution={512}>
-        <Lightformer intensity={4} position={[5, 5, -5]} scale={[10, 10, 1]} color="#ffffff" />
-        <Lightformer intensity={2} position={[-5, -5, 5]} scale={[10, 10, 1]} color="#88aaff" />
+        <Lightformer intensity={0.8} position={[5, 5, -5]} scale={[4, 4, 1]} color="#aaaaff" />
+        <Lightformer intensity={0.5} position={[-5, -5, 5]} scale={[5, 5, 1]} color="#555577" />
       </Environment>
     </group>
   )
