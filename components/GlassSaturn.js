@@ -65,19 +65,19 @@ export default function GlassSaturn() {
           <torusGeometry args={[0.8, 0.015, 64, 256]} />
           <meshPhysicalMaterial
             transmission={1}
-            thickness={1.6}                  // ← как у планеты
-            roughness={0.05}
-            ior={1.52}
-            reflectivity={0.6}
+            thickness={0.8}                  // ← как у планеты
+            roughness={0.12}
+            ior={1.5}
+            reflectivity={0.2}
             clearcoat={1}
-            clearcoatRoughness={0}
+            clearcoatRoughness={0.1}
             metalness={0}
+            side={THREE.DoubleSide}
             envMap={hdrTexture}
-            envMapIntensity={0}
-            opacity={0.3}
-            transparent
-            attenuationColor="#0f1015"
-            attenuationDistance={0.2}
+            envMapIntensity={0.3}
+            opacity={0.35}                     // ← ключевое! Чуть выше, чем у планеты
+            attenuationColor="#0d1118"
+            attenuationDistance={0.25}
           />
         </mesh>
       </group>
