@@ -41,7 +41,12 @@ export default function GlassSaturn() {
       {/* Маска чтобы звезды не просвечивали */}
       <mesh renderOrder={1}>
         <sphereGeometry args={[0.44, 64, 64]} />
-        <meshStandardMaterial color="black" depthWrite />
+         <meshStandardMaterial
+            color="black"
+            transparent
+            opacity={0.99}
+            depthWrite
+          />
       </mesh>
 
       {/* Стеклянная сфера */}
@@ -67,8 +72,8 @@ export default function GlassSaturn() {
         <ringGeometry args={[0.6, 1.2, 128]} />
         <meshBasicMaterial
           color="#111"
-          opacity={0.4}
-          transparent={true}
+          opacity={0.3}
+          transparent
           depthWrite={true}
           side={DoubleSide}
         />
@@ -76,7 +81,7 @@ export default function GlassSaturn() {
 
       {/* Свет */}
       <Environment background={false} resolution={512}>
-        <Lightformer intensity={0.8} position={[5, 5, -5]} scale={[4, 4, 1]} color="#aaaaff" />
+        {/* <Lightformer intensity={0.8} position={[5, 5, -5]} scale={[4, 4, 1]} color="#aaaaff" /> */}
         <Lightformer intensity={0.5} position={[-5, -5, 5]} scale={[5, 5, 1]} color="#555577" />
       </Environment>
     </group>
