@@ -1,22 +1,16 @@
 import React, { useRef, useEffect } from 'react'
 import { useFrame, useThree, useLoader } from '@react-three/fiber'
 import { RGBELoader } from 'three-stdlib'
-import {
-  DoubleSide
-} from 'three'
 import * as THREE from 'three'
-
 
 export default function GlassSaturn() {
   const ref = useRef()
   const ringRef = useRef()
-  const { scene } = useThree()
   const mouse = useRef({ x: 0, y: 0 })
 
   const hdrTexture = useLoader(RGBELoader, '/env/satara_night_no_lamps_1k.hdr')
   hdrTexture.mapping = THREE.EquirectangularReflectionMapping
 
-  // Покачивание
   useFrame(({ clock, mouse: m }) => {
     const t = clock.getElapsedTime()
     if (ref.current && ringRef.current) {
@@ -47,7 +41,8 @@ export default function GlassSaturn() {
           clearcoat={1}
           clearcoatRoughness={0}
           metalness={0}
-          envMapIntensity={0}
+          envMap={hdrTexture}
+          envMapIntensity={1}
           opacity={0.3}
           transparent
           attenuationColor="#0f1015"
@@ -64,52 +59,40 @@ export default function GlassSaturn() {
         color="#aaffff"
       />
 
-      {/* Кольца */}
+      {/* Объёмные кольца (торы) */}
       <group position={[0, 0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]} renderOrder={4} ref={ringRef}>
         <mesh>
-          <ringGeometry args={[0.6, 0.9, 128]} />
+          <torusGeometry args={[0.75, 0.05, 64, 128]} />
           <meshPhysicalMaterial
-            color="#c0d8ff"
             transmission={1}
-            thickness={0.2}
-            roughness={0.3}
-            ior={1.3}
-            reflectivity={0.05}
+            thickness={0.3}
+            roughness={0.05}
+            ior={1.4}
+            reflectivity={0.3}
             clearcoat={1}
-            clearcoatRoughness={0.4}
+            clearcoatRoughness={0.1}
             transparent
-            side={DoubleSide}
+            side={THREE.DoubleSide}
+            envMap={hdrTexture}
             envMapIntensity={1.2}
-            depthWrite={true}
+            color="#ffffff"
           />
         </mesh>
-
-        <mesh position={[0, 0, 0.02]}>
-          <ringGeometry args={[0.6, 0.9, 128]} />
+        <mesh>
+          <torusGeometry args={[0.85, 0.03, 64, 128]} />
           <meshPhysicalMaterial
             transmission={1}
-            thickness={0.2}
-            roughness={0.3}
-            ior={1.3}
-            reflectivity={0.05}
+            thickness={0.25}
+            roughness={0.05}
+            ior={1.4}
+            reflectivity={0.3}
             clearcoat={1}
-            clearcoatRoughness={0.4}
+            clearcoatRoughness={0.1}
             transparent
-            side={DoubleSide}
-            envMapIntensity={1}
-            depthWrite={true}
-          />
-        </mesh>
-
-        {/* Тень от планеты */}
-        <mesh position={[0, 0, -0.005]} renderOrder={0}>
-          <ringGeometry args={[0.55, 0.9, 128]} />
-          <meshBasicMaterial
-            color="black"
-            opacity={0.5}
-            transparent
-            side={DoubleSide}
-            depthWrite={false}
+            side={THREE.DoubleSide}
+            envMap={hdrTexture}
+            envMapIntensity={1.2}
+            color="#ffffff"
           />
         </mesh>
       </group>
