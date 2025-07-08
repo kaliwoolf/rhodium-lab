@@ -75,7 +75,7 @@ export default function GlassSaturn() {
       </mesh>
 
       {/* Кольца — двойной слой для псевдо-объёма */}
-        <group position={[0, -0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]} renderOrder={3}>
+        <group position={[0, 0.5, 0]} rotation={[Math.PI / 2.2, 0, 0]} renderOrder={3}>
           {/* Нижнее кольцо */}
           <mesh>
             <ringGeometry args={[0.6, 0.9, 128]} />
@@ -113,6 +113,19 @@ export default function GlassSaturn() {
               depthWrite={true}
             />
           </mesh>
+
+          {/* "Тень" под кольцами от планеты */}
+          <mesh position={[0, 0, -0.005]} renderOrder={0}>
+            <ringGeometry args={[0.55, 0.9, 128]} />
+            <meshBasicMaterial
+              color="black"
+              opacity={0.2} // ← можно регулировать силу тени
+              transparent
+              side={DoubleSide}
+              depthWrite={false}
+            />
+          </mesh>
+
         </group>
 
       {/* Свет */}
