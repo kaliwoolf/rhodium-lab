@@ -7,8 +7,11 @@ export default function GlassSaturn() {
   const ringRef = useRef()
   const mouse = useRef({ x: 0, y: 0 })
 
+  const baseScale = 1
+
   useFrame(({ clock, mouse: m }) => {
     const t = clock.getElapsedTime()
+
     if (ref.current && ringRef.current) {
       mouse.current.x += (m.x - mouse.current.x) * 0.05
       mouse.current.y += (m.y - mouse.current.y) * 0.05
@@ -16,6 +19,10 @@ export default function GlassSaturn() {
       const tilt = 0.15
       ref.current.rotation.x = mouse.current.y * tilt
       ref.current.rotation.y = mouse.current.x * tilt
+
+      // 💡 Добавим мягкую "пульсацию" от мыши
+      const scalePulse = baseScale + 0.015 * (mouse.current.x ** 2 + mouse.current.y ** 2)
+      ref.current.scale.set(scalePulse, scalePulse, scalePulse)
 
       ringRef.current.rotation.x = Math.PI / 2.2
       ringRef.current.rotation.z = t * 0.02
@@ -30,20 +37,31 @@ export default function GlassSaturn() {
         <sphereGeometry args={[0.52, 128, 128]} />
         <meshPhysicalMaterial
           transmission={1}
-          thickness={1.6}
-          roughness={0.01}
+          thickness={1.8}
+          roughness={0.005}
           ior={1.52}
           reflectivity={0.05}
           clearcoat={1}
-          clearcoatRoughness={0.2}
+          clearcoatRoughness={0}
           metalness={0}
-          envMapIntensity={0.6}
-          opacity={0.2}
+          envMapIntensity={1.0}
+          opacity={0.125}
           transparent
           attenuationColor="#0b1118"
-          attenuationDistance={0.35}
+          attenuationDistance={0.25}
         />
       </mesh>
+
+      /* 💡 Краевой боковой свет — для линзы */}
+      <spotLight
+        position={[3, 1, 2]}     // справа сверху
+        angle={0.45}
+        penumbra={1}
+        intensity={0.9}          // не слишком яркий
+        distance={5}
+        decay={2}
+        color="#88ccff"
+      />
 
       {/* Объёмные кольца (торы) */}
      <group ref={ringRef} renderOrder={1} position={[0, 0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]}>
