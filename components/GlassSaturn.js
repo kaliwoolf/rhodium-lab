@@ -47,7 +47,6 @@ export default function GlassSaturn() {
           transparent
           attenuationColor="#0b1118"
           attenuationDistance={0.15}
-          color="#e6faff"
         />
       </mesh>
 
