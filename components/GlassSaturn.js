@@ -37,40 +37,44 @@ export default function GlassSaturn() {
   })
 
   return (
-    <group
-      position={[3.3, 2, -2]}
-      scale={[4.8, 4.8, 4.8]}
-      rotation={[Math.PI / 5, Math.PI / 12, Math.PI / 32]}
-    >
-      {/* Сфера (Сатурн) */}
-      <mesh ref={ref}>
+    <group position={[2.5, 1.6, -2]} scale={[4, 4, 4]} rotation={[0.4, -0.5, 0]}>
+      {/* Маска чтобы звезды не просвечивали */}
+      <mesh>
+        <sphereGeometry args={[0.44, 64, 64]} />
+        <meshStandardMaterial color="black" depthWrite />
+      </mesh>
+
+      {/* Стеклянная сфера */}
+      <mesh>
         <sphereGeometry args={[0.45, 64, 64]} />
         <MeshTransmissionMaterial
           resolution={1024}
-          thickness={2}
-          roughness={0.05}
+          thickness={1.5}
+          roughness={0}
           transmission={1}
-          ior={1.4}
-          chromaticAberration={0.1}
-          anisotropy={0.2}
-          distortion={0.15}
-          distortionScale={0.5}
-          temporalDistortion={0.3}
+          ior={1.3}
+          chromaticAberration={0.08}
+          anisotropy={0.1}
+          distortion={0.1}
+          distortionScale={0.3}
+          temporalDistortion={0.2}
           backside
         />
       </mesh>
 
       {/* Кольца */}
-      <mesh ref={ringRef} rotation={[Math.PI / 2, 0, 0]}>
-        <ringGeometry args={[0.55, 1.1, 64]} />
+      <mesh rotation={[Math.PI / 2.2, 0, 0]}>
+        <ringGeometry args={[0.6, 1.2, 128]} />
         <meshStandardMaterial
-          color="#222"
-          opacity={0.4}
+          color="#111"
           transparent
-          side={THREE.DoubleSide}
+          opacity={0.4}
+          side={DoubleSide}
+          depthWrite
         />
       </mesh>
 
+      {/* Свет */}
       <Environment background={false} resolution={512}>
         <Lightformer intensity={4} position={[5, 5, -5]} scale={[10, 10, 1]} color="#ffffff" />
         <Lightformer intensity={2} position={[-5, -5, 5]} scale={[10, 10, 1]} color="#88aaff" />
