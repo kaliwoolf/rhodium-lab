@@ -99,8 +99,8 @@ function Starfield({ mouse }) {
         const dist = Math.sqrt(dx * dx + dy * dy)
 
         // коэффициент ускорения
-        const baseSpeed = Math.min(0.0005 + t * 0.00005, 0.005) // медленно растёт со временем
-        const speed = baseSpeed + dist * 0.003
+        const baseSpeed = Math.min(0.0002 + t * 0.00001, 0.0002) // медленно растёт со временем
+        const speed = baseSpeed + dist * 0.00002
 
         // летим к камере (по Z)
         z += speed
@@ -143,8 +143,8 @@ function BackgroundGradient() {
   const fragment = `
     varying vec2 vUv;
     void main() {
-      vec3 top = vec3(0.07, 0.08, 0.1);     // Верх — тёмно-серый
-      vec3 bottom = vec3(0.015, 0.02, 0.04); // Низ — почти чёрный
+      vec3 top = vec3(0.02, 0.02, 0.03);
+      vec3 bottom = vec3(0.005, 0.007, 0.01);
       vec3 color = mix(bottom, top, vUv.y);
       gl_FragColor = vec4(color, 1.0);
     }
@@ -159,7 +159,7 @@ function BackgroundGradient() {
   `
 
   return (
-    <mesh scale={[100, 100, 1]}>
+    <mesh scale={[100, 100, 1]} position={[0, 0, -100]}>
       <planeGeometry args={[2, 2]} />
       <shaderMaterial
         ref={shaderRef}
