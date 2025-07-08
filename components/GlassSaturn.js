@@ -42,10 +42,10 @@ export default function GlassSaturn() {
           clearcoat={1}
           clearcoatRoughness={0}
           metalness={0}
-          envMapIntensity={0.5}
+          envMapIntensity={0.4}
           transparent
           color="#ffffff"
-          attenuationColor="#ddeeff"
+          attenuationColor="#ffffff"
           attenuationDistance={0.6}
         />
       </mesh>

@@ -140,8 +140,9 @@ export default function ThreeBackground() {
       <ambientLight intensity={0.5} />
       <pointLight position={[5, 5, 5]} intensity={3} color="#1d1f22" />
       
-      <GlassSaturn mouse={mouse} />
       <Starfield mouse={mouse} />
+      <GlassSaturn mouse={mouse} />
+      
 
       <EffectComposer>
         <Bloom
