@@ -1,6 +1,6 @@
 // components/ThreeBackground.js
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
-import { Canvas, useFrame } from '@react-three/fiber'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useRef, useMemo, useEffect } from 'react'
 import { Points, PointMaterial, Stars } from '@react-three/drei'
 import GlassSaturn from '../components/GlassSaturn'
@@ -99,8 +99,8 @@ function Starfield({ mouse }) {
         const dist = Math.sqrt(dx * dx + dy * dy)
 
         // коэффициент ускорения
-        const baseSpeed = Math.min(0.0002 + t * 0.00001, 0.0002) // медленно растёт со временем
-        const speed = baseSpeed + dist * 0.00002
+        const baseSpeed = Math.min(0.00002 + t * 0.000005, 0.00002) // медленно растёт со временем
+        const speed = baseSpeed + dist * 0.000005
 
         // летим к камере (по Z)
         z += speed
@@ -140,6 +140,8 @@ function Starfield({ mouse }) {
 function BackgroundGradient() {
   const shaderRef = useRef()
 
+  const { viewport } = useThree()
+
   const fragment = `
     varying vec2 vUv;
     void main() {
@@ -159,8 +161,8 @@ function BackgroundGradient() {
   `
 
   return (
-    <mesh scale={[100, 100, 1]} position={[0, 0, -100]}>
-      <planeGeometry args={[2, 2]} />
+    <mesh scale={[1, 1, 1]} position={[0, 0, -50]}>
+      <planeGeometry args={[viewport.width * 2, viewport.height * 2]} />
       <shaderMaterial
         ref={shaderRef}
         fragmentShader={fragment}
