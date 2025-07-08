@@ -156,15 +156,16 @@ export default function ThreeBackground() {
       
       <Starfield mouse={mouse} />
 
-      <mesh position={[2.5, 1.6, -10]}>
-        <planeGeometry args={[100, 100]} />
+      <mesh position={[0, 0, -9.9]}>
+        <planeGeometry args={[200, 200]} />
         <meshBasicMaterial
-          color="#22252c"
+          color="#0b0f17"
           transparent
-          opacity={0.4}
+          opacity={0.8}
           depthWrite={false}
         />
       </mesh>
+
 
       <GlassSaturn mouse={mouse} />
 
