@@ -23,7 +23,7 @@ export default function GlassSaturn({ mouse }) {
       ref.current.rotation.x = mouse.current.y * tilt
       ref.current.rotation.y = mouse.current.x * tilt
 
-      const scalePulse = baseScale + 0.015 * (mouse.current.x ** 2 + mouse.current.y ** 2)
+      const scalePulse = baseScale + 0.016 * (mouse.current.x ** 2 + mouse.current.y ** 2)
       ref.current.scale.set(scalePulse, scalePulse, scalePulse)
 
       ringRef.current.rotation.z = t * 0.02
