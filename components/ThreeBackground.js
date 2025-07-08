@@ -144,9 +144,9 @@ export default function ThreeBackground() {
 
       {/* 💫 Окружение для прозрачности */}
       <Environment
-        background={false}
+        background={true}
         blur={0.6}
-        files="/env/rogland_clear_night_1k.hdr"
+        files="/env/satara_night_no_lamps_1k.hdr"
       />
       
       {/* 💡 Свет */}
