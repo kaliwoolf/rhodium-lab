@@ -62,40 +62,26 @@ export default function GlassSaturn() {
       {/* Объёмные кольца (торы) */}
       <group position={[0, 0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]} renderOrder={4} ref={ringRef}>
         <mesh>
-          <torusGeometry args={[0.75, 0.05, 64, 128]} />
+          <torusGeometry args={[0.8, 0.015, 64, 256]} />
           <meshPhysicalMaterial
             transmission={1}
-            thickness={0.3}
+            thickness={1.6}                  // ← как у планеты
             roughness={0.05}
-            ior={1.4}
-            reflectivity={0.3}
+            ior={1.52}
+            reflectivity={0.6}
             clearcoat={1}
-            clearcoatRoughness={0.1}
-            transparent
-            side={THREE.DoubleSide}
+            clearcoatRoughness={0}
+            metalness={0}
             envMap={hdrTexture}
-            envMapIntensity={1.2}
-            color="#ffffff"
-          />
-        </mesh>
-        <mesh>
-          <torusGeometry args={[0.85, 0.03, 64, 128]} />
-          <meshPhysicalMaterial
-            transmission={1}
-            thickness={0.25}
-            roughness={0.05}
-            ior={1.4}
-            reflectivity={0.3}
-            clearcoat={1}
-            clearcoatRoughness={0.1}
+            envMapIntensity={0}
+            opacity={0.3}
             transparent
-            side={THREE.DoubleSide}
-            envMap={hdrTexture}
-            envMapIntensity={1.2}
-            color="#ffffff"
+            attenuationColor="#0f1015"
+            attenuationDistance={0.2}
           />
         </mesh>
       </group>
+
     </group>
   )
 }
