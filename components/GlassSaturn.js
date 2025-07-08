@@ -112,7 +112,7 @@ export default function GlassSaturn() {
           <mesh position={[0, 0, 0.02]}>
             <ringGeometry args={[0.6, 0.9, 128]} />
             <meshPhysicalMaterial
-              color="#212323"
+              color="#212322"
               transmission={1}
               thickness={0.2}
               roughness={0.3}
