@@ -80,11 +80,11 @@ function Starfield({ mouse }) {
       const i3 = i * 3
 
       // Смещение звезды по синусоиде
-      const dx = 0.05 * Math.sin(t + o[i])
-      const dy = 0.05 * Math.cos(t + o[i])
+      const dx = 0.05 * Math.sin(t * 0.25 + o[i])
+      const dy = 0.05 * Math.cos(t * 0.25 + o[i])
 
-      pos[i3] += dx * 0.02   // X
-      pos[i3 + 1] += dy * 0.02 // Y
+      pos[i3] += dx * 0.005   // X
+      pos[i3 + 1] += dy * 0.005 // Y
       // Z — остаётся на месте
     }
 

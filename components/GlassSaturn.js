@@ -45,7 +45,8 @@ export default function GlassSaturn() {
             color="black"
             transparent
             opacity={0.99}
-            depthWrite
+            depthWrite={true}
+            depthTest={true}
           />
       </mesh>
 
@@ -65,6 +66,8 @@ export default function GlassSaturn() {
           attenuationDistance={0.5}
           clearcoat={1}
           clearcoatRoughness={0.2}
+          depthWrite={true}
+          depthTest={true} 
         />
       </mesh>
 
@@ -84,7 +87,8 @@ export default function GlassSaturn() {
             transparent
             opacity={0.3}
             side={DoubleSide}
-            depthWrite
+            depthWrite={true}
+            depthTest={true} 
           />
         </mesh>
 
@@ -102,7 +106,8 @@ export default function GlassSaturn() {
             transparent
             opacity={0.3}
             side={DoubleSide}
-            depthWrite
+            depthWrite={true}
+            depthTest={true} 
           />
         </mesh>
       </group>
