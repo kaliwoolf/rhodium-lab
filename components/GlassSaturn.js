@@ -141,7 +141,7 @@ export default function GlassSaturn() {
         </group>
 
       {/* Свет */}
-      <Environment preset="night" background={false} resolution={512}>
+      <Environment background={false}>
         <Lightformer intensity={0.8} position={[5, 5, -5]} scale={[4, 4, 1]} color="#aaaaff" />
         <Lightformer intensity={0.8} position={[-6, -2, -5]} scale={[6, 6, 1]} color="#334455" />  
       </Environment>
