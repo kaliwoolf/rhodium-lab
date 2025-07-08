@@ -54,7 +54,7 @@ export default function GlassSaturn() {
       <mesh renderOrder={2}>
         <sphereGeometry args={[0.45, 64, 64]} />
         <meshPhysicalMaterial
-          color="#111111"          
+          color="#212323"          
           transmission={1}
           transparent
           thickness={1.5}
@@ -71,36 +71,46 @@ export default function GlassSaturn() {
         />
       </mesh>
 
-      {/* Кольца */}
-      <group rotation={[Math.PI / 2.2, 0, 0]} renderOrder={3}>
-        {/* Нижнее кольцо (основное) */}
-        <mesh>
-          <ringGeometry args={[0.52, 0.9, 128]} />
-          <meshPhysicalMaterial
-            color="#1a1a1a"
-            transparent
-            opacity={0.3}
-            side={DoubleSide}
-            depthWrite={false}
-            depthTest={true}
-          />
-        </mesh>
+      {/* Кольца — двойной слой для псевдо-объёма */}
+        <group rotation={[Math.PI / 2.2, 0, 0]} renderOrder={3}>
+          {/* Нижнее кольцо */}
+          <mesh>
+            <ringGeometry args={[0.5, 0.95, 128]} />
+            <meshPhysicalMaterial
+              color="#212323"
+              transmission={1}
+              thickness={0.2}
+              roughness={0.3}
+              ior={1.3}
+              reflectivity={0.05}
+              clearcoat={1}
+              clearcoatRoughness={0.4}
+              transparent
+              side={DoubleSide}
+              envMapIntensity={0}
+              depthWrite={true}
+            />
+          </mesh>
 
-        {/* Верхнее кольцо, чуть ближе к камере — добавляет лёгкий объём */}
-        <mesh position={[0, 0, 0.003]}>
-          <ringGeometry args={[0.52, 0.9, 128]} />
-          <meshPhysicalMaterial
-            color="#1a1a1a"
-            transparent
-            opacity={0.3}
-            side={DoubleSide}
-            depthWrite={false}
-            depthTest={true}
-          />
-        </mesh>
-      </group>
-
-
+          {/* Верхнее кольцо, чуть ближе к камере */}
+          <mesh position={[0, 0, 0.005]}>
+            <ringGeometry args={[0.5, 0.95, 128]} />
+            <meshPhysicalMaterial
+              color="#212323"
+              transmission={1}
+              thickness={0.2}
+              roughness={0.3}
+              ior={1.3}
+              reflectivity={0.05}
+              clearcoat={1}
+              clearcoatRoughness={0.4}
+              transparent
+              side={DoubleSide}
+              envMapIntensity={0}
+              depthWrite={true}
+            />
+          </mesh>
+        </group>
 
       {/* Свет */}
       <Environment background={false} resolution={512}>
