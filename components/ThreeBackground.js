@@ -71,57 +71,26 @@ function Starfield({ mouse }) {
 
   
   // Анимация
-  useFrame(({ clock }) => {
+ useFrame(({ clock }) => {
     const t = clock.getElapsedTime()
+    const pos = pointsRef.current.geometry.attributes.position.array
+    const o = offsets.current
 
-    if (pointsRef.current) {
-      const s = pointsRef.current.material
-      s.size = 0.15 + 0.05 * Math.sin(t * 1.2)
+    for (let i = 0; i < count; i++) {
+      const i3 = i * 3
 
-      // Плавное вращение с инерцией от мыши
-      pointsRef.current.rotation.x = mouse.current.y * 0.05
-      pointsRef.current.rotation.y = t * 0.015 + mouse.current.x * 0.05
-      pointsRef.current.position.x = Math.sin(t * 0.2) * 0.1
-      pointsRef.current.position.y = Math.cos(t * 0.2) * 0.1
+      // Смещение звезды по синусоиде
+      const dx = 0.05 * Math.sin(t + o[i])
+      const dy = 0.05 * Math.cos(t + o[i])
 
-
-      // 🌌 WARP C УСКОРЕНИЕМ
-      const positions = pointsRef.current.geometry.attributes.position.array
-
-      for (let i = 0; i < positions.length; i += 3) {
-        let x = positions[i]
-        let y = positions[i + 1]
-        let z = positions[i + 2]
-
-        // расстояние до центра по XY
-        const dx = x
-        const dy = y
-        const dist = Math.sqrt(dx * dx + dy * dy)
-
-        // коэффициент ускорения
-        const baseSpeed = Math.min(0.00002 + t * 0.000005, 0.00002) // медленно растёт со временем
-        const speed = baseSpeed + dist * 0.000005
-
-        // летим к камере (по Z)
-        z += speed
-
-        // сбрасываем звёзду назад
-        if (z > 10) {
-          z = -100 + Math.random() * -50
-          // перегенерируем позицию XY, чтобы не было линейности
-          x = (Math.random() - 0.5) * 50
-          y = (Math.random() - 0.5) * 50
-        }
-
-        // обновляем позицию
-        positions[i] = x
-        positions[i + 1] = y
-        positions[i + 2] = z
-      }
-
-      pointsRef.current.geometry.attributes.position.needsUpdate = true
+      pos[i3] += dx * 0.02   // X
+      pos[i3 + 1] += dy * 0.02 // Y
+      // Z — остаётся на месте
     }
+
+    pointsRef.current.geometry.attributes.position.needsUpdate = true
   })
+
 
 
   return (
@@ -166,7 +135,7 @@ export default function ThreeBackground() {
       }}
       camera={{ position: [0, 0, 10], fov: 60 }}
     >
-      <color attach="background" args={['#050510']} />
+      <color attach="background" args={['#12161C']} />
       
       {/* 💡 Свет */}
       <ambientLight intensity={0.5} />
