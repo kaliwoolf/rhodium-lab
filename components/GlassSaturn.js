@@ -52,16 +52,16 @@ export default function GlassSaturn() {
         />
       </mesh>
 
-      /* 💡 Краевой боковой свет — для линзы */}
-      <spotLight
-        position={[3, 1, 2]}     // справа сверху
-        angle={0.45}
-        penumbra={1}
-        intensity={0.9}          // не слишком яркий
-        distance={5}
-        decay={2}
-        color="#88ccff"
-      />
+      {/* 💡 Краевой боковой свет — для линзы */}
+        <spotLight
+          position={[3, 1, 2]}     // справа сверху
+          angle={0.45}
+          penumbra={1}
+          intensity={0.9}          // не слишком яркий
+          distance={5}
+          decay={2}
+          color="#88ccff"
+        />
 
       {/* Объёмные кольца (торы) */}
      <group ref={ringRef} renderOrder={1} position={[0, 0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]}>
