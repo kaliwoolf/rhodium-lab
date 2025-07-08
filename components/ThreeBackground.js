@@ -145,9 +145,9 @@ export default function ThreeBackground() {
 
       <EffectComposer>
         <Bloom
-          intensity={2.8}
-          luminanceThreshold={0.05}
-          luminanceSmoothing={0.65}
+          intensity={0.6}
+          luminanceThreshold={0.3}
+          luminanceSmoothing={0.5}
           mipmapBlur={true}
         />
       </EffectComposer>
