@@ -165,18 +165,6 @@ export default function ThreeBackground() {
 
       <GlassSaturn mouse={mouse} />
 
-      {/* 💡 Краевой боковой свет — для линзы */}
-      <spotLight
-          position={[2, 2, 2]}     // справа сверху
-          angle={0.3}
-          penumbra={0.5}
-          intensity={1}          // не слишком яркий
-          distance={5}
-          decay={1}
-          color="#aaccee"
-      />
-   
-
       <EffectComposer>
         <Bloom
           intensity={0.6}
