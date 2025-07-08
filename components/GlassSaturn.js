@@ -39,37 +39,22 @@ export default function GlassSaturn() {
   return (
     <group position={[2.5, 1.6, -2]} scale={[7, 7, 7]} rotation={[0.45, 0, 0.46]}>
       
-      {/* Внутренняя текстурированная сфера */}
-      <mesh renderOrder={2}>
-        <sphereGeometry args={[0.515, 64, 64]} />
-        <meshStandardMaterial
-          color="#12161C"
-          roughness={1}
-          metalness={0}
-        />
-      </mesh>
-
       {/* Внешняя стеклянная оболочка */}
-      <mesh renderOrder={3}>
+      <mesh renderOrder={1}>
         <sphereGeometry args={[0.52, 64, 64]} />
-        <MeshTransmissionMaterial
-          backside
-          samples={10}
-          resolution={512}
-          thickness={1.2}
-          transmission={1}
-          roughness={0.1}
-          chromaticAberration={0.03}
-          anisotropy={0.2}
-          distortion={0.2}
-          distortionScale={0.5}
-          temporalDistortion={0.15}
-          ior={1.4}
-          attenuationColor="#8899aa"
-          attenuationDistance={0.25}
-          toneMapped={false}
-          envMapIntensity={0.2} 
-        />
+          <meshPhysicalMaterial
+            transparent
+            transmission={1}
+            thickness={0.5}
+            roughness={0.05}
+            ior={1.2}
+            reflectivity={0.1}
+            clearcoat={1}
+            clearcoatRoughness={0.1}
+            metalness={0}
+            envMapIntensity={0}
+            color="#ffffff"
+          />
       </mesh>
 
       {/* Кольца — двойной слой для псевдо-объёма */}
