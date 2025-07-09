@@ -71,21 +71,24 @@ export default function GlassSaturn({ mouse }) {
         {/* Стеклянная сфера */}
         <mesh ref={ref}>
           <sphereGeometry args={[0.52, 128, 128]} />
-          <meshPhysicalMaterial
-            transmission={1}
-            thickness={2.5}
-            roughness={0.02}
-            ior={1.52}
-            reflectivity={0.3}
-            clearcoat={1}
-            clearcoatRoughness={0.05}
-            metalness={0}
-            envMapIntensity={1.0}
-            transparent
-            attenuationColor="#ccffff"
-            attenuationDistance={0.25}
-            toneMapped={false}
-          />
+        <meshPhysicalMaterial
+          transmission={1}
+          thickness={2.5}
+          roughness={0.02}
+          ior={1.52}
+          reflectivity={0.3}
+          clearcoat={1}
+          clearcoatRoughness={0.05}
+          metalness={0}
+          envMapIntensity={1.0}
+          iridescence={1}
+          iridescenceIOR={1.3}
+          iridescenceThicknessRange={[100, 400]}
+          attenuationColor="#ccffff"
+          attenuationDistance={0.25}
+          transparent
+          toneMapped={false}
+        />
         </mesh>
 
         {/* Кольца */}
