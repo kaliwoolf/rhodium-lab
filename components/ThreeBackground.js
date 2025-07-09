@@ -159,10 +159,7 @@ export default function ThreeBackground() {
         />
 
         <EffectComposer>
-          <ChromaticAberration
-            blendFunction={BlendFunction.NORMAL}
-            offset={[0.0009, 0.0009]}
-          />
+          {/* <ChromaticAberration blendFunction={BlendFunction.NORMAL} offset={[0.0009, 0.0009]} /> */}
         </EffectComposer>
       </Suspense>
     </Canvas>

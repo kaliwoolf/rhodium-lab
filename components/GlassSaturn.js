@@ -56,15 +56,19 @@ export default function GlassSaturn({ mouse }) {
         {/* 🌑 Внутренняя чёрная маска */}
         <mesh scale={[0.985, 0.985, 0.985]}>
           <sphereGeometry args={[0.52, 128, 128]} />
-          <meshStandardMaterial
+          <meshPhysicalMaterial
             color="#000000"
-            emissive="#000000"
+            metalness={1}
+            roughness={0.5}
             transparent
-            opacity={0.85}
+            opacity={1}
             side={BackSide}
             depthWrite={false}
+            depthTest={false}
+            toneMapped={false}
           />
         </mesh>
+
 
         {/* 🔮 Внешняя стеклянная сфера */}
         <mesh ref={ref}>
@@ -88,6 +92,22 @@ export default function GlassSaturn({ mouse }) {
             toneMapped={false}
           />
         </mesh>
+
+        {/* 🌫️ Ореол по краю через Fresnel */}
+        <mesh scale={[1.015, 1.015, 1.015]}>
+          <sphereGeometry args={[0.52, 128, 128]} />
+          <LayerMaterial transparent toneMapped={false}>
+            <Base color="#000000" alpha={0.0} />
+            <Fresnel
+              mode="add"
+              color="#aaffff"
+              intensity={1.4}
+              power={2.5}
+              bias={0.0}
+            />
+          </LayerMaterial>
+        </mesh>
+
 
         {/* 🪐 Радужные стеклянные кольца */}
         <group ref={ringRef} position={[0, 0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]}>
