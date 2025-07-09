@@ -116,9 +116,11 @@ export default function GlassSaturn({ mouse }) {
               toneMapped={false}
               side={DoubleSide}
             />
-          </mesh>
+          </mesh>     
 
-          <mesh scale={[1.015, 1.015, 1.015]} renderOrder={-1}>
+        </group>
+
+        <mesh scale={[1.2, 1.2, 1.2]} renderOrder={2}>
             <sphereGeometry args={[0.52, 128, 128]} />
             <shaderMaterial
               vertexShader={`
@@ -146,8 +148,7 @@ export default function GlassSaturn({ mouse }) {
               blending={AdditiveBlending} // ✨ Сияющий режим наложения
             />
           </mesh>
-
-        </group>
+          
       </group>
     </>
   )
