@@ -93,6 +93,7 @@ export default function GlassSaturn({ mouse }) {
             depthTest={false}
             toneMapped={false}
             blending={THREE.NormalBlending}
+            side={THREE.DoubleSide} <!-- 🔥 Вот это было критично -->
             vertexShader={`
               varying vec2 vUv;
               void main() {
@@ -103,15 +104,15 @@ export default function GlassSaturn({ mouse }) {
             fragmentShader={`
               varying vec2 vUv;
               void main() {
-                // Центр затемнения ближе к левому нижнему краю
                 vec2 center = vec2(0.25, 0.75); 
                 float d = distance(vUv, center);
-                float alpha = smoothstep(0.35, 0.1, d); // Обратный градиент: сильнее в центре
-                gl_FragColor = vec4(0.0, 0.0, 0.0, alpha * 0.8);
+                float alpha = smoothstep(0.35, 0.1, d);
+                gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
               }
             `}
           />
         </mesh>
+
 
 
 
