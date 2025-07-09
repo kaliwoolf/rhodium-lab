@@ -69,6 +69,12 @@ export default function GlassSaturn({ mouse }) {
           color="#d300ff"
         />
 
+        <directionalLight
+          position={[1.5, 2.5, 1.5]} // сверху-справа
+          intensity={6}
+          color="#ffddaa" // мягкое холодное золото
+        />
+
 
         <mesh>
           <torusGeometry args={[0.95, 0.04, 64, 256]} />
@@ -95,8 +101,8 @@ export default function GlassSaturn({ mouse }) {
         
       </group>
 
-      <mesh position={[-0.35, -0.27, 0.1]} rotation={[0.3, 0, 0]} renderOrder={5}>
-          <planeGeometry args={[2.5, 2.5]} />
+      <mesh position={[-0.05, -0.3, 0.15]} rotation={[0.3, 0, 0]} renderOrder={5}>
+          <planeGeometry args={[1.5, 1.5]} />
           <shaderMaterial
             transparent
             depthWrite={false}
