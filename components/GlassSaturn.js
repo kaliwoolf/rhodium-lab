@@ -83,13 +83,15 @@ export default function GlassSaturn({ mouse }) {
           />
         </mesh>
 
-        <mesh position={[0, -0.3, 0]} rotation={[Math.PI / 2.2, 0, 0]} renderOrder={-2}>
-          <planeGeometry args={[2.2, 1.5]} />
+        <mesh position={[0, 0.05, 0]} rotation={[Math.PI / 2.2, 0, 0]} renderOrder={3}>
+          <circleGeometry args={[1.5, 64]} />
           <meshBasicMaterial
             color="black"
             transparent
-            opacity={0.5} // можно регулировать глубину затемнения
+            opacity={0.8}
+            side={DoubleSide}
             depthWrite={false}
+            depthTest={false}
             toneMapped={false}
           />
         </mesh>
