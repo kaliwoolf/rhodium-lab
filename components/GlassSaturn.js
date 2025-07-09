@@ -1,6 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { DoubleSide, BackSide, AdditiveBlending } from 'three'
+import * as THREE from 'three'
+
 
 export default function GlassSaturn({ mouse }) {
   const ref = useRef()
@@ -83,18 +85,32 @@ export default function GlassSaturn({ mouse }) {
           />
         </mesh>
 
-        <mesh position={[-0.3, -0.15, 0.01]} rotation={[Math.PI / 2.2, 0, 0]} renderOrder={3}>
-          <circleGeometry args={[0.9, 64]} />
-          <meshBasicMaterial
-            color="black"
+        <mesh position={[-0.1, -0.25, 0.15]} rotation={[0.3, 0, 0]} renderOrder={5}>
+          <planeGeometry args={[1.2, 1.2]} />
+          <shaderMaterial
             transparent
-            opacity={0.8}
-            side={DoubleSide}
             depthWrite={false}
             depthTest={false}
             toneMapped={false}
+            blending={THREE.NormalBlending}
+            vertexShader={`
+              varying vec2 vUv;
+              void main() {
+                vUv = uv;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+              }
+            `}
+            fragmentShader={`
+              varying vec2 vUv;
+              void main() {
+                float d = distance(vUv, vec2(0.5));
+                float alpha = smoothstep(0.3, 0.5, d); // мягкий градиент от центра
+                gl_FragColor = vec4(0.0, 0.0, 0.0, alpha * 0.7); // полупрозрачный чёрный
+              }
+            `}
           />
         </mesh>
+
 
       </group>
 
