@@ -112,55 +112,55 @@ export default function ThreeBackground() {
   }, [])
 
   return (
-    
+  <>
     <Canvas
-        camera={{ position: [0, 0, 9], fov: 35 }}
-        gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping }}
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          zIndex: -2,
-          pointerEvents: 'none',
-          background: '#000000',
-        }}
-        onCreated={({ camera }) => camera.layers.set(0)}
-      >
-        <Suspense fallback={null}>
-          <Starfield mouse={mouse} />
-          <EffectComposer>
-            <Bloom intensity={0.3} luminanceThreshold={0.3} />
-          </EffectComposer>
-        </Suspense>
-      </Canvas>
-
+      camera={{ position: [0, 0, 9], fov: 35 }}
+      gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping }}
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        zIndex: -2,
+        pointerEvents: 'none',
+        background: '#000000',
+      }}
+      onCreated={({ camera }) => camera.layers.set(0)}
+    >
+      <Suspense fallback={null}>
+        <Starfield mouse={mouse} />
+        <EffectComposer>
+          <Bloom intensity={0.3} luminanceThreshold={0.3} />
+        </EffectComposer>
+      </Suspense>
+    </Canvas>
 
     <Canvas
-        camera={{ position: [0, 0, 9], fov: 35 }}
-        gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping }}
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          zIndex: -1,
-          pointerEvents: 'none',
-        }}
-        onCreated={({ camera }) => camera.layers.set(1)}
-      >
-        <Suspense fallback={null}>
-          <GlassSaturn mouse={mouse} />
-          <EffectComposer>
-            <ChromaticAberration
-              blendFunction={BlendFunction.NORMAL}
-              offset={[0.0009, 0.0009]}
-            />
-          </EffectComposer>
-        </Suspense>
-      </Canvas>
-
+      camera={{ position: [0, 0, 9], fov: 35 }}
+      gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping }}
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        zIndex: -1,
+        pointerEvents: 'none',
+      }}
+      onCreated={({ camera }) => camera.layers.set(1)}
+    >
+      <Suspense fallback={null}>
+        <GlassSaturn mouse={mouse} />
+        <EffectComposer>
+          <ChromaticAberration
+            blendFunction={BlendFunction.NORMAL}
+            offset={[0.0009, 0.0009]}
+          />
+        </EffectComposer>
+      </Suspense>
+    </Canvas>
+  </>
   )
+
 }
