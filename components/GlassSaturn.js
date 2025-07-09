@@ -9,10 +9,10 @@ export default function GlassSaturn({ mouse }) {
   const ringRef = useRef()
   const wrapperRef = useRef()
   const target = useRef({ x: 0, y: 0 })
-  const tilt = 0.05
+  const tilt = 0.1
 
   const [scale, setScale] = useState([2.2, 2.2, 2.2])
-  const [position, setPosition] = useState([1.2, 1.2, -3])
+  const [position, setPosition] = useState([0, 0, 0])
 
   useEffect(() => {
     const isMobile = window.innerWidth < 768

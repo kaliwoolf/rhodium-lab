@@ -152,7 +152,7 @@ export default function ThreeBackground() {
     >
       <Suspense fallback={null}>
 
-        <group position={[-2.1, -2, 0]} scale={[2, 2, 2]}>
+        <group position={[-2.1, -2.1, 0]} scale={[2, 2, 2]}>
           <GlassSaturn mouse={mouse} />
         </group>
 
