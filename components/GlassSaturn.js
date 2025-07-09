@@ -8,6 +8,7 @@ export default function GlassSaturn({ mouse }) {
   const ref = useRef()
   const ringRef = useRef()
   const wrapperRef = useRef()
+  const target = useRef({ x: 0, y: 0 })
 
   const [scale, setScale] = useState([2.2, 2.2, 2.2])
   const [position, setPosition] = useState([1.2, 1.2, -3])
@@ -26,12 +27,14 @@ export default function GlassSaturn({ mouse }) {
   useFrame(({ clock, mouse: m }) => {
     const t = clock.getElapsedTime()
     if (wrapperRef.current && ringRef.current) {
-      mouse.current.x += (m.x - mouse.current.x) * 0.05
-      mouse.current.y += (m.y - mouse.current.y) * 0.05
+      target.current.x += (m.x - target.current.x) * 0.03
+      target.current.y += (m.y - target.current.y) * 0.03
 
-      const tilt = 0.15
-      wrapperRef.current.rotation.x = mouse.current.y * tilt
-      wrapperRef.current.rotation.y = mouse.current.x * tilt
+      if (wrapperRef.current && ringRef.current) {
+        wrapperRef.current.rotation.x = target.current.y * tilt
+        wrapperRef.current.rotation.y = target.current.x * tilt
+        ringRef.current.rotation.z = t * 0.02
+      }
 
       ringRef.current.rotation.z = t * 0.02
     }
