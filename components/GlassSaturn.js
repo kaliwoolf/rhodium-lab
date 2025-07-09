@@ -93,7 +93,7 @@ export default function GlassSaturn({ mouse }) {
         
       </group>
 
-      <mesh position={[-0.22, -0.3, 0.15]} rotation={[0.3, 0, 0]} renderOrder={5}>
+      <mesh position={[-0.3, -0.35, 0.15]} rotation={[0.3, 0, 0]} renderOrder={5}>
           <planeGeometry args={[1.7, 1.7]} />
           <shaderMaterial
             transparent
@@ -130,7 +130,14 @@ export default function GlassSaturn({ mouse }) {
             />
         </mesh>
 
-
+      <directionalLight
+          position={[0, 3, 0]}         // прям над планетой
+          intensity={10}                // можешь поднять до 6–8, если нужно ярче
+          color="#ffd580"             // тёплый золотистый (можно заменить на "#ffcc66" или "#ffdd99")
+          castShadow={false}
+        />
+  
+        
       {/* 🔮 Внешняя стеклянная сфера */}
       <mesh ref={ref} renderOrder={1}>
         <sphereGeometry args={[0.52, 128, 128]} />
