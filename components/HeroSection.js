@@ -8,7 +8,7 @@ export default function HeroSection() {
     setWave(true);
     document.getElementById(anchor)?.scrollIntoView({ behavior: 'smooth' });
 
-    setTimeout(() => setWave(false), 1200); // автооткат
+    setTimeout(() => setWave(false), 2000);
   };
 
   return (
@@ -26,14 +26,7 @@ export default function HeroSection() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1.2, delay: 0.4 }}
-        className={[
-          "mt-4",
-          "text-sm md:text-base",
-          "text-white/60",
-          "tracking-wide",
-          "backdrop-blur"
-        ].join(" ")}
-
+        className="mt-4 text-sm md:text-base text-white/60 tracking-wide backdrop-blur"
       >
         Лаборатория иммерсивных смыслов
       </motion.p>
@@ -48,40 +41,58 @@ export default function HeroSection() {
           ПРОЕКТЫ
         </button>
 
-        <AnimatePresence>
-          {wave ? (
-            <motion.svg
-              key="wave"
-              width="60"
-              height="10"
-              viewBox="0 0 60 10"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              initial={{ pathLength: 0 }}
-              animate={{ pathLength: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <motion.path
-                d="M0 5 Q 10 0, 20 5 T 40 5 T 60 5"
-                stroke="#ff003c"
-                strokeWidth="2"
-                fill="transparent"
-                initial={{ pathLength: 0 }}
-                animate={{ pathLength: 1 }}
-                transition={{ duration: 0.8, ease: 'easeInOut' }}
+        {/* Разделитель */}
+        <div className="relative w-[60px] h-[10px]">
+          <AnimatePresence mode="wait">
+            {wave ? (
+              <motion.svg
+                key="wave"
+                width="60"
+                height="10"
+                viewBox="0 0 60 10"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="absolute top-0 left-0"
+              >
+                <motion.path
+                  d="M0 5 Q 10 0, 20 5 T 40 5 T 60 5"
+                  stroke="#ff003c"
+                  strokeWidth="2"
+                  fill="transparent"
+                  initial={{ pathLength: 0 }}
+                  animate={{
+                    pathLength: [0, 1],
+                    transition: { duration: 0.6, ease: 'easeInOut' }
+                  }}
+                />
+                <motion.path
+                  d="M0 5 Q 10 0, 20 5 T 40 5 T 60 5"
+                  stroke="#ff003c"
+                  strokeWidth="2"
+                  fill="transparent"
+                  strokeDasharray="20"
+                  strokeDashoffset={0}
+                  animate={{
+                    strokeDashoffset: [0, 20],
+                    transition: {
+                      duration: 1.2,
+                      ease: 'linear',
+                      repeat: Infinity,
+                    },
+                  }}
+                />
+              </motion.svg>
+            ) : (
+              <motion.div
+                key="line"
+                className="absolute top-1/2 left-0 w-full h-[2px] bg-crimson"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
               />
-            </motion.svg>
-          ) : (
-            <motion.div
-              key="line"
-              className="w-6 h-px bg-crimson"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            />
-          )}
-        </AnimatePresence>
+            )}
+          </AnimatePresence>
+        </div>
 
         <button onClick={() => handleClick('contact')} className="hover:scale-105 transition-transform">
           СВЯЗАТЬСЯ
