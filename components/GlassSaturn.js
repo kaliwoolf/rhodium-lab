@@ -11,13 +11,12 @@ export default function GlassSaturn({ mouse }) {
   const target = useRef({ x: 0, y: 0 })
   const tilt = 0.1
 
-  const [scale, setScale] = useState([2.2, 2.2, 2.2])
+  const [scale, setScale] = useState([2.4, 2.4, 2.4])
   const [position, setPosition] = useState([0, 0, 0])
 
   useEffect(() => {
     const isMobile = window.innerWidth < 768
-    setScale(isMobile ? [1.3, 1.3, 1.3] : [2.2, 2.2, 2.2])
-    setPosition(isMobile ? [0.0, 0.0, 0] : [0, 0, 0])
+    setScale(isMobile ? [1.3, 1.3, 1.3] : [1.8, 1.8, 1.8])
   }, [])
 
   useEffect(() => {
