@@ -148,7 +148,7 @@ export default function ThreeBackground() {
         zIndex: -1,
         pointerEvents: 'none',
       }}
-      onCreated={({ camera }) => camera.layers.set(1)}
+      onCreated={({ camera }) => camera.layers.enable(1)}
     >
       <Suspense fallback={null}>
         <GlassSaturn mouse={mouse} />

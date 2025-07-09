@@ -25,6 +25,11 @@ export default function GlassSaturn({ mouse }) {
     return () => window.removeEventListener('resize', updateLayout)
   }, [])
 
+  useEffect(() => {
+    if (ref.current) ref.current.layers.set(1)
+    if (ringRef.current) ringRef.current.layers.set(1)
+  }, [])
+
   const baseScale = 1
 
   useFrame(({ clock, mouse: m }) => {
