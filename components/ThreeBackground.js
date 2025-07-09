@@ -137,7 +137,7 @@ export default function ThreeBackground() {
     </Canvas>
 
     <Canvas
-      camera={{ position: [0, 0, 9], fov: 35 }}
+      camera={{ position: [0.4, 0, 8], fov: 35 }}
       gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping }}
       style={{
         position: 'fixed',
@@ -151,7 +151,10 @@ export default function ThreeBackground() {
       onCreated={({ camera }) => camera.layers.enable(1)}
     >
       <Suspense fallback={null}>
-        <GlassSaturn mouse={mouse} />
+
+        <group position={[0, -0.3, 0]} scale={[1.8, 1.8, 1.8]}>
+          <GlassSaturn mouse={mouse} />
+        </group>
 
         <Environment
           files="/env/starfield_2k.hdr"

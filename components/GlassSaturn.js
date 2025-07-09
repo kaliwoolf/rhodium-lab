@@ -36,6 +36,10 @@ export default function GlassSaturn({ mouse }) {
     }
   })
 
+  useFrame(({ camera }) => {
+    camera.lookAt(0, 0, 0)
+  })
+
   return (
   <>
     {/* 🌈 Цветовая контровая подсветка */}
