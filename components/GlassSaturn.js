@@ -56,7 +56,6 @@ export default function GlassSaturn({ mouse }) {
       {/* 🪐 Стеклянные кольца */}
       <group ref={ringRef} position={[0, 0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]}>
 
-      // Внутри твоего <group ref={ringRef}>
         <ambientLight intensity={0.4} color="#ffffff" />
         <directionalLight position={[2, 0, 2]} intensity={0.5} />
         <directionalLight position={[-2, 0, -2]} intensity={0.5} />
