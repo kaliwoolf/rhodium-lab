@@ -22,21 +22,34 @@ export default function HeroSection() {
       </p>
 
       <motion.div
-        animate={{
-          position: isPinned ? 'fixed' : 'static',
-          top: isPinned ? '1.5rem' : 'auto',
-          left: isPinned ? '50%' : 'auto',
-          translateX: isPinned ? '-50%' : '0%',
-          translateY: isPinned ? '0%' : '0%',
-          scale: isPinned ? 0.9 : 1,
-          opacity: isPinned ? 0.95 : 1,
-          zIndex: 50,
-        }}
-        transition={{ duration: 0.5, ease: [0.42, 0, 0.58, 1] }}
-        className="mt-10"
+        animate={isPinned
+          ? {
+              position: 'fixed',
+              top: '1.5rem',
+              left: '50%',
+              x: '-50%',
+              y: '0%',
+              scale: 0.9,
+              opacity: 0.95,
+              zIndex: 50
+            }
+          : {
+              position: 'relative',
+              top: 'auto',
+              left: 'auto',
+              x: 0,
+              y: 0,
+              scale: 1,
+              opacity: 1,
+              zIndex: 10
+            }
+        }
+        transition={{ duration: 0.6, ease: [0.42, 0, 0.58, 1] }}
+        className="mt-10 w-full flex justify-center"
       >
         <HeroButtons />
       </motion.div>
+
     </main>
   )
 }
