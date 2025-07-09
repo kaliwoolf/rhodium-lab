@@ -85,7 +85,7 @@ export default function GlassSaturn({ mouse }) {
           />
         </mesh>
 
-        <mesh position={[-0.1, -0.25, 0.15]} rotation={[0.3, 0, 0]} renderOrder={5}>
+        <mesh position={[-0.22, -0.27, 0.1]} rotation={[0.3, 0, 0]} renderOrder={5}>
           <planeGeometry args={[1.2, 1.2]} />
           <shaderMaterial
             transparent
@@ -103,13 +103,16 @@ export default function GlassSaturn({ mouse }) {
             fragmentShader={`
               varying vec2 vUv;
               void main() {
-                float d = distance(vUv, vec2(0.5));
-                float alpha = smoothstep(0.3, 0.5, d); // мягкий градиент от центра
-                gl_FragColor = vec4(0.0, 0.0, 0.0, alpha * 0.7); // полупрозрачный чёрный
+                // Центр затемнения ближе к левому нижнему краю
+                vec2 center = vec2(0.25, 0.75); 
+                float d = distance(vUv, center);
+                float alpha = smoothstep(0.35, 0.1, d); // Обратный градиент: сильнее в центре
+                gl_FragColor = vec4(0.0, 0.0, 0.0, alpha * 0.8);
               }
             `}
           />
         </mesh>
+
 
 
       </group>
