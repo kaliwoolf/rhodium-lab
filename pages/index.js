@@ -21,7 +21,7 @@ export default function Home() {
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className="h-screen bg-black text-white flex items-center justify-center"
+          className="h-screen bg-transparent text-white flex items-center justify-center"
         >
           <p className="text-4xl">Проекты будут здесь ✨</p>
         </motion.section>
@@ -31,7 +31,7 @@ export default function Home() {
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className="h-screen bg-[#111] text-white flex items-center justify-center"
+          className="h-screen bg-transparent text-white flex items-center justify-center"
         >
           <p className="text-4xl">Контакты</p>
         </motion.section>
