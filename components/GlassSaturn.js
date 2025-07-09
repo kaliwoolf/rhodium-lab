@@ -17,7 +17,7 @@ export default function GlassSaturn({ mouse }) {
   useEffect(() => {
     const isMobile = window.innerWidth < 768
     setScale(isMobile ? [1.3, 1.3, 1.3] : [2.2, 2.2, 2.2])
-    setPosition(isMobile ? [0.0, 0.0, -3] : [1.2, 1.2, -3])
+    setPosition(isMobile ? [0.0, 0.0, 0] : [0, 0, 0])
   }, [])
 
   useEffect(() => {
@@ -66,7 +66,7 @@ export default function GlassSaturn({ mouse }) {
     />
 
 
-    <group position={position} scale={scale} rotation={[0.46, 0, 0.46]}>
+    <group scale={scale} rotation={[0.46, 0, 0.46]}>
       {/* 🪐 Стеклянные кольца */}
       <group ref={ringRef} position={[0, 0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]}>
 
@@ -104,7 +104,7 @@ export default function GlassSaturn({ mouse }) {
         
       </group>
 
-      <mesh position={[-0.4, -0.45, 0.15]} rotation={[0.3, 0, 0]} renderOrder={5}>
+      <mesh position={[0, 0, 0]} rotation={[0.3, 0, 0]} renderOrder={5}>
           <planeGeometry args={[1.8, 1.8]} />
           <shaderMaterial
             transparent

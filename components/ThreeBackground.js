@@ -152,18 +152,13 @@ export default function ThreeBackground() {
     >
       <Suspense fallback={null}>
 
-        <group position={[-2.1, -2.1, 0]} scale={[2, 2, 2]}>
-          <GlassSaturn mouse={mouse} />
-        </group>
+        <GlassSaturn mouse={mouse} />
 
         <Environment
           files="/env/starfield_2k.hdr"
           background={false}
         />
 
-        <EffectComposer>
-          { /*<ChromaticAberration blendFunction={BlendFunction.NORMAL} offset={[0.0009, 0.0009]} /> */ }
-        </EffectComposer>
       </Suspense>
     </Canvas>
   </>
