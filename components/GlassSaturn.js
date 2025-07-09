@@ -69,14 +69,14 @@ export default function GlassSaturn({ mouse }) {
 
 
         <mesh>
-          <torusGeometry args={[0.95, 0.04, 128, 512]} />
+          <torusGeometry args={[0.95, 0.04, 256, 1024]} />
           <meshPhysicalMaterial
             transmission={1}
             thickness={0.5}
-            roughness={0.2}
+            roughness={0.25}
             ior={1.45}
             clearcoat={1}
-            clearcoatRoughness={0.1}
+            clearcoatRoughness={0.15}
             iridescence={1}
             iridescenceIOR={1.3}
             iridescenceThicknessRange={[200, 600]}
@@ -177,7 +177,7 @@ export default function GlassSaturn({ mouse }) {
             varying vec3 vViewPosition;
             void main() {
               float fresnel = pow(1.0 - dot(normalize(vViewPosition), vNormal), 2.2);
-              float topMask = smoothstep(0.0, 0.1, vNormal.y); // только верхняя часть
+              float topMask = smoothstep(0.0, 0.15, vNormal.y); // только верхняя часть
               vec3 color = vec3(1.0, 0.8, 0.5); // тёплый золотистый
               gl_FragColor = vec4(color, fresnel * topMask * 0.8);
             }
