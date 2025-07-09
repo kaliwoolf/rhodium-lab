@@ -35,121 +35,119 @@ export default function GlassSaturn({ mouse }) {
   })
 
   return (
-    <>
-      {/* 🌈 Цветовая контровая подсветка */}
-      <spotLight
-        position={[-3, 2, 2]}
-        intensity={1.2}
-        angle={0.5}
-        penumbra={0.8}
-        color="#99ffff"
-      />
-      <spotLight
-        position={[3, 2, 2]}
-        intensity={1.2}
-        angle={0.5}
-        penumbra={0.8}
-        color="#cc88ff"
-      />
+  <>
+    {/* 🌈 Цветовая контровая подсветка */}
+    <spotLight
+      position={[-3, 2, 2]}
+      intensity={1.2}
+      angle={0.5}
+      penumbra={0.8}
+      color="#99ffff"
+    />
+    <spotLight
+      position={[3, 2, 2]}
+      intensity={1.2}
+      angle={0.5}
+      penumbra={0.8}
+      color="#cc88ff"
+    />
 
-      <group position={position} scale={scale} rotation={[0.46, 0, 0.46]}>
-        {/* 🌑 Внутренняя чёрная маска */}
-        <mesh scale={[0.985, 0.985, 0.985]}>
-          <sphereGeometry args={[0.52, 128, 128]} />
-          <meshPhysicalMaterial
-            color="#000000"
-            metalness={1}
-            roughness={0.5}
-            transparent
-            opacity={1}
-            side={BackSide}
-            depthWrite={false}
-            depthTest={false}
-            toneMapped={false}
-          />
-        </mesh>
-
-
-        {/* 🔮 Внешняя стеклянная сфера */}
-        <mesh ref={ref}>
-          <sphereGeometry args={[0.52, 128, 128]} />
+    <group position={position} scale={scale} rotation={[0.46, 0, 0.46]}>
+      {/* 🪐 Стеклянные кольца */}
+      <group ref={ringRef} position={[0, 0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]}>
+        <mesh>
+          <torusGeometry args={[0.95, 0.04, 64, 256]} />
           <meshPhysicalMaterial
             transmission={1}
-            thickness={1.2}
+            thickness={0.5}
             roughness={0}
-            ior={1.52}
-            reflectivity={0.02}
+            ior={1.45}
             clearcoat={1}
             clearcoatRoughness={0}
-            metalness={0}
-            envMapIntensity={0.2}
             iridescence={1}
-            iridescenceIOR={1.25}
-            iridescenceThicknessRange={[150, 400]}
+            iridescenceIOR={1.3}
+            iridescenceThicknessRange={[200, 600]}
             attenuationColor="#ffffff"
-            attenuationDistance={0.3}
+            attenuationDistance={0.5}
+            metalness={0}
+            envMapIntensity={0.6}
             transparent
             toneMapped={false}
+            side={DoubleSide}
           />
         </mesh>
-
-       
-        {/* 🪐 Радужные стеклянные кольца */}
-        <group ref={ringRef} position={[0, 0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]}>
-          <mesh>
-            <torusGeometry args={[0.95, 0.04, 64, 256]} />
-            <meshPhysicalMaterial
-              transmission={1}
-              thickness={0.5}
-              roughness={0}
-              ior={1.45}
-              clearcoat={1}
-              clearcoatRoughness={0}
-              iridescence={1}
-              iridescenceIOR={1.3}
-              iridescenceThicknessRange={[200, 600]}
-              attenuationColor="#ffffff"
-              attenuationDistance={0.5}
-              metalness={0}
-              envMapIntensity={0.6}
-              transparent
-              toneMapped={false}
-              side={DoubleSide}
-            />
-          </mesh>     
-
-        </group>
-
-        <mesh scale={[1.2, 1.2, 1.2]} renderOrder={2}>
-            <sphereGeometry args={[0.52, 128, 128]} />
-            <shaderMaterial
-              vertexShader={`
-                varying vec3 vNormal;
-                varying vec3 vViewPosition;
-                void main() {
-                  vNormal = normalize(normalMatrix * normal);
-                  vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-                  vViewPosition = -mvPosition.xyz;
-                  gl_Position = projectionMatrix * mvPosition;
-                }
-              `}
-              fragmentShader={`
-                varying vec3 vNormal;
-                varying vec3 vViewPosition;
-                void main() {
-                  float fresnel = pow(1.0 - dot(normalize(vViewPosition), vNormal), 2.5);
-                  vec3 color = mix(vec3(0.0), vec3(0.7, 1.0, 1.0), fresnel); // Аквамариново-аметистовый
-                  gl_FragColor = vec4(color, fresnel * 0.6); // Чуть приглушённее
-                }
-              `}
-              transparent={true}
-              depthWrite={false}
-              depthTest={false} // 💥 Не участвует в буфере глубины
-              blending={AdditiveBlending} // ✨ Сияющий режим наложения
-            />
-          </mesh>
-          
       </group>
-    </>
-  )
+
+      {/* 🔮 Внешняя стеклянная сфера */}
+      <mesh ref={ref} renderOrder={1}>
+        <sphereGeometry args={[0.52, 128, 128]} />
+        <meshPhysicalMaterial
+          transmission={1}
+          thickness={1.2}
+          roughness={0}
+          ior={1.52}
+          reflectivity={0.02}
+          clearcoat={1}
+          clearcoatRoughness={0}
+          metalness={0}
+          envMapIntensity={0.2}
+          iridescence={1}
+          iridescenceIOR={1.25}
+          iridescenceThicknessRange={[150, 400]}
+          attenuationColor="#ffffff"
+          attenuationDistance={0.3}
+          transparent
+          toneMapped={false}
+        />
+      </mesh>
+
+      {/* ✨ Контурное аквамариново-аметистовое свечение (Fresnel Shader) */}
+      <mesh scale={[1.02, 1.02, 1.02]} renderOrder={2}>
+        <sphereGeometry args={[0.52, 128, 128]} />
+        <shaderMaterial
+          vertexShader={`
+            varying vec3 vNormal;
+            varying vec3 vViewPosition;
+            void main() {
+              vNormal = normalize(normalMatrix * normal);
+              vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+              vViewPosition = -mvPosition.xyz;
+              gl_Position = projectionMatrix * mvPosition;
+            }
+          `}
+          fragmentShader={`
+            varying vec3 vNormal;
+            varying vec3 vViewPosition;
+            void main() {
+              float fresnel = pow(1.0 - dot(normalize(vViewPosition), vNormal), 2.5);
+              vec3 color = mix(vec3(0.0), vec3(0.7, 1.0, 1.0), fresnel); // Аквамариново-аметистовый
+              gl_FragColor = vec4(color, fresnel * 0.6); // Мягкое свечение
+            }
+          `}
+          transparent={true}
+          depthWrite={false}
+          depthTest={false}
+          blending={AdditiveBlending}
+        />
+      </mesh>
+
+      {/* 🌑 Внутренняя чёрная маска — в конце, позади колец */}
+      <mesh scale={[0.95, 0.95, 0.95]} renderOrder={-1}>
+        <sphereGeometry args={[0.52, 128, 128]} />
+        <meshPhysicalMaterial
+          color="#000000"
+          metalness={1}
+          roughness={0.5}
+          transparent
+          opacity={1}
+          side={BackSide}
+          depthWrite={false}
+          depthTest={true} // включено!
+          toneMapped={false}
+        />
+      </mesh>
+    </group>
+  </>
+)
+
 }
