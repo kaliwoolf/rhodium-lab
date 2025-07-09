@@ -52,6 +52,16 @@ export default function GlassSaturn({ mouse }) {
       color="#cc88ff"
     />
 
+    <spotLight
+      position={[-3, -2, -2]} // 🎯 Снизу-слева
+      intensity={-0.6}        // 💡 Отрицательная интенсивность "высасывает" свет
+      angle={0.8}
+      penumbra={1}
+      color="#000000"
+      castShadow={false}
+    />
+
+
     <group position={position} scale={scale} rotation={[0.46, 0, 0.46]}>
       {/* 🪐 Стеклянные кольца */}
       <group ref={ringRef} position={[0, 0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]}>
