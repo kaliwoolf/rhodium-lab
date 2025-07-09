@@ -7,13 +7,23 @@ export default function GlassSaturn({ mouse }) {
   const ref = useRef()
   const ringRef = useRef()
 
-  // 🔍 Адаптивный масштаб в зависимости от ширины экрана
-  const [scale, setScale] = useState([3, 3, 3])
+  // 📐 Адаптивные параметры
+  const [scale, setScale] = useState([3.5, 3.5, 3.5])
+  const [position, setPosition] = useState([2.5, 1.6, -2])
 
   useEffect(() => {
     if (typeof window === 'undefined') return
-    const isMobile = window.innerWidth < 768
-    setScale(isMobile ? [2.1, 2.1, 2.1] : [3.5, 3.5, 3.5])
+
+    const updateLayout = () => {
+      const isMobile = window.innerWidth < 768
+      setScale(isMobile ? [1.6, 1.6, 1.6] : [3.5, 3.5, 3.5])
+      setPosition(isMobile ? [1.2, 0.8, -2] : [2.5, 1.6, -2])
+    }
+
+    window.addEventListener('resize', updateLayout)
+    updateLayout()
+
+    return () => window.removeEventListener('resize', updateLayout)
   }, [])
 
   const baseScale = 1
@@ -38,13 +48,12 @@ export default function GlassSaturn({ mouse }) {
 
   return (
     <>
-      {/* Свет как у Active Theory */}
+      {/* Световые ореолы */}
       <Lightformer form="ring" intensity={6} scale={10} position={[5, 3, 2]} color="#aaffff" />
       <Lightformer form="ring" intensity={4} scale={8} position={[-5, -3, -2]} color="#ffccaa" />
 
-      <group position={[2.5, 1.6, -2]} scale={scale} rotation={[0.45, 0, 0.46]}>
-        
-        {/* Сфера свечения по краям */}
+      <group position={position} scale={scale} rotation={[0.45, 0, 0.46]}>
+        {/* Внутреннее свечение */}
         <mesh scale={[1.01, 1.01, 1.01]}>
           <sphereGeometry args={[0.52, 128, 128]} />
           <meshStandardMaterial
@@ -59,7 +68,7 @@ export default function GlassSaturn({ mouse }) {
           />
         </mesh>
 
-        {/* Основная стеклянная сфера */}
+        {/* Стеклянная сфера */}
         <mesh ref={ref}>
           <sphereGeometry args={[0.52, 128, 128]} />
           <meshPhysicalMaterial
