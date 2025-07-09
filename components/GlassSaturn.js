@@ -17,7 +17,7 @@ export default function GlassSaturn({ mouse }) {
   useEffect(() => {
     const isMobile = window.innerWidth < 768
     setScale(isMobile ? [1.3, 1.3, 1.3] : [2.2, 2.2, 2.2])
-    setPosition(isMobile ? [0.5, 0.8, -3] : [1.2, 1.2, -3])
+    setPosition(isMobile ? [0.0, 0.0, -3] : [1.2, 1.2, -3])
   }, [])
 
   useEffect(() => {
@@ -31,12 +31,14 @@ export default function GlassSaturn({ mouse }) {
       target.current.x += (m.x - target.current.x) * 0.03
       target.current.y += (m.y - target.current.y) * 0.03
 
-      if (wrapperRef.current && ringRef.current) {
-        wrapperRef.current.rotation.x = target.current.y * tilt
-        wrapperRef.current.rotation.y = target.current.x * tilt
-        ringRef.current.rotation.z = t * 0.02
-        ringRef.current.rotation.z = t * 0.02
-      }
+       if (wrapperRef.current) {
+          wrapperRef.current.rotation.x = target.current.y * tilt
+          wrapperRef.current.rotation.y = target.current.x * tilt
+       }
+
+       if (ringRef.current) {
+          ringRef.current.rotation.z = t * 0.02
+       }
 
   })
 
