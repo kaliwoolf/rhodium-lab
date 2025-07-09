@@ -7,6 +7,7 @@ import * as THREE from 'three'
 export default function GlassSaturn({ mouse }) {
   const ref = useRef()
   const ringRef = useRef()
+  const wrapperRef = useRef()
 
   const [scale, setScale] = useState([2.2, 2.2, 2.2])
   const [position, setPosition] = useState([1.2, 1.2, -3])
@@ -24,13 +25,13 @@ export default function GlassSaturn({ mouse }) {
 
   useFrame(({ clock, mouse: m }) => {
     const t = clock.getElapsedTime()
-    if (ref.current && ringRef.current) {
+    if (wrapperRef.current && ringRef.current) {
       mouse.current.x += (m.x - mouse.current.x) * 0.05
       mouse.current.y += (m.y - mouse.current.y) * 0.05
 
       const tilt = 0.15
-      ref.current.rotation.x = mouse.current.y * tilt
-      ref.current.rotation.y = mouse.current.x * tilt
+      wrapperRef.current.rotation.x = mouse.current.y * tilt
+      wrapperRef.current.rotation.y = mouse.current.x * tilt
 
       ringRef.current.rotation.z = t * 0.02
     }
@@ -42,6 +43,7 @@ export default function GlassSaturn({ mouse }) {
 
   return (
   <>
+    <group ref={wrapperRef}>
     {/* 🌈 Цветовая контровая подсветка */}
     <spotLight
       position={[-3, 2, 2]}
@@ -59,7 +61,7 @@ export default function GlassSaturn({ mouse }) {
     />
 
 
-    <group ref={ref} position={position} scale={scale} rotation={[0.46, 0, 0.46]}>
+    <group position={position} scale={scale} rotation={[0.46, 0, 0.46]}>
       {/* 🪐 Стеклянные кольца */}
       <group ref={ringRef} position={[0, 0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]}>
 
@@ -233,6 +235,7 @@ export default function GlassSaturn({ mouse }) {
         </mesh>
 
     </group>
+  </group>  
   </>
 )
 
