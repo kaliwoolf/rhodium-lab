@@ -85,7 +85,10 @@ export default function GlassSaturn({ mouse }) {
           />
         </mesh>
 
-        <mesh position={[-0.22, -0.27, 0.1]} rotation={[0.3, 0, 0]} renderOrder={5}>
+        
+      </group>
+
+      <mesh position={[-0.22, -0.27, 0.1]} rotation={[0.3, 0, 0]} renderOrder={5}>
           <planeGeometry args={[1.2, 1.2]} />
           <shaderMaterial
             transparent
@@ -107,16 +110,12 @@ export default function GlassSaturn({ mouse }) {
                 vec2 center = vec2(0.25, 0.75); 
                 float d = distance(vUv, center);
                 float alpha = smoothstep(0.35, 0.1, d);
-                gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+                gl_FragColor = vec4(0.0, 0.0, 0.0, alpha * 0.6);
               }
             `}
           />
         </mesh>
 
-
-
-
-      </group>
 
       {/* 🔮 Внешняя стеклянная сфера */}
       <mesh ref={ref} renderOrder={1}>
