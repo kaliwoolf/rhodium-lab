@@ -13,13 +13,17 @@ export default function HeroButtons() {
     <motion.div
       initial={false}
       animate={{
-        top: isPinned ? '1.5rem' : '50%',
-        translateY: isPinned ? '0%' : '-50%',
+        position: isPinned ? 'fixed' : 'relative',
+        top: isPinned ? '1.5rem' : 'unset',
+        left: isPinned ? '50%' : 'unset',
+        translateX: isPinned ? '-50%' : '0%',
+        translateY: isPinned ? '0%' : '0%',
         scale: isPinned ? 0.9 : 1,
         opacity: isPinned ? 0.9 : 1,
+        zIndex: 50,
       }}
       transition={{ duration: 0.5, ease: [0.42, 0, 0.58, 1] }}
-      className="fixed left-1/2 -translate-x-1/2 z-50 flex items-center gap-6 px-8 py-3 rounded-full border border-crimson text-base md:text-lg tracking-widest shadow-neon backdrop-blur-sm bg-white/5 hover:bg-white/10"
+      className="flex items-center gap-6 px-8 py-3 rounded-full border border-crimson text-base md:text-lg tracking-widest shadow-neon backdrop-blur-sm bg-white/5 hover:bg-white/10"
     >
       <button onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })} className="hover:scale-105 transition-transform">
         ПРОЕКТЫ
