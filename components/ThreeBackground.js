@@ -154,7 +154,7 @@ export default function ThreeBackground() {
         <GlassSaturn mouse={mouse} />
 
         <Environment
-          files="/env/moonless_golf_1k.hdr"
+          files="/env/rogland_clear_night_1k.hdr"
           background={false}
         />
 
