@@ -1,15 +1,15 @@
 import React, { useRef, useEffect, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { Lightformer } from '@react-three/drei'
 import { DoubleSide, BackSide } from 'three'
 
 export default function GlassSaturn({ mouse }) {
   const ref = useRef()
   const ringRef = useRef()
 
-  const [scale, setScale] = useState([3.5, 3.5, 3.5])
-  const [position, setPosition] = useState([3.2, 1.8, -3])
+  const [scale, setScale] = useState([2.2, 2.2, 2.2])
+  const [position, setPosition] = useState([1.2, 1.2, -3])
 
+  // 📐 адаптивная позиция
   useEffect(() => {
     if (typeof window === 'undefined') return
 
@@ -21,20 +21,18 @@ export default function GlassSaturn({ mouse }) {
 
     window.addEventListener('resize', updateLayout)
     updateLayout()
-
     return () => window.removeEventListener('resize', updateLayout)
   }, [])
 
+  // ✅ назначение на слой 1
   useEffect(() => {
     if (ref.current) ref.current.layers.set(1)
     if (ringRef.current) ringRef.current.layers.set(1)
   }, [])
 
-  const baseScale = 1
-
+  // 🎥 вращение и параллакс
   useFrame(({ clock, mouse: m }) => {
     const t = clock.getElapsedTime()
-
     if (ref.current && ringRef.current) {
       mouse.current.x += (m.x - mouse.current.x) * 0.05
       mouse.current.y += (m.y - mouse.current.y) * 0.05
@@ -43,27 +41,44 @@ export default function GlassSaturn({ mouse }) {
       ref.current.rotation.x = mouse.current.y * tilt
       ref.current.rotation.y = mouse.current.x * tilt
 
-      const scalePulse = baseScale + 0.012 * (mouse.current.x ** 2 + mouse.current.y ** 2)
-      ref.current.scale.set(scalePulse, scalePulse, scalePulse)
-
-      ringRef.current.rotation.z = t * 0.015
+      ringRef.current.rotation.z = t * 0.02
     }
   })
 
   return (
     <>
-      {/* Световые ореолы */}
-      <Lightformer form="ring" intensity={2} scale={10} position={[5, 3, 2]} color="#ddeeff" />
+      {/* ✨ Световая схема в стиле Resn */}
+      <spotLight
+        intensity={1.2}
+        angle={0.6}
+        penumbra={0.8}
+        position={[-4, 3, 3]}
+        color="#aaffff"
+      />
+      <spotLight
+        intensity={1.0}
+        angle={0.4}
+        penumbra={1}
+        position={[4, 3, -4]}
+        color="#ffe6ff"
+      />
+      <rectAreaLight
+        intensity={2}
+        width={5}
+        height={3}
+        position={[0, 2.5, 3]}
+        color="#cceeff"
+      />
 
-      <group position={position} scale={scale} rotation={[0.45, 0, 0.46]} layers={1}>
-        {/* Едва заметное внутреннее свечение */}
+      <group position={position} scale={scale} rotation={[0.46, 0, 0.46]}>
+        {/* 🌫️ внутренний ореол */}
         <mesh scale={[1.01, 1.01, 1.01]}>
           <sphereGeometry args={[0.52, 128, 128]} />
           <meshStandardMaterial
             emissive="#aaffff"
-            emissiveIntensity={0.03}
+            emissiveIntensity={0.05}
             transparent
-            opacity={0.02}
+            opacity={0.03}
             depthWrite={false}
             depthTest={false}
             toneMapped={false}
@@ -71,46 +86,50 @@ export default function GlassSaturn({ mouse }) {
           />
         </mesh>
 
-        {/* Стеклянная сфера с преломлением */}
+        {/* 🔮 стеклянная сфера */}
         <mesh ref={ref}>
           <sphereGeometry args={[0.52, 128, 128]} />
           <meshPhysicalMaterial
             transmission={1}
-            thickness={2.0}
+            thickness={2.5}
             roughness={0}
             ior={1.52}
             reflectivity={0.05}
             clearcoat={1}
             clearcoatRoughness={0}
             metalness={0}
-            envMapIntensity={0.5}
-            iridescence={0.3}
+            envMapIntensity={0.3}
+            iridescence={1}
             iridescenceIOR={1.3}
-            iridescenceThicknessRange={[50, 200]}
-            attenuationColor="#ffffff"
-            attenuationDistance={0.35}
+            iridescenceThicknessRange={[150, 450]}
+            attenuationColor="#ccffff"
+            attenuationDistance={0.25}
             transparent
             toneMapped={false}
           />
         </mesh>
 
-        {/* Кольца */}
-        <group ref={ringRef} position={[0, 0.1, 0]} rotation={[Math.PI / 2.3, 0, 0]}>
+        {/* 🪐 кольца — расширенные и радужные */}
+        <group ref={ringRef} position={[0, 0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]}>
           <mesh>
-            <torusGeometry args={[0.9, 0.035, 64, 256]} />
+            <torusGeometry args={[0.95, 0.035, 64, 256]} />
             <meshPhysicalMaterial
               transmission={1}
-              thickness={0.5}
+              thickness={0.4}
               roughness={0}
               ior={1.45}
-              iridescence={1}
-              iridescenceThicknessRange={[100, 400]}
               clearcoat={1}
               clearcoatRoughness={0}
+              iridescence={1}
+              iridescenceIOR={1.2}
+              iridescenceThicknessRange={[120, 380]}
+              attenuationColor="#b8ffe5"
+              attenuationDistance={0.4}
+              metalness={0}
+              envMapIntensity={0.6}
               transparent
+              toneMapped={false}
               side={DoubleSide}
-              attenuationColor="#ddffff"
-              attenuationDistance={0.5}
             />
           </mesh>
         </group>
