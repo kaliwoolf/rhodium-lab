@@ -26,7 +26,7 @@ export default function GlassSaturn({ mouse }) {
 
   useFrame(({ clock, mouse: m }) => {
     const t = clock.getElapsedTime()
-    if (wrapperRef.current && ringRef.current) {
+
       target.current.x += (m.x - target.current.x) * 0.03
       target.current.y += (m.y - target.current.y) * 0.03
 
@@ -34,10 +34,9 @@ export default function GlassSaturn({ mouse }) {
         wrapperRef.current.rotation.x = target.current.y * tilt
         wrapperRef.current.rotation.y = target.current.x * tilt
         ringRef.current.rotation.z = t * 0.02
+        ringRef.current.rotation.z = t * 0.02
       }
 
-      ringRef.current.rotation.z = t * 0.02
-    }
   })
 
   useFrame(({ camera }) => {
