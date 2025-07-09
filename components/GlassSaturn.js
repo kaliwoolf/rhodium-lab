@@ -71,7 +71,7 @@ export default function GlassSaturn({ mouse }) {
 
         <directionalLight
           position={[1.5, 2.5, 1.5]} // сверху-справа
-          intensity={6}
+          intensity={20}
           color="#ffddaa" // мягкое холодное золото
         />
 
@@ -101,7 +101,7 @@ export default function GlassSaturn({ mouse }) {
         
       </group>
 
-      <mesh position={[-0.05, -0.3, 0.15]} rotation={[0.3, 0, 0]} renderOrder={5}>
+      <mesh position={[-0.1, -0.3, 0.15]} rotation={[0.3, 0, 0]} renderOrder={5}>
           <planeGeometry args={[1.5, 1.5]} />
           <shaderMaterial
             transparent
@@ -110,23 +110,32 @@ export default function GlassSaturn({ mouse }) {
             toneMapped={false}
             blending={THREE.NormalBlending}
             side={THREE.DoubleSide}
-            vertexShader={`
-              varying vec2 vUv;
-              void main() {
-                vUv = uv;
-                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-              }
-            `}
-            fragmentShader={`
-              varying vec2 vUv;
-              void main() {
-                vec2 center = vec2(0.25, 0.75); // левый нижний угол
-                float d = distance(vUv, center);
-                float alpha = 1.0 - smoothstep(0.0, 0.4, d); // мягкий, но глубокий градиент
-                gl_FragColor = vec4(0.0, 0.0, 0.0, min(alpha * 2.0, 1.0)); // до 100% непрозрачности
-              }
-            `}
-          />
+             vertexShader={`
+                varying vec2 vUv;
+                void main() {
+                  vUv = uv;
+                  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+              `}
+              fragmentShader={`
+                varying vec2 vUv;
+
+                float random(vec2 st) {
+                  return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
+                }
+
+                void main() {
+                  vec2 center = vec2(0.35, 0.75);
+                  float d = distance(vUv, center);
+                  float mask = 1.0 - smoothstep(0.15, 0.45, d);
+
+                  float grain = random(vUv * 50.0);
+                  float alpha = min(mask * 1.5, 1.0) * mix(0.85, 1.0, grain);
+
+                  gl_FragColor = vec4(0.0, 0.0, 0.0, alpha);
+                }
+              `}
+            />
         </mesh>
 
 
