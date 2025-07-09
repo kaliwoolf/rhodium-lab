@@ -36,7 +36,7 @@ export default function GlassSaturn({ mouse }) {
 
   return (
     <>
-      {/* 🔵 Аквамариновый свет */}
+      {/* 🌈 Цветовая контровая подсветка */}
       <spotLight
         position={[-3, 2, 2]}
         intensity={1.2}
@@ -44,7 +44,6 @@ export default function GlassSaturn({ mouse }) {
         penumbra={0.8}
         color="#99ffff"
       />
-      {/* 🟣 Аметистовый свет */}
       <spotLight
         position={[3, 2, 2]}
         intensity={1.2}
@@ -54,14 +53,16 @@ export default function GlassSaturn({ mouse }) {
       />
 
       <group position={position} scale={scale} rotation={[0.46, 0, 0.46]}>
-        {/* 🌑 Внутреннее затемнение */}
-        <mesh scale={[0.99, 0.99, 0.99]}>
+        {/* 🌑 Внутренняя чёрная маска */}
+        <mesh scale={[0.985, 0.985, 0.985]}>
           <sphereGeometry args={[0.52, 128, 128]} />
           <meshStandardMaterial
             color="#000000"
+            emissive="#000000"
             transparent
-            opacity={0.6}
+            opacity={0.85}
             side={BackSide}
+            depthWrite={false}
           />
         </mesh>
 
@@ -70,25 +71,25 @@ export default function GlassSaturn({ mouse }) {
           <sphereGeometry args={[0.52, 128, 128]} />
           <meshPhysicalMaterial
             transmission={1}
-            thickness={2.5}
+            thickness={1.2}
             roughness={0}
             ior={1.52}
-            reflectivity={0.05}
+            reflectivity={0.02}
             clearcoat={1}
             clearcoatRoughness={0}
             metalness={0}
-            envMapIntensity={0.5}
+            envMapIntensity={0.2}
             iridescence={1}
             iridescenceIOR={1.25}
             iridescenceThicknessRange={[150, 400]}
             attenuationColor="#ffffff"
-            attenuationDistance={0.9}
+            attenuationDistance={0.3}
             transparent
             toneMapped={false}
           />
         </mesh>
 
-        {/* 🪐 Радужные кольца */}
+        {/* 🪐 Радужные стеклянные кольца */}
         <group ref={ringRef} position={[0, 0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]}>
           <mesh>
             <torusGeometry args={[0.95, 0.04, 64, 256]} />
@@ -105,7 +106,7 @@ export default function GlassSaturn({ mouse }) {
               attenuationColor="#ffffff"
               attenuationDistance={0.5}
               metalness={0}
-              envMapIntensity={0.7}
+              envMapIntensity={0.6}
               transparent
               toneMapped={false}
               side={DoubleSide}
