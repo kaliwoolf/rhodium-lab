@@ -6,9 +6,10 @@ export default function HeroSection() {
       </h1>
 
       <p className="mt-4 text-sm md:text-base text-white opacity-60 tracking-wide backdrop-blur text-center px-4">
-        Изымаем хаос. <br className="md:hidden" />
+        Изымаем хаос.<span className="block md:hidden"><br /></span><span className="hidden md:inline">&nbsp;</span>
         Создаём структуры, в которых можно жить и думать.
       </p>
+
     </main>
   )
 }

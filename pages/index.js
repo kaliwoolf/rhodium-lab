@@ -15,7 +15,6 @@ export default function Home() {
       <ThreeBackground />
 
       <main className="relative z-10">
-          <HeroButtons />
           <HeroSection />
 
       <motion.section
