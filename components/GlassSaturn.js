@@ -69,7 +69,7 @@ export default function GlassSaturn({ mouse }) {
 
 
         <mesh>
-          <torusGeometry args={[0.95, 0.04, 64, 256]} />
+          <torusGeometry args={[0.95, 0.04, 128, 512]} />
           <meshPhysicalMaterial
             transmission={1}
             thickness={0.5}
