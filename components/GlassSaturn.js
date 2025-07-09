@@ -80,7 +80,7 @@ export default function GlassSaturn({ mouse }) {
             iridescence={1}
             iridescenceIOR={1.3}
             iridescenceThicknessRange={[200, 600]}
-            attenuationColor="#ffffff"
+            attenuationColor="#b083d9"
             attenuationDistance={0.5}
             metalness={0}
             envMapIntensity={0.6}
@@ -119,7 +119,7 @@ export default function GlassSaturn({ mouse }) {
                 void main() {
                   vec2 center = vec2(0.4, 0.8);
                   float d = distance(vUv, center);
-                  float mask = 1.0 - smoothstep(0.05, 0.4, d);
+                  float mask = 1.0 - smoothstep(0.05, 0.3, d);
 
                   float grain = random(vUv * 50.0);
                   float alpha = min(mask * 1.5, 1.0) * mix(0.9, 1.0, grain);
