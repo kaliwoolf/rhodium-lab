@@ -141,39 +141,17 @@ export default function ThreeBackground() {
       }}
     >
       <color attach="background" args={['#12161C']} />
-
-      {/* 💫 Окружение для прозрачности */}
-      <Environment
-        background={false}
-        preset="sunset"
-        blur={0.6}
-        files="/env/satara_night_no_lamps_1k.hdr"
-      />
       
     
       <Starfield mouse={mouse} />
 
-      //<mesh position={[0, 0, -9.9]}>
-      //  <planeGeometry args={[200, 200]} />
-        <meshBasicMaterial
-          color="#0b0f17"
-          transparent
-          opacity={0.8}
-          depthWrite={false}
-        />
-      </mesh>
-
-
       <GlassSaturn mouse={mouse} />
 
       <EffectComposer>
-        <Bloom
-          intensity={0.6}
-          luminanceThreshold={0.3}
-          luminanceSmoothing={0.5}
-          mipmapBlur={true}
-        />
+        <Bloom intensity={1.5} luminanceThreshold={0.1} />
+        <ChromaticAberration offset={[0.0015, 0.001]} />
       </EffectComposer>
+
     </Canvas>
   )
 }
