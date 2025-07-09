@@ -152,7 +152,7 @@ export default function ThreeBackground() {
     >
       <Suspense fallback={null}>
 
-        <group position={[-0.5, -0.3, 0]} scale={[1.8, 1.8, 1.8]}>
+        <group position={[-1, -1, 0]} scale={[1.8, 1.8, 1.8]}>
           <GlassSaturn mouse={mouse} />
         </group>
 
@@ -162,7 +162,7 @@ export default function ThreeBackground() {
         />
 
         <EffectComposer>
-          {/* <ChromaticAberration blendFunction={BlendFunction.NORMAL} offset={[0.0009, 0.0009]} /> */}
+          <ChromaticAberration blendFunction={BlendFunction.NORMAL} offset={[0.0009, 0.0009]} />
         </EffectComposer>
       </Suspense>
     </Canvas>
