@@ -16,6 +16,7 @@ function Starfield({ mouse, scrollRef, explosionFactor }) {
   const count = 4000
   const offsets = useRef([])
   const originalColorsRef = useRef([])
+  const targetColorsRef = useRef([])
 
 
   const { positions, colors } = useMemo(() => {
@@ -59,6 +60,20 @@ function Starfield({ mouse, scrollRef, explosionFactor }) {
 
       col.push(r, g, b)
       originalColorsRef.current.push(r, g, b)
+
+      const rand = Math.random()
+      let tr, tg, tb
+
+      if (rand < 0.33) {
+        tr = 1.0; tg = 0.2; tb = 1.0       // фиолетово-розовый
+      } else if (rand < 0.66) {
+        tr = 1.0; tg = 0.4; tb = 0.1       // оранжево-красный
+      } else {
+        tr = 0.8; tg = 0.3; tb = 1.0       // сине-фиолетовый
+      }
+
+      targetColorsRef.current.push(tr, tg, tb)
+
     }
 
     offsets.current = offs
@@ -77,8 +92,6 @@ function Starfield({ mouse, scrollRef, explosionFactor }) {
     const scroll = scrollRef?.current || 0
     const factor = 1.0 - Math.min(scroll * 1.5, 0.95)
     const colorShift = Math.min(scroll * 2, 1)
-    const explosionTrigger = scroll > 1.5
-    const explosionFactor = explosionTrigger ? Math.min((scroll - 1.5) * 2, 1.0) : 0
 
     const pos = posAttr.array
     const o = offsets.current
@@ -181,7 +194,7 @@ export default function ThreeBackground() {
       <Suspense fallback={null}>
         <Starfield mouse={mouse} scrollRef={scrollRef} explosionFactor={explosionFactor} />
         <EffectComposer>
-          <DynamicBloom scrollRef={scrollRef} explosionFactor={explosionFactor} />
+          <DynamicBloom explosionFactor={explosionFactor} />
         </EffectComposer>
       </Suspense>
     </Canvas>
