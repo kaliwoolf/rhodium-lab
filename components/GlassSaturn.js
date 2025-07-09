@@ -132,20 +132,17 @@ export default function GlassSaturn({ mouse }) {
       </mesh>
 
       {/* 🌑 Внутренняя чёрная маска — в конце, позади колец */}
-      <mesh scale={[0.95, 0.95, 0.95]} renderOrder={-1}>
-        <sphereGeometry args={[0.52, 128, 128]} />
-        <meshPhysicalMaterial
-          color="#000000"
-          metalness={1}
-          roughness={0.5}
-          transparent
-          opacity={1}
-          side={BackSide}
-          depthWrite={false}
-          depthTest={true} // включено!
-          toneMapped={false}
-        />
-      </mesh>
+      <mesh scale={[0.985, 0.985, 0.985]} renderOrder={-1}>
+          <sphereGeometry args={[0.52, 128, 128]} />
+          <meshBasicMaterial
+            color="black"
+            side={BackSide}
+            depthWrite={true}
+            depthTest={true}
+            toneMapped={false}
+          />
+        </mesh>
+
     </group>
   </>
 )
