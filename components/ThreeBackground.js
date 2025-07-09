@@ -152,6 +152,12 @@ export default function ThreeBackground() {
     >
       <Suspense fallback={null}>
         <GlassSaturn mouse={mouse} />
+
+        <Environment
+          files="/env/studio_small_09_1k.hdr"
+          background={false}
+        />
+
         <EffectComposer>
           <ChromaticAberration
             blendFunction={BlendFunction.NORMAL}
