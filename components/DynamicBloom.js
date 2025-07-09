@@ -1,6 +1,6 @@
 import { Bloom } from '@react-three/postprocessing'
 
-export default function DynamicBloom({ scrollRef }) {
+export default function DynamicBloom({ scrollRef, explosionFactor }) {
   const scroll = scrollRef.current || 0
   const explosionFactor = scroll > 1.5 ? Math.min((scroll - 1.5) * 2, 1.0) : 0
 

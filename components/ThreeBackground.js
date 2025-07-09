@@ -11,7 +11,7 @@ import DynamicBloom from './DynamicBloom'
 
 
 
-function Starfield({ mouse, scrollRef }) {
+function Starfield({ mouse, scrollRef, explosionFactor }) {
   const pointsRef = useRef()
   const count = 4000
   const offsets = useRef([])
@@ -121,6 +121,10 @@ function Starfield({ mouse, scrollRef }) {
     colAttr.needsUpdate = true
   })
 
+  const scroll = scrollRef.current || 0
+  const explosionFactor = scroll > 1.5 ? Math.min((scroll - 1.5) * 2, 1.0) : 0
+
+
   return (
     <Points ref={pointsRef} positions={positions} colors={colors} stride={3} layers={0}>
       <PointMaterial
@@ -179,9 +183,9 @@ export default function ThreeBackground() {
       onCreated={({ camera }) => camera.layers.set(0)}
     >
       <Suspense fallback={null}>
-        <Starfield mouse={mouse} scrollRef={scrollRef} />
+        <Starfield mouse={mouse} scrollRef={scrollRef} explosionFactor={explosionFactor} />
         <EffectComposer>
-          <DynamicBloom scrollRef={scrollRef} />
+          <DynamicBloom scrollRef={scrollRef} explosionFactor={explosionFactor} />
         </EffectComposer>
       </Suspense>
     </Canvas>
