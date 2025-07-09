@@ -1,7 +1,7 @@
 // components/ThreeBackground.js
 import React, { Suspense, useRef, useEffect, useMemo } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { EffectComposer, Bloom, ChromaticAberration, FXAA } from '@react-three/postprocessing'
+import { EffectComposer, Bloom, ChromaticAberration } from '@react-three/postprocessing'
 import { BlendFunction } from 'postprocessing'
 import { Points, PointMaterial, Environment, Lightformer } from '@react-three/drei'
 import * as THREE from 'three'
@@ -159,7 +159,6 @@ export default function ThreeBackground() {
         />
 
         <EffectComposer>
-          <FXAA />      
           {/* <ChromaticAberration blendFunction={BlendFunction.NORMAL} offset={[0.0009, 0.0009]} /> */}
         </EffectComposer>
       </Suspense>
