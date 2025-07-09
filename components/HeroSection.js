@@ -1,42 +1,76 @@
-import { motion, useScroll, useTransform, useMotionValueEvent } from 'framer-motion'
-import { useRef, useState } from 'react'
-import HeroButtons from './HeroButtons'
+import { useRef } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
 
 export default function HeroSection() {
-  const { scrollY } = useScroll()
-  const [isPinned, setIsPinned] = useState(false)
-
-  // Обновляем состояние, когда scrollY превышает 100
-  useMotionValueEvent(scrollY, 'change', (latest) => {
-    setIsPinned(latest > 100)
+  const sectionRef = useRef(null)
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start start', 'end start']
   })
 
-  // Анимации
-  const y = useTransform(scrollY, [0, 100], [0, -80])
-  const scale = useTransform(scrollY, [0, 100], [1, 0.9])
-  const opacity = useTransform(scrollY, [0, 100], [1, 0.85])
+  const headingOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0])
+  const paragraphOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0])
+  const buttonY = useTransform(scrollYProgress, [0, 0.2], ['0%', '-120px'])
+  const buttonScale = useTransform(scrollYProgress, [0, 0.2], [1, 0.85])
 
   return (
-    <main className="relative min-h-screen flex flex-col items-center justify-center text-white font-sans z-10">
-      <h1 className="text-[clamp(2.5rem,8vw,7rem)] font-bold tracking-[0.15em] text-center leading-tight backdrop-blur-sm">
+    <section
+      ref={sectionRef}
+      className="relative min-h-screen flex flex-col items-center justify-center text-white font-sans z-10 overflow-hidden"
+    >
+      <motion.h1
+        style={{ opacity: headingOpacity }}
+        className="text-[clamp(2.5rem,8vw,7rem)] font-bold tracking-[0.15em] text-center leading-tight backdrop-blur-sm"
+      >
         RHODIUM LAB
-      </h1>
+      </motion.h1>
 
-      <p className="mt-4 text-sm md:text-base text-white opacity-60 tracking-wide backdrop-blur text-center px-4">
+      <motion.p
+        style={{ opacity: paragraphOpacity }}
+        className="mt-4 text-sm md:text-base text-white opacity-60 tracking-wide backdrop-blur text-center px-4"
+      >
         Изымаем хаос. <br className="md:hidden" />
         Создаём структуры, в которых можно жить и думать.
-      </p>
+      </motion.p>
 
-      {/* Кнопка */}
       <motion.div
-        style={{ y, scale, opacity }}
-        className={`
-          mt-10 w-full flex justify-center transition-all duration-500 ease-in-out
-          ${isPinned ? 'fixed top-8 left-1/2 -translate-x-1/2 z-50' : ''}
-        `}
+        style={{
+          y: buttonY,
+          scale: buttonScale,
+          position: 'sticky',
+          top: 32,
+          zIndex: 50,
+        }}
+        className="mt-12"
       >
-        <HeroButtons />
+        <div className="flex items-center gap-6 px-8 py-3 rounded-full border border-crimson text-base md:text-lg tracking-widest shadow-neon backdrop-blur-sm bg-white/5 hover:bg-white/10 transition-all">
+          <button
+            onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
+            className="hover:scale-105 transition-transform"
+          >
+            ПРОЕКТЫ
+          </button>
+
+          <div className="relative w-[60px] h-[14px]">
+            <svg viewBox="0 0 60 10" width="60" height="10" className="absolute top-2 left-0">
+              <path
+                d="M 0,5 L 60,5"
+                stroke="#ff003c"
+                strokeWidth="2"
+                fill="none"
+                style={{ filter: 'drop-shadow(0 0 4px #ff003c)' }}
+              />
+            </svg>
+          </div>
+
+          <button
+            onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+            className="hover:scale-105 transition-transform"
+          >
+            СВЯЗАТЬСЯ
+          </button>
+        </div>
       </motion.div>
-    </main>
+    </section>
   )
 }
