@@ -6,7 +6,7 @@ export default function HeroSection() {
       </h1>
 
       <p className="mt-4 text-sm md:text-base text-white opacity-60 tracking-wide backdrop-blur">
-        Лаборатория иммерсивных смыслов
+        Изымаем хаос. Создаём структуры, в которых можно жить и думать.
       </p>
     </main>
   )
