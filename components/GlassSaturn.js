@@ -70,9 +70,10 @@ export default function GlassSaturn({ mouse }) {
         />
 
         <directionalLight
-          position={[1.5, 2.5, 1.5]} // сверху-справа
+          position={[0, 5, 0]} // сверху-справа
           intensity={20}
           color="#ffddaa" // мягкое холодное золото
+          castShadow={false}
         />
 
 
@@ -102,7 +103,7 @@ export default function GlassSaturn({ mouse }) {
       </group>
 
       <mesh position={[-0.1, -0.3, 0.15]} rotation={[0.3, 0, 0]} renderOrder={5}>
-          <planeGeometry args={[1.5, 1.5]} />
+          <planeGeometry args={[1.7, 1.7]} />
           <shaderMaterial
             transparent
             depthWrite={false}
@@ -125,9 +126,9 @@ export default function GlassSaturn({ mouse }) {
                 }
 
                 void main() {
-                  vec2 center = vec2(0.35, 0.75);
+                  vec2 center = vec2(0.38, 0.8);
                   float d = distance(vUv, center);
-                  float mask = 1.0 - smoothstep(0.15, 0.45, d);
+                  float mask = 1.0 - smoothstep(0.05, 0.55, d);
 
                   float grain = random(vUv * 50.0);
                   float alpha = min(mask * 1.5, 1.0) * mix(0.85, 1.0, grain);
