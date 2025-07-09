@@ -94,7 +94,7 @@ export default function GlassSaturn({ mouse }) {
       </group>
 
       <mesh position={[-0.35, -0.4, 0.15]} rotation={[0.3, 0, 0]} renderOrder={5}>
-          <planeGeometry args={[1.7, 1.7]} />
+          <planeGeometry args={[1.8, 1.8]} />
           <shaderMaterial
             transparent
             depthWrite={false}
@@ -177,9 +177,9 @@ export default function GlassSaturn({ mouse }) {
             varying vec3 vViewPosition;
             void main() {
               float fresnel = pow(1.0 - dot(normalize(vViewPosition), vNormal), 2.2);
-              float topMask = smoothstep(0.0, 0.3, vNormal.y); // только верхняя часть
+              float topMask = smoothstep(0.0, 0.15, vNormal.y); // только верхняя часть
               vec3 color = vec3(1.0, 0.8, 0.5); // тёплый золотистый
-              gl_FragColor = vec4(color, fresnel * topMask * 0.5);
+              gl_FragColor = vec4(color, fresnel * topMask * 0.8);
             }
           `}
         />
