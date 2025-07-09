@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { DoubleSide, BackSide } from 'three'
-import { LayerMaterial, Fresnel, Base } from 'lamina'
 
 export default function GlassSaturn({ mouse }) {
   const ref = useRef()
@@ -94,20 +93,33 @@ export default function GlassSaturn({ mouse }) {
           />
         </mesh>
 
-        {/* 🌫️ Ореол по краю через Fresnel */}
         <mesh scale={[1.015, 1.015, 1.015]}>
           <sphereGeometry args={[0.52, 128, 128]} />
-          <LayerMaterial transparent toneMapped={false}>
-            <Base color="#000000" alpha={0.0} />
-            <Fresnel
-              mode="add"
-              color="#aaffff"
-              intensity={1.4}
-              power={2.5}
-              bias={0.0}
-            />
-          </LayerMaterial>
+          <shaderMaterial
+            vertexShader={`
+              varying vec3 vNormal;
+              varying vec3 vViewPosition;
+              void main() {
+                vNormal = normalize(normalMatrix * normal);
+                vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+                vViewPosition = -mvPosition.xyz;
+                gl_Position = projectionMatrix * mvPosition;
+              }
+            `}
+            fragmentShader={`
+              varying vec3 vNormal;
+              varying vec3 vViewPosition;
+              void main() {
+                float fresnel = pow(1.0 - dot(normalize(vViewPosition), vNormal), 2.5);
+                vec3 color = mix(vec3(0.0), vec3(0.7, 1.0, 1.0), fresnel);
+                gl_FragColor = vec4(color, fresnel);
+              }
+            `}
+            transparent={true}
+            depthWrite={false}
+          />
         </mesh>
+
 
 
         {/* 🪐 Радужные стеклянные кольца */}
