@@ -1,14 +1,20 @@
-import { useEffect, useState } from 'react'
-import { motion, useScroll, useMotionValueEvent } from 'framer-motion'
+import { motion, useScroll, useTransform, useMotionValueEvent } from 'framer-motion'
+import { useRef, useState } from 'react'
 import HeroButtons from './HeroButtons'
 
 export default function HeroSection() {
   const { scrollY } = useScroll()
   const [isPinned, setIsPinned] = useState(false)
 
+  // Обновляем состояние, когда scrollY превышает 100
   useMotionValueEvent(scrollY, 'change', (latest) => {
     setIsPinned(latest > 100)
   })
+
+  // Анимации
+  const y = useTransform(scrollY, [0, 100], [0, -80])
+  const scale = useTransform(scrollY, [0, 100], [1, 0.9])
+  const opacity = useTransform(scrollY, [0, 100], [1, 0.85])
 
   return (
     <main className="relative min-h-screen flex flex-col items-center justify-center text-white font-sans z-10">
@@ -21,35 +27,16 @@ export default function HeroSection() {
         Создаём структуры, в которых можно жить и думать.
       </p>
 
+      {/* Кнопка */}
       <motion.div
-        animate={isPinned
-          ? {
-              position: 'fixed',
-              top: '1.5rem',
-              left: '50%',
-              x: '-50%',
-              y: '0%',
-              scale: 0.9,
-              opacity: 0.95,
-              zIndex: 50
-            }
-          : {
-              position: 'relative',
-              top: 'auto',
-              left: 'auto',
-              x: 0,
-              y: 0,
-              scale: 1,
-              opacity: 1,
-              zIndex: 10
-            }
-        }
-        transition={{ duration: 0.6, ease: [0.42, 0, 0.58, 1] }}
-        className="mt-10 w-full flex justify-center"
+        style={{ y, scale, opacity }}
+        className={`
+          mt-10 w-full flex justify-center transition-all duration-500 ease-in-out
+          ${isPinned ? 'fixed top-8 left-1/2 -translate-x-1/2 z-50' : ''}
+        `}
       >
         <HeroButtons />
       </motion.div>
-
     </main>
   )
 }
