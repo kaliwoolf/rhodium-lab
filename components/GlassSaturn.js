@@ -93,7 +93,7 @@ export default function GlassSaturn({ mouse }) {
             depthTest={false}
             toneMapped={false}
             blending={THREE.NormalBlending}
-            side={THREE.DoubleSide} <!-- 🔥 Вот это было критично -->
+            side={THREE.DoubleSide}
             vertexShader={`
               varying vec2 vUv;
               void main() {
