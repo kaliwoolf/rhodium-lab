@@ -103,7 +103,7 @@ export default function GlassSaturn({ mouse }) {
         
       </group>
 
-      <mesh position={[-1, -1, 0]} rotation={[0.3, 0, 0]} renderOrder={5}>
+      <mesh position={[-0.7, -0.5, 0]} rotation={[0.3, 0, 0]} renderOrder={5}>
           <planeGeometry args={[1.8, 1.8]} />
           <shaderMaterial
             transparent
