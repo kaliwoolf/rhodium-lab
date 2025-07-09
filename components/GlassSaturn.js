@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { DoubleSide, BackSide } from 'three'
+import { DoubleSide } from 'three'
 
 export default function GlassSaturn({ mouse }) {
   const ref = useRef()
@@ -9,7 +9,7 @@ export default function GlassSaturn({ mouse }) {
   const [scale, setScale] = useState([2.2, 2.2, 2.2])
   const [position, setPosition] = useState([1.2, 1.2, -3])
 
-  // 📐 адаптивная позиция
+  // 📐 адаптация под размер экрана
   useEffect(() => {
     if (typeof window === 'undefined') return
 
@@ -24,7 +24,7 @@ export default function GlassSaturn({ mouse }) {
     return () => window.removeEventListener('resize', updateLayout)
   }, [])
 
-  // ✅ назначение на слой 1
+  // ✅ слои для разделения постобработки
   useEffect(() => {
     if (ref.current) ref.current.layers.set(1)
     if (ringRef.current) ringRef.current.layers.set(1)
@@ -47,7 +47,7 @@ export default function GlassSaturn({ mouse }) {
 
   return (
     <>
-      {/* ✨ Световая схема в стиле Resn */}
+      {/* ✨ Свет в стиле Resn */}
       <spotLight
         intensity={1.2}
         angle={0.6}
@@ -67,25 +67,10 @@ export default function GlassSaturn({ mouse }) {
         width={5}
         height={3}
         position={[0, 2.5, 3]}
-        color="#cceeff"
+        color="#e6faff"
       />
 
       <group position={position} scale={scale} rotation={[0.46, 0, 0.46]}>
-        {/* 🌫️ внутренний ореол */}
-        <mesh scale={[1.01, 1.01, 1.01]}>
-          <sphereGeometry args={[0.52, 128, 128]} />
-          <meshStandardMaterial
-            emissive="#aaffff"
-            emissiveIntensity={0.05}
-            transparent
-            opacity={0.03}
-            depthWrite={false}
-            depthTest={false}
-            toneMapped={false}
-            side={BackSide}
-          />
-        </mesh>
-
         {/* 🔮 стеклянная сфера */}
         <mesh ref={ref}>
           <sphereGeometry args={[0.52, 128, 128]} />
@@ -98,35 +83,35 @@ export default function GlassSaturn({ mouse }) {
             clearcoat={1}
             clearcoatRoughness={0}
             metalness={0}
-            envMapIntensity={0.3}
-            iridescence={1}
-            iridescenceIOR={1.3}
-            iridescenceThicknessRange={[150, 450]}
-            attenuationColor="#ccffff"
-            attenuationDistance={0.25}
+            envMapIntensity={0.15}
+            iridescence={0.6}
+            iridescenceIOR={1.25}
+            iridescenceThicknessRange={[80, 300]}
+            attenuationColor="#ffffff"
+            attenuationDistance={0.45}
             transparent
             toneMapped={false}
           />
         </mesh>
 
-        {/* 🪐 кольца — расширенные и радужные */}
+        {/* 🪐 радужные кольца */}
         <group ref={ringRef} position={[0, 0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]}>
           <mesh>
             <torusGeometry args={[0.95, 0.035, 64, 256]} />
             <meshPhysicalMaterial
               transmission={1}
-              thickness={0.4}
+              thickness={0.5}
               roughness={0}
               ior={1.45}
               clearcoat={1}
               clearcoatRoughness={0}
               iridescence={1}
-              iridescenceIOR={1.2}
-              iridescenceThicknessRange={[120, 380]}
-              attenuationColor="#b8ffe5"
+              iridescenceIOR={1.3}
+              iridescenceThicknessRange={[120, 400]}
+              attenuationColor="#ffffff"
               attenuationDistance={0.4}
               metalness={0}
-              envMapIntensity={0.6}
+              envMapIntensity={0.5}
               transparent
               toneMapped={false}
               side={DoubleSide}
