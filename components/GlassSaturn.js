@@ -93,7 +93,32 @@ export default function GlassSaturn({ mouse }) {
           />
         </mesh>
 
-        <mesh scale={[1.015, 1.015, 1.015]}>
+       
+        {/* 🪐 Радужные стеклянные кольца */}
+        <group ref={ringRef} position={[0, 0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]}>
+          <mesh>
+            <torusGeometry args={[0.95, 0.04, 64, 256]} />
+            <meshPhysicalMaterial
+              transmission={1}
+              thickness={0.5}
+              roughness={0}
+              ior={1.45}
+              clearcoat={1}
+              clearcoatRoughness={0}
+              iridescence={1}
+              iridescenceIOR={1.3}
+              iridescenceThicknessRange={[200, 600]}
+              attenuationColor="#ffffff"
+              attenuationDistance={0.5}
+              metalness={0}
+              envMapIntensity={0.6}
+              transparent
+              toneMapped={false}
+              side={DoubleSide}
+            />
+          </mesh>
+
+           <mesh scale={[1.015, 1.015, 1.015]}>
           <sphereGeometry args={[0.52, 128, 128]} />
           <shaderMaterial
             vertexShader={`
@@ -120,31 +145,6 @@ export default function GlassSaturn({ mouse }) {
           />
         </mesh>
 
-
-
-        {/* 🪐 Радужные стеклянные кольца */}
-        <group ref={ringRef} position={[0, 0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]}>
-          <mesh>
-            <torusGeometry args={[0.95, 0.04, 64, 256]} />
-            <meshPhysicalMaterial
-              transmission={1}
-              thickness={0.5}
-              roughness={0}
-              ior={1.45}
-              clearcoat={1}
-              clearcoatRoughness={0}
-              iridescence={1}
-              iridescenceIOR={1.3}
-              iridescenceThicknessRange={[200, 600]}
-              attenuationColor="#ffffff"
-              attenuationDistance={0.5}
-              metalness={0}
-              envMapIntensity={0.6}
-              transparent
-              toneMapped={false}
-              side={DoubleSide}
-            />
-          </mesh>
         </group>
       </group>
     </>
