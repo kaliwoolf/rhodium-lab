@@ -1,7 +1,6 @@
 // components/ThreeBackground.js
 import { EffectComposer, Bloom, ChromaticAberration } from '@react-three/postprocessing'
 import { BlendFunction } from 'postprocessing'
-import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useRef, useMemo, useEffect } from 'react'
 import { Points, PointMaterial, Stars, Environment } from '@react-three/drei'
