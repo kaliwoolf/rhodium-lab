@@ -11,7 +11,7 @@ export default function GlassSaturn({ mouse }) {
   const target = useRef({ x: 0, y: 0 })
   const tilt = 0.1
 
-  const [scale, setScale] = useState([1.8, 1.8, 1.8])
+  const [scale, setScale] = useState([2.2, 2.2, 2.2])
 
 
   useEffect(() => {
