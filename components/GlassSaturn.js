@@ -59,7 +59,7 @@ export default function GlassSaturn({ mouse }) {
     />
 
 
-    <group position={position} scale={scale} rotation={[0.46, 0, 0.46]}>
+    <group ref={ref} position={position} scale={scale} rotation={[0.46, 0, 0.46]}>
       {/* 🪐 Стеклянные кольца */}
       <group ref={ringRef} position={[0, 0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]}>
 
