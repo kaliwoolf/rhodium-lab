@@ -1,8 +1,7 @@
 import Head from 'next/head'
-import dynamic from 'next/dynamic'
-
-// Отключаем SSR для WebGL-сцены
-const Scene = dynamic(() => import('../components/Scene'), { ssr: false })
+import ThreeBackground from '../components/ThreeBackground'
+import HeroSection from '../components/HeroSection'
+// и т.д.
 
 export default function Home() {
   return (
@@ -10,8 +9,12 @@ export default function Home() {
       <Head>
         <title>RHODIUM LAB</title>
       </Head>
-      <main className="h-screen w-screen">
-        <Scene />
+
+      <ThreeBackground />
+
+      <main className="relative z-10">
+        <HeroSection />
+        {/* ContactSection и т.д. */}
       </main>
     </>
   )

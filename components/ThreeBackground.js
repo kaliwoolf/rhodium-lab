@@ -6,6 +6,8 @@ import { BlendFunction } from 'postprocessing'
 import { Points, PointMaterial, Environment, Lightformer } from '@react-three/drei'
 import * as THREE from 'three'
 import GlassSaturn from './GlassSaturn'
+import { useScroll } from 'framer-motion'
+
 
 function Starfield({ mouse }) {
   const pointsRef = useRef()
@@ -97,6 +99,16 @@ function Starfield({ mouse }) {
 export default function ThreeBackground() {
   const mouse = useRef({ x: 0, y: 0 })
 
+  const scrollRef = useRef(0)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      scrollRef.current = window.scrollY / window.innerHeight
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
   useEffect(() => {
     if (typeof window === 'undefined') return
 
@@ -129,7 +141,7 @@ export default function ThreeBackground() {
       onCreated={({ camera }) => camera.layers.set(0)}
     >
       <Suspense fallback={null}>
-        <Starfield mouse={mouse} />
+        <Starfield mouse={mouse} scrollRef={scrollRef} />
         <EffectComposer>
           <Bloom intensity={0.3} luminanceThreshold={0.3} />
         </EffectComposer>
@@ -152,7 +164,7 @@ export default function ThreeBackground() {
     >
       <Suspense fallback={null}>
 
-        <GlassSaturn mouse={mouse} />
+        <GlassSaturn mouse={mouse} scrollRef={scrollRef} />
 
         <Environment
           files="/env/starfield_2k.hdr"

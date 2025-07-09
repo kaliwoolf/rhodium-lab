@@ -24,6 +24,17 @@ export default function GlassSaturn({ mouse }) {
 
   useFrame(({ clock, mouse: m }) => {
     const t = clock.getElapsedTime()
+    const scroll = scrollRef?.current || 0
+
+    if (ref.current) {
+    ref.current.rotation.y = t * 0.15 + scroll * 2.0
+    }
+
+    if (wrapperRef.current) {
+      const s = 1 - scroll * 0.5
+      wrapperRef.current.scale.set(s, s, s)
+      wrapperRef.current.position.z = -scroll * 2.5
+    }
 
     if (ringRef.current) {
           ringRef.current.rotation.z = t * 0.02
