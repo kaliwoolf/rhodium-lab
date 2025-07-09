@@ -47,7 +47,7 @@ export default function GlassSaturn({ mouse }) {
 
   return (
   <>
-    <group ref={wrapperRef}>
+    <group ref={wrapperRef scale={scale} }>
     {/* 🌈 Цветовая контровая подсветка */}
     <spotLight
       position={[-3, 2, 2]}
@@ -65,9 +65,9 @@ export default function GlassSaturn({ mouse }) {
     />
 
 
-    <group scale={scale} rotation={[0.46, 0, 0.46]}>
+    <group rotation={[0.46, 0, 0.46]}>
       {/* 🪐 Стеклянные кольца */}
-      <group ref={ringRef} position={[0, 0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]}>
+      <group ref={ringRef} position={[0, 0, 0]} rotation={[Math.PI / 2.2, 0, 0]}>
 
       
 
@@ -103,7 +103,7 @@ export default function GlassSaturn({ mouse }) {
         
       </group>
 
-      <mesh position={[0, 0, 0]} rotation={[0.3, 0, 0]} renderOrder={5}>
+      <mesh position={[-2, -2, 0]} rotation={[0.3, 0, 0]} renderOrder={5}>
           <planeGeometry args={[1.8, 1.8]} />
           <shaderMaterial
             transparent
