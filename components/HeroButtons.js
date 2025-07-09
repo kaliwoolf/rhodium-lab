@@ -1,30 +1,30 @@
-import { useEffect, useState } from 'react'
+'use client'
+import { useState, useEffect } from 'react'
 import { motion, useScroll, useMotionValueEvent } from 'framer-motion'
 
 export default function HeroButtons() {
   const { scrollY } = useScroll()
-  const [isPinned, setIsPinned] = useState(false)
+  const [pinned, setPinned] = useState(false)
 
-  useMotionValueEvent(scrollY, 'change', (latest) => {
-    setIsPinned(latest > 100)
+  useMotionValueEvent(scrollY, 'change', (y) => {
+    setPinned(y > window.innerHeight * 0.4) // можно подрегулировать
   })
 
   return (
     <motion.div
       initial={false}
       animate={{
-        position: isPinned ? 'fixed' : 'absolute',
-        top: isPinned ? '2rem' : 'calc(100vh - 8rem)',
+        position: pinned ? 'fixed' : 'absolute',
+        top: pinned ? '2rem' : 'calc(100% + 2rem)',
         left: '50%',
         translateX: '-50%',
-        scale: isPinned ? 0.9 : 1,
-        opacity: isPinned ? 0.95 : 1,
-        zIndex: isPinned ? 50 : 10,
+        scale: pinned ? 0.9 : 1,
+        opacity: 1,
+        zIndex: 50,
       }}
-      transition={{ duration: 0.6, ease: [0.42, 0, 0.58, 1] }}
-      className="transition-all duration-500 ease-in-out"
+      transition={{ duration: 0.5, ease: [0.42, 0, 0.58, 1] }}
     >
-      <div className="flex items-center gap-6 px-8 py-3 rounded-full border border-crimson text-white text-base md:text-lg tracking-widest shadow-neon backdrop-blur-sm bg-white/10 hover:bg-white/20">
+      <div className="flex items-center gap-6 px-8 py-3 rounded-full border border-crimson text-base md:text-lg tracking-widest shadow-neon backdrop-blur-sm bg-white/5 hover:bg-white/10 text-white">
         <button
           onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
           className="hover:scale-105 transition-transform"

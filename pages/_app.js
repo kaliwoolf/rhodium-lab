@@ -9,7 +9,6 @@ export default function App({ Component, pageProps }) {
   return (
     <>
       <ThreeBackground />
-      <HeroButtons />
       <Component {...pageProps} />
     </>
   )
