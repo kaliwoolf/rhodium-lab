@@ -61,17 +61,8 @@ function Starfield({ mouse, scrollRef, explosionFactor }) {
       col.push(r, g, b)
       originalColorsRef.current.push(r, g, b)
 
-      const rand = Math.random()
-      let tr, tg, tb
-
-      if (rand < 0.33) {
-        tr = 1.0; tg = 0.2; tb = 1.0       // фиолетово-розовый
-      } else if (rand < 0.66) {
-        tr = 1.0; tg = 0.4; tb = 0.1       // оранжево-красный
-      } else {
-        tr = 0.8; tg = 0.3; tb = 1.0       // сине-фиолетовый
-      }
-
+      const hue = Math.floor(Math.random() * 360)
+      const [tr, tg, tb] = new THREE.Color(`hsl(${hue}, 100%, 65%)`).toArray()
       targetColorsRef.current.push(tr, tg, tb)
 
     }
@@ -197,6 +188,14 @@ export default function ThreeBackground() {
     >
       <Suspense fallback={null}>
         <Starfield mouse={mouse} scrollRef={scrollRef} explosionFactor={explosionFactor} />
+
+        {/* 💥 Белая вспышка на весь экран */}
+        <mesh visible={explosionFactor > 0.8}>
+          <planeGeometry args={[100, 100]} />
+          <meshBasicMaterial color="white" transparent opacity={explosionFactor} />
+          <primitive object={new THREE.Mesh()} />
+        </mesh>  
+
         <EffectComposer>
           <DynamicBloom explosionFactor={explosionFactor} />
         </EffectComposer>
