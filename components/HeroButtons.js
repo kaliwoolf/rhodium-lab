@@ -1,30 +1,31 @@
-'use client'
-import { useState, useEffect } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { motion, useScroll, useMotionValueEvent } from 'framer-motion'
 
 export default function HeroButtons() {
   const { scrollY } = useScroll()
-  const [pinned, setPinned] = useState(false)
+  const [isPinned, setIsPinned] = useState(false)
+  const wrapperRef = useRef(null)
 
-  useMotionValueEvent(scrollY, 'change', (y) => {
-    setPinned(y > window.innerHeight * 0.4) // можно подрегулировать
+  useMotionValueEvent(scrollY, 'change', (latest) => {
+    setIsPinned(latest > window.innerHeight * 0.6) // только после первого экрана
   })
 
   return (
-    <motion.div
-      initial={false}
-      animate={{
-        position: pinned ? 'fixed' : 'absolute',
-        top: pinned ? '2rem' : 'calc(100% + 2rem)',
-        left: '50%',
-        translateX: '-50%',
-        scale: pinned ? 0.9 : 1,
-        opacity: 1,
-        zIndex: 50,
-      }}
-      transition={{ duration: 0.5, ease: [0.42, 0, 0.58, 1] }}
-    >
-      <div className="flex items-center gap-6 px-8 py-3 rounded-full border border-crimson text-base md:text-lg tracking-widest shadow-neon backdrop-blur-sm bg-white/5 hover:bg-white/10 text-white">
+    <div ref={wrapperRef} className="relative w-full flex justify-center mt-6">
+      <motion.div
+        initial={false}
+        animate={{
+          position: isPinned ? 'fixed' : 'relative',
+          top: isPinned ? '1.5rem' : 'unset',
+          left: isPinned ? '50%' : 'unset',
+          translateX: isPinned ? '-50%' : '0%',
+          scale: isPinned ? 0.9 : 1,
+          opacity: isPinned ? 0.95 : 1,
+          zIndex: isPinned ? 50 : 'auto',
+        }}
+        transition={{ duration: 0.4, ease: [0.42, 0, 0.58, 1] }}
+        className="flex items-center gap-6 px-8 py-3 rounded-full border border-crimson text-base md:text-lg tracking-widest shadow-neon backdrop-blur-sm bg-white/5 hover:bg-white/10 transition-all"
+      >
         <button
           onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
           className="hover:scale-105 transition-transform"
@@ -50,7 +51,7 @@ export default function HeroButtons() {
         >
           СВЯЗАТЬСЯ
         </button>
-      </div>
-    </motion.div>
+      </motion.div>
+    </div>
   )
 }
