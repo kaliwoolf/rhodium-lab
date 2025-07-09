@@ -1,7 +1,7 @@
 import Head from 'next/head'
-import ThreeBackground from '../components/ThreeBackground'
-import HeroSection from '@/components/HeroSection'
-import HeroButtons from '@/components/HeroButtons'
+import ThreeBackground from './ThreeBackground'
+import HeroSection from './HeroSection'
+import HeroButtons from './HeroButtons'
 import { motion } from 'framer-motion'
 
 
