@@ -11,12 +11,13 @@ export default function GlassSaturn({ mouse }) {
   const target = useRef({ x: 0, y: 0 })
   const tilt = 0.1
 
-  const [scale, setScale] = useState([2.2, 2.2, 2.2])
+  const [scale, setScale] = useState(null)
 
 
   useEffect(() => {
     const isMobile = window.innerWidth < 768
-    setScale(isMobile ? [1.3, 1.3, 1.3] : [1.8, 1.8, 1.8])
+    const newScale = isMobile ? [1.3, 1.3, 1.3] : [2.4, 2.4, 2.4]
+    setScale(newScale)
   }, [])
 
   useEffect(() => {
@@ -45,7 +46,7 @@ export default function GlassSaturn({ mouse }) {
     camera.lookAt(0, 0, 0)
   })
 
-  return (
+  return scale && (
     <group ref={wrapperRef} scale={scale}>
     {/* 🌈 Цветовая контровая подсветка */}
     <spotLight
@@ -102,7 +103,7 @@ export default function GlassSaturn({ mouse }) {
         
       </group>
 
-      <mesh position={[-2, -2, 0]} rotation={[0.3, 0, 0]} renderOrder={5}>
+      <mesh position={[-1, -1, 0]} rotation={[0.3, 0, 0]} renderOrder={5}>
           <planeGeometry args={[1.8, 1.8]} />
           <shaderMaterial
             transparent
