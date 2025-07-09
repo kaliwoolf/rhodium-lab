@@ -12,9 +12,8 @@ export default function HeroSection() {
         Создаём структуры, в которых можно жить и думать.
       </p>
 
-      <div className="relative w-full h-[120px] mt-8">
-        <HeroButtons />
-      </div>
+      <HeroButtons />
+
     </main>
   )
 }
