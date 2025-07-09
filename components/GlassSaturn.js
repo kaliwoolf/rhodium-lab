@@ -11,6 +11,8 @@ export default function GlassSaturn({ mouse }) {
   const target = useRef({ x: 0, y: 0 })
   const tilt = 0.1
 
+  const initialRotation = new THREE.Euler(0.46, 0, 0.46) // наклон Сатурна
+
   const [scale, setScale] = useState(null)
 
 
@@ -34,6 +36,7 @@ export default function GlassSaturn({ mouse }) {
        if (wrapperRef.current) {
           wrapperRef.current.rotation.x = target.current.y * tilt
           wrapperRef.current.rotation.y = target.current.x * tilt
+          wrapperRef.current.rotation.z = initialRotation.z
        }
 
        if (ringRef.current) {
@@ -48,7 +51,7 @@ export default function GlassSaturn({ mouse }) {
 
   return scale && (
     <group scale={scale}>
-      <group ref={wrapperRef} rotation={[0.46, 0, 0.46]}>
+      <group ref={wrapperRef}>
         {/* 🌈 Цветовая контровая подсветка */}
         <spotLight
           position={[-3, 2, 2]}
