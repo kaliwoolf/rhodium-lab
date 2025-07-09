@@ -131,7 +131,7 @@ export default function ThreeBackground() {
     >
       <Suspense fallback={null}>
         <Starfield mouse={mouse} />
-        <GlassSaturn mouse={mouseRef} />
+        <GlassSaturn mouse={mouse} />
         <Environment preset="studio" />
         <EffectComposer>
           <Bloom intensity={1.5} luminanceThreshold={0.1} />
