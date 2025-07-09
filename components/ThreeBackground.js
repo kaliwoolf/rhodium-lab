@@ -174,6 +174,10 @@ export default function ThreeBackground() {
     return () => window.removeEventListener('mousemove', handleMouseMove)
   }, [])
 
+  const scroll = scrollRef.current || 0
+  const explosionFactor = scroll > 1.5 ? Math.min((scroll - 1.5) * 2, 1.0) : 0
+
+
   return (
   <>
     <Canvas
