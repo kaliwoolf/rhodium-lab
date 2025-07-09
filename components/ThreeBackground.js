@@ -2,7 +2,7 @@
 import { EffectComposer, Bloom, ChromaticAberration } from '@react-three/postprocessing'
 import { BlendFunction } from 'postprocessing'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { useRef, useMemo, useEffect, Suspence } from 'react'
+import { useRef, useMemo, useEffect, Suspense } from 'react'
 import { Points, PointMaterial, Stars, Environment } from '@react-three/drei'
 import GlassSaturn from '../components/GlassSaturn'
 import * as THREE from 'three'
