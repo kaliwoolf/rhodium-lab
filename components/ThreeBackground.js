@@ -112,31 +112,47 @@ export default function ThreeBackground() {
   }, [])
 
   return (
+    
     <Canvas
-      gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping }}
-      camera={{ position: [0, 0, 9], fov: 35 }}
-      onCreated={({ camera }) => {
-        camera.layers.enable(0) // 🌟 звёзды
-        camera.layers.enable(1) // 🪐 Сатурн
-      }}
-      style={{ width: '100%', height: '100vh', background: '#111111' }}
-    >
-      <Suspense fallback={null}>
-          {/* 🌌 Первый слой: звёзды с блумом */}
+        camera={{ position: [0, 0, 9], fov: 35 }}
+        gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping }}
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          zIndex: -2,
+          pointerEvents: 'none',
+          background: '#000000',
+        }}
+        onCreated={({ camera }) => camera.layers.set(0)}
+      >
+        <Suspense fallback={null}>
           <Starfield mouse={mouse} />
-
-          {/* 🪐 Второй слой: Сатурн */}
-          <GlassSaturn mouse={mouse} />
-
-          {/* Световое окружение (можно оставить общее) */}
-          <Environment preset="studio" />
-
-          {/* 🌟 PostFX для звёзд — слой 0 */}
-          <EffectComposer multisampling={8}>
-            <Bloom intensity={0.25} luminanceThreshold={0.4} />
+          <EffectComposer>
+            <Bloom intensity={0.3} luminanceThreshold={0.3} />
           </EffectComposer>
+        </Suspense>
+      </Canvas>
 
-          {/* 🪐 PostFX только для Сатурна — слой 1 */}
+
+    <Canvas
+        camera={{ position: [0, 0, 9], fov: 35 }}
+        gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping }}
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          zIndex: -1,
+          pointerEvents: 'none',
+        }}
+        onCreated={({ camera }) => camera.layers.set(1)}
+      >
+        <Suspense fallback={null}>
+          <GlassSaturn mouse={mouse} />
           <EffectComposer>
             <ChromaticAberration
               blendFunction={BlendFunction.NORMAL}
@@ -144,7 +160,7 @@ export default function ThreeBackground() {
             />
           </EffectComposer>
         </Suspense>
+      </Canvas>
 
-    </Canvas>
   )
 }

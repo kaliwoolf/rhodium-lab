@@ -92,7 +92,7 @@ export default function GlassSaturn({ mouse }) {
         {/* Кольца */}
         <group ref={ringRef} position={[0, 0.1, 0]} rotation={[Math.PI / 2.3, 0, 0]}>
           <mesh>
-            <torusGeometry args={[0.75, 0.035, 64, 256]} />
+            <torusGeometry args={[0.9, 0.035, 64, 256]} />
             <meshPhysicalMaterial
               transmission={1}
               thickness={0.5}
