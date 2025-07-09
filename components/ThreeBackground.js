@@ -7,12 +7,16 @@ import { Points, PointMaterial, Environment, Lightformer } from '@react-three/dr
 import * as THREE from 'three'
 import GlassSaturn from './GlassSaturn'
 import { useScroll } from 'framer-motion'
+import DynamicBloom from './DynamicBloom'
+
 
 
 function Starfield({ mouse, scrollRef }) {
   const pointsRef = useRef()
   const count = 4000
   const offsets = useRef([])
+  const originalColorsRef = useRef([])
+
 
   const { positions, colors } = useMemo(() => {
     const pos = []
@@ -54,6 +58,7 @@ function Starfield({ mouse, scrollRef }) {
       }
 
       col.push(r, g, b)
+      originalColorsRef.current.push(r, g, b)
     }
 
     offsets.current = offs
@@ -72,23 +77,46 @@ function Starfield({ mouse, scrollRef }) {
     const scroll = scrollRef?.current || 0
     const factor = 1.0 - Math.min(scroll * 1.5, 0.95)
     const colorShift = Math.min(scroll * 2, 1)
+    const explosionTrigger = scroll > 1.5
+    const explosionFactor = explosionTrigger ? Math.min((scroll - 1.5) * 2, 1.0) : 0
+
     const pos = posAttr.array
     const o = offsets.current
     const colAttr = pointsRef.current.geometry.attributes.color
     const col = colAttr.array
 
+    
+
     for (let i = 0; i < count; i++) {
       const i3 = i * 3
+
       const dx = 0.05 * Math.sin(t * 0.25 * factor + o[i])
       const dy = 0.05 * Math.cos(t * 0.25 * factor + o[i])
       pos[i3] += dx * 0.005 + mouse.current.x * 0.002
       pos[i3 + 1] += dy * 0.005 + mouse.current.y * 0.002
 
-      // color shift
-      col[i3] = col[i3] * (1.0 - colorShift) + 1.0 * colorShift   // R
-      col[i3 + 1] *= (1.0 - colorShift * 0.8)                      // G
-      col[i3 + 2] *= (1.0 - colorShift * 0.8)                      // B
-    }
+      const baseR = originalColorsRef.current[i3]
+      const baseG = originalColorsRef.current[i3 + 1]
+      const baseB = originalColorsRef.current[i3 + 2]
+
+      // Вычисляем контрастную цель — например, смещаем к фиолетово-красным оттенкам
+      const targetR = 1.0
+      const targetG = 0.2
+      const targetB = 1.0 - baseB * 0.3  // чуть варьируем
+
+      let r = baseR * (1.0 - colorShift) + targetR * colorShift
+      let g = baseG * (1.0 - colorShift) + targetG * colorShift
+      let b = baseB * (1.0 - colorShift) + targetB * colorShift
+
+      r = r + explosionFactor * (1.0 - r)
+      g = g * (1.0 - explosionFactor * 0.6)
+      b = b + explosionFactor * (1.0 - b)
+
+      col[i3]     = Math.min(r, 1.0)
+      col[i3 + 1] = Math.min(g, 1.0)
+      col[i3 + 2] = Math.min(b, 1.0)
+      }
+
 
     posAttr.needsUpdate = true
     colAttr.needsUpdate = true
@@ -154,7 +182,7 @@ export default function ThreeBackground() {
       <Suspense fallback={null}>
         <Starfield mouse={mouse} scrollRef={scrollRef} />
         <EffectComposer>
-          <Bloom intensity={0.3} luminanceThreshold={0.3} />
+          <DynamicBloom scrollRef={scrollRef} />
         </EffectComposer>
       </Suspense>
     </Canvas>

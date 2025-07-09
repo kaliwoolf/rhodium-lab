@@ -1,0 +1,14 @@
+import { Bloom } from '@react-three/postprocessing'
+
+export default function DynamicBloom({ scrollRef }) {
+  const scroll = scrollRef.current || 0
+  const explosionFactor = scroll > 1.5 ? Math.min((scroll - 1.5) * 2, 1.0) : 0
+
+  return (
+    <Bloom
+      intensity={0.3 + explosionFactor * 1.2} // базовый + вспышка
+      luminanceThreshold={0.2 - explosionFactor * 0.15} // светлее при взрыве
+      luminanceSmoothing={0.025}
+    />
+  )
+}
