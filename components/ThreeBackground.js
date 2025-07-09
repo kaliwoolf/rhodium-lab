@@ -137,7 +137,7 @@ export default function ThreeBackground() {
     </Canvas>
 
     <Canvas
-      camera={{ position: [0.4, 0, 8], fov: 35 }}
+      camera={{ position: [0, 0, 8], fov: 35 }}
       gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping }}
       style={{
         position: 'fixed',
@@ -152,7 +152,7 @@ export default function ThreeBackground() {
     >
       <Suspense fallback={null}>
 
-        <group position={[0, -0.3, 0]} scale={[1.8, 1.8, 1.8]}>
+        <group position={[-0.5, -0.3, 0]} scale={[1.8, 1.8, 1.8]}>
           <GlassSaturn mouse={mouse} />
         </group>
 
