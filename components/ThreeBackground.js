@@ -125,34 +125,19 @@ export default function ThreeBackground() {
 
   return (
     <Canvas
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        zIndex: -10,
-        width: '100%',
-        height: '100%',
-      }}
-      camera={{ position: [0, 0, 10], fov: 60 }}
-      gl={{
-        antialias: true,
-        alpha: true,
-        toneMapping: THREE.ACESFilmicToneMapping, // ← это критично
-        outputEncoding: THREE.sRGBEncoding          // ← и это
-      }}
+      gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping }}
+      camera={{ position: [0, 0, 6], fov: 35 }}
+      style={{ background: '#05070a' }}
     >
-      <color attach="background" args={['#12161C']} />
-      
-    
-      <Starfield mouse={mouse} />
-
-      <GlassSaturn mouse={mouse} />
-
-      <EffectComposer>
-        <Bloom intensity={1.5} luminanceThreshold={0.1} />
-        <ChromaticAberration offset={[0.0015, 0.001]} />
-      </EffectComposer>
-
+      <Suspense fallback={null}>
+        <Starfield mouse={mouse} />
+        <GlassSaturn mouse={mouseRef} />
+        <Environment preset="studio" />
+        <EffectComposer>
+          <Bloom intensity={1.5} luminanceThreshold={0.1} />
+          <ChromaticAberration offset={[0.0015, 0.001]} />
+        </EffectComposer>
+      </Suspense>
     </Canvas>
   )
 }
