@@ -63,6 +63,15 @@ export default function GlassSaturn({ mouse }) {
         <directionalLight position={[2, 0, 2]} intensity={0.5} />
         <directionalLight position={[-2, 0, -2]} intensity={0.5} />
 
+        <pointLight
+          position={[1.5, -1, 1]}
+          intensity={2}
+          distance={3}
+          decay={2}
+          color="#ffffff"
+        />
+
+
         <mesh>
           <torusGeometry args={[0.95, 0.04, 64, 256]} />
           <meshPhysicalMaterial
@@ -110,7 +119,7 @@ export default function GlassSaturn({ mouse }) {
                 vec2 center = vec2(0.25, 0.75); 
                 float d = distance(vUv, center);
                 float alpha = smoothstep(0.35, 0.1, d);
-                gl_FragColor = vec4(0.0, 0.0, 0.0, alpha * 0.6);
+                gl_FragColor = vec4(0.0, 0.0, 0.0, alpha * 0.8);
               }
             `}
           />
