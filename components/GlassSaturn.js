@@ -4,7 +4,7 @@ import { DoubleSide, BackSide, AdditiveBlending } from 'three'
 import * as THREE from 'three'
 
 
-export default function GlassSaturn({ mouse }) {
+export default function GlassSaturn({ mouse, scrollRef }) {
   const ref = useRef()
   const ringRef = useRef()
   const wrapperRef = useRef()

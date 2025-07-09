@@ -9,7 +9,7 @@ import GlassSaturn from './GlassSaturn'
 import { useScroll } from 'framer-motion'
 
 
-function Starfield({ mouse }) {
+function Starfield({ mouse, scrollRef }) {
   const pointsRef = useRef()
   const count = 4000
   const offsets = useRef([])
