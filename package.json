@@ -20,6 +20,7 @@
     "@react-three/fiber": "^8.15.9",
     "@react-three/drei": "^9.93.0",
     "@react-three/postprocessing": "^2.7.1",
-    "three-stdlib": "^2.26.0"
+    "three-stdlib": "^2.26.0",
+    "flubber": "^0.4.2"
   }
 }
