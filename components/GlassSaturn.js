@@ -119,10 +119,10 @@ export default function GlassSaturn({ mouse }) {
                 void main() {
                   vec2 center = vec2(0.4, 0.8);
                   float d = distance(vUv, center);
-                  float mask = 1.0 - smoothstep(0.05, 0.55, d);
+                  float mask = 1.0 - smoothstep(0.05, 0.4, d);
 
                   float grain = random(vUv * 50.0);
-                  float alpha = min(mask * 1.5, 1.0) * mix(0.85, 1.0, grain);
+                  float alpha = min(mask * 1.5, 1.0) * mix(0.9, 1.0, grain);
 
                   gl_FragColor = vec4(0.0, 0.0, 0.0, alpha);
                 }
@@ -130,13 +130,6 @@ export default function GlassSaturn({ mouse }) {
             />
         </mesh>
 
-      <directionalLight
-          position={[3, 4, 3]}         // прям над планетой
-          intensity={10}                // можешь поднять до 6–8, если нужно ярче
-          color="#ffd580"             // тёплый золотистый (можно заменить на "#ffcc66" или "#ffdd99")
-          castShadow={false}
-        />
-  
         
       {/* 🔮 Внешняя стеклянная сфера */}
       <mesh ref={ref} renderOrder={1}>
@@ -160,6 +153,38 @@ export default function GlassSaturn({ mouse }) {
           toneMapped={false}
         />
       </mesh>
+
+      <mesh scale={[1.01, 1.01, 1.01]} renderOrder={3}>
+        <sphereGeometry args={[0.52, 128, 128]} />
+        <shaderMaterial
+          transparent
+          depthWrite={false}
+          depthTest={false}
+          toneMapped={false}
+          blending={THREE.AdditiveBlending}
+          vertexShader={`
+            varying vec3 vNormal;
+            varying vec3 vViewPosition;
+            void main() {
+              vNormal = normalize(normalMatrix * normal);
+              vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+              vViewPosition = -mvPosition.xyz;
+              gl_Position = projectionMatrix * mvPosition;
+            }
+          `}
+          fragmentShader={`
+            varying vec3 vNormal;
+            varying vec3 vViewPosition;
+            void main() {
+              float fresnel = pow(1.0 - dot(normalize(vViewPosition), vNormal), 2.2);
+              float topMask = smoothstep(0.0, 0.3, vNormal.y); // только верхняя часть
+              vec3 color = vec3(1.0, 0.8, 0.5); // тёплый золотистый
+              gl_FragColor = vec4(color, fresnel * topMask * 0.5);
+            }
+          `}
+        />
+      </mesh>
+
 
       {/* ✨ Контурное аквамариново-аметистовое свечение (Fresnel Shader) */}
       <mesh scale={[1.02, 1.02, 1.02]} renderOrder={2}>
