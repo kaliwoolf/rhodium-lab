@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { DoubleSide, BackSide } from 'three'
+import { DoubleSide, BackSide, AdditiveBlending } from 'three'
 
 export default function GlassSaturn({ mouse }) {
   const ref = useRef()
@@ -118,32 +118,34 @@ export default function GlassSaturn({ mouse }) {
             />
           </mesh>
 
-           <mesh scale={[1.015, 1.015, 1.015]}>
-          <sphereGeometry args={[0.52, 128, 128]} />
-          <shaderMaterial
-            vertexShader={`
-              varying vec3 vNormal;
-              varying vec3 vViewPosition;
-              void main() {
-                vNormal = normalize(normalMatrix * normal);
-                vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-                vViewPosition = -mvPosition.xyz;
-                gl_Position = projectionMatrix * mvPosition;
-              }
-            `}
-            fragmentShader={`
-              varying vec3 vNormal;
-              varying vec3 vViewPosition;
-              void main() {
-                float fresnel = pow(1.0 - dot(normalize(vViewPosition), vNormal), 2.5);
-                vec3 color = mix(vec3(0.0), vec3(0.7, 1.0, 1.0), fresnel);
-                gl_FragColor = vec4(color, fresnel);
-              }
-            `}
-            transparent={true}
-            depthWrite={false}
-          />
-        </mesh>
+          <mesh scale={[1.015, 1.015, 1.015]} renderOrder={-1}>
+            <sphereGeometry args={[0.52, 128, 128]} />
+            <shaderMaterial
+              vertexShader={`
+                varying vec3 vNormal;
+                varying vec3 vViewPosition;
+                void main() {
+                  vNormal = normalize(normalMatrix * normal);
+                  vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+                  vViewPosition = -mvPosition.xyz;
+                  gl_Position = projectionMatrix * mvPosition;
+                }
+              `}
+              fragmentShader={`
+                varying vec3 vNormal;
+                varying vec3 vViewPosition;
+                void main() {
+                  float fresnel = pow(1.0 - dot(normalize(vViewPosition), vNormal), 2.5);
+                  vec3 color = mix(vec3(0.0), vec3(0.7, 1.0, 1.0), fresnel); // Аквамариново-аметистовый
+                  gl_FragColor = vec4(color, fresnel * 0.6); // Чуть приглушённее
+                }
+              `}
+              transparent={true}
+              depthWrite={false}
+              depthTest={false} // 💥 Не участвует в буфере глубины
+              blending={AdditiveBlending} // ✨ Сияющий режим наложения
+            />
+          </mesh>
 
         </group>
       </group>
