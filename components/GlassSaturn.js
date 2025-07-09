@@ -31,8 +31,9 @@ export default function GlassSaturn({ mouse, scrollRef }) {
     }
 
     if (wrapperRef.current) {
-      const s = 1 - scroll * 0.5
+      const s = Math.pow(0.9, scroll * 5)
       wrapperRef.current.scale.set(s, s, s)
+      wrapperRef.current.position.y = scroll * 1.2
       wrapperRef.current.position.z = -scroll * 2.5
     }
 
