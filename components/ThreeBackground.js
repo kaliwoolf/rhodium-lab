@@ -69,18 +69,29 @@ function Starfield({ mouse, scrollRef }) {
     if (!posAttr) return
 
     const t = clock.getElapsedTime()
+    const scroll = scrollRef?.current || 0
+    const factor = 1.0 - Math.min(scroll * 1.5, 0.95)
+    const colorShift = Math.min(scroll * 2, 1)
     const pos = posAttr.array
     const o = offsets.current
+    const colAttr = pointsRef.current.geometry.attributes.color
+    const col = colAttr.array
 
     for (let i = 0; i < count; i++) {
       const i3 = i * 3
-      const dx = 0.05 * Math.sin(t * 0.25 + o[i])
-      const dy = 0.05 * Math.cos(t * 0.25 + o[i])
+      const dx = 0.05 * Math.sin(t * 0.25 * factor + o[i])
+      const dy = 0.05 * Math.cos(t * 0.25 * factor + o[i])
       pos[i3] += dx * 0.005 + mouse.current.x * 0.002
       pos[i3 + 1] += dy * 0.005 + mouse.current.y * 0.002
+
+      // color shift
+      col[i3] = col[i3] * (1.0 - colorShift) + 1.0 * colorShift   // R
+      col[i3 + 1] *= (1.0 - colorShift * 0.8)                      // G
+      col[i3 + 2] *= (1.0 - colorShift * 0.8)                      // B
     }
 
     posAttr.needsUpdate = true
+    colAttr.needsUpdate = true
   })
 
   return (
