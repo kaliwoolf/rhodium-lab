@@ -82,7 +82,7 @@ function Starfield({ mouse }) {
   })
 
   return (
-    <Points ref={pointsRef} positions={positions} colors={colors} stride={3}>
+    <Points ref={pointsRef} positions={positions} colors={colors} stride={3} layers={0}>
       <PointMaterial
         transparent
         vertexColors
@@ -115,20 +115,36 @@ export default function ThreeBackground() {
     <Canvas
       gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping }}
       camera={{ position: [0, 0, 9], fov: 35 }}
-      style={{ width: '100%', height: '100vh', background: '#05070a' }}
+      onCreated={({ camera }) => {
+        camera.layers.enable(0) // 🌟 звёзды
+        camera.layers.enable(1) // 🪐 Сатурн
+      }}
+      style={{ width: '100%', height: '100vh', background: '#111111' }}
     >
       <Suspense fallback={null}>
-        <Starfield mouse={mouse} />
-        <GlassSaturn mouse={mouse} />
-        <Environment preset="studio" background={false} />
-        <EffectComposer>
-          <Bloom intensity={0.7} luminanceThreshold={0.2} />
-          <ChromaticAberration
-            blendFunction={BlendFunction.NORMAL}
-            offset={[0.0015, 0.001]}
-          />
-        </EffectComposer>
-      </Suspense>
+          {/* 🌌 Первый слой: звёзды с блумом */}
+          <Starfield mouse={mouse} />
+
+          {/* 🪐 Второй слой: Сатурн */}
+          <GlassSaturn mouse={mouse} />
+
+          {/* Световое окружение (можно оставить общее) */}
+          <Environment preset="studio" />
+
+          {/* 🌟 PostFX для звёзд — слой 0 */}
+          <EffectComposer multisampling={8}>
+            <Bloom intensity={0.25} luminanceThreshold={0.4} />
+          </EffectComposer>
+
+          {/* 🪐 PostFX только для Сатурна — слой 1 */}
+          <EffectComposer>
+            <ChromaticAberration
+              blendFunction={BlendFunction.NORMAL}
+              offset={[0.0009, 0.0009]}
+            />
+          </EffectComposer>
+        </Suspense>
+
     </Canvas>
   )
 }

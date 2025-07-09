@@ -15,8 +15,8 @@ export default function GlassSaturn({ mouse }) {
 
     const updateLayout = () => {
       const isMobile = window.innerWidth < 768
-      setScale(isMobile ? [1.6, 1.6, 1.6] : [3.5, 3.5, 3.5])
-      setPosition(isMobile ? [1.2, 0.8, -3] : [3.2, 1.8, -3])
+      setScale(isMobile ? [1.3, 1.3, 1.3] : [2.2, 2.2, 2.2])
+      setPosition(isMobile ? [0.5, 0.8, -3] : [1.2, 1.2, -3])
     }
 
     window.addEventListener('resize', updateLayout)
@@ -49,9 +49,8 @@ export default function GlassSaturn({ mouse }) {
     <>
       {/* Световые ореолы */}
       <Lightformer form="ring" intensity={2} scale={10} position={[5, 3, 2]} color="#ddeeff" />
-      <Lightformer form="ring" intensity={1.5} scale={8} position={[-5, -3, -2]} color="#ffddcc" />
 
-      <group position={position} scale={scale} rotation={[0.45, 0, 0.46]}>
+      <group position={position} scale={scale} rotation={[0.45, 0, 0.46]} layers={1}>
         {/* Едва заметное внутреннее свечение */}
         <mesh scale={[1.01, 1.01, 1.01]}>
           <sphereGeometry args={[0.52, 128, 128]} />
@@ -93,7 +92,7 @@ export default function GlassSaturn({ mouse }) {
         {/* Кольца */}
         <group ref={ringRef} position={[0, 0.1, 0]} rotation={[Math.PI / 2.3, 0, 0]}>
           <mesh>
-            <torusGeometry args={[0.65, 0.05, 64, 256]} />
+            <torusGeometry args={[0.75, 0.035, 64, 256]} />
             <meshPhysicalMaterial
               transmission={1}
               thickness={0.5}
