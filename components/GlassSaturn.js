@@ -83,8 +83,8 @@ export default function GlassSaturn({ mouse }) {
           />
         </mesh>
 
-        <mesh position={[0, 0.05, 0]} rotation={[Math.PI / 2.2, 0, 0]} renderOrder={3}>
-          <circleGeometry args={[1.5, 64]} />
+        <mesh position={[-0.3, -0.15, 0.01]} rotation={[Math.PI / 2.2, 0, 0]} renderOrder={3}>
+          <circleGeometry args={[0.9, 64]} />
           <meshBasicMaterial
             color="black"
             transparent
