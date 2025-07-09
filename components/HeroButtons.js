@@ -1,6 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion, useScroll, useMotionValueEvent } from 'framer-motion'
-
 
 export default function HeroButtons() {
   const { scrollY } = useScroll()
@@ -12,13 +11,20 @@ export default function HeroButtons() {
 
   return (
     <motion.div
-      className={`
-        fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-0
-        transition-all duration-500 ease-in-out
-        ${isPinned ? 'top-8 translate-y-0 scale-90 opacity-90 z-50' : '-translate-y-1/2 scale-100 opacity-100 z-10'}
-      `}
+      initial={false}
+      animate={{
+        position: isPinned ? 'fixed' : 'absolute',
+        top: isPinned ? '2rem' : 'calc(100vh - 8rem)',
+        left: '50%',
+        translateX: '-50%',
+        scale: isPinned ? 0.9 : 1,
+        opacity: isPinned ? 0.95 : 1,
+        zIndex: isPinned ? 50 : 10,
+      }}
+      transition={{ duration: 0.6, ease: [0.42, 0, 0.58, 1] }}
+      className="transition-all duration-500 ease-in-out"
     >
-      <div className="flex items-center gap-6 px-8 py-3 rounded-full border border-crimson text-base md:text-lg tracking-widest shadow-neon backdrop-blur-sm bg-white/5 hover:bg-white/10 transition-all">
+      <div className="flex items-center gap-6 px-8 py-3 rounded-full border border-crimson text-white text-base md:text-lg tracking-widest shadow-neon backdrop-blur-sm bg-white/10 hover:bg-white/20">
         <button
           onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
           className="hover:scale-105 transition-transform"
