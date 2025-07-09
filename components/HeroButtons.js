@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import { motion, useScroll, useMotionValueEvent } from 'framer-motion'
+
 
 export default function HeroButtons() {
   const { scrollY } = useScroll()
