@@ -1,3 +1,5 @@
+import { motion, useScroll, useMotionValueEvent } from 'framer-motion'
+
 export default function HeroButtons() {
   const { scrollY } = useScroll()
   const [isPinned, setIsPinned] = useState(false)
