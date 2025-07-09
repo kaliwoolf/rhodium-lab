@@ -16,25 +16,27 @@ export default function HeroSection() {
   }
 
   useEffect(() => {
-    if (!pathRef.current) return
+    if (!pathRef.current) return;
 
-    const interpolator = flubber.interpolate(wave ? straight : waveForm, wave ? waveForm : straight, {
-      maxSegmentLength: 2,
-    })
+    const interpolator = flubber.interpolate(
+      wave ? straight : waveForm,
+      wave ? waveForm : straight,
+      { maxSegmentLength: 2 }
+    );
 
     const controls = animate(0, 1, {
-      duration: 1.2,
-      ease: 'easeInOut',
+      duration: 0.6, // ускорено
+      ease: [0.42, 0, 0.58, 1], // плавнее и резче одновременно
       onUpdate(latest) {
-        const d = interpolator(latest)
+        const d = interpolator(latest);
         if (pathRef.current) {
-          pathRef.current.setAttribute('d', d)
+          pathRef.current.setAttribute('d', d);
         }
       },
-    })
+    });
 
-    return () => controls.stop()
-  }, [wave])
+    return () => controls.stop();
+  }, [wave]);
 
   return (
     <main className="bg-transparent min-h-screen flex flex-col items-center justify-center text-white font-sans relative z-10">
