@@ -3,16 +3,18 @@ import { Canvas, useFrame } from '@react-three/fiber'
 import { EffectComposer } from '@react-three/postprocessing'
 import { Points, PointMaterial, Environment } from '@react-three/drei'
 import * as THREE from 'three'
-import GlassSaturn from './GlassSaturn'
-import DynamicBloom from './DynamicBloom'
-import Starfield from './Starfield' 
+import dynamic from 'next/dynamic'
+
+const Starfield = dynamic(() => import('./Starfield'), { ssr: false })
+const GlassSaturn = dynamic(() => import('./GlassSaturn'), { ssr: false })
+const DynamicBloom = dynamic(() => import('./DynamicBloom'), { ssr: false })
 
 export default function ThreeBackground() {
   const mouse = useRef({ x: 0, y: 0 })
   const rawScroll = useRef(0)
   const smoothScroll = useRef(0)
 
-  // Scroll handler
+  // Scroll event → rawScroll
   useEffect(() => {
     const handleScroll = () => {
       rawScroll.current = window.scrollY / window.innerHeight
@@ -21,10 +23,8 @@ export default function ThreeBackground() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Mouse handler
+  // Mouse tracking
   useEffect(() => {
-    if (typeof window === 'undefined') return
-
     const handleMouseMove = (e) => {
       const targetX = (e.clientX / window.innerWidth - 0.5) * 2
       const targetY = -(e.clientY / window.innerHeight - 0.5) * 2
@@ -36,15 +36,21 @@ export default function ThreeBackground() {
     return () => window.removeEventListener('mousemove', handleMouseMove)
   }, [])
 
-  // Smooth scroll interpolation
-  useFrame(() => {
-    smoothScroll.current += (rawScroll.current - smoothScroll.current) * 0.08
-  })
+  // 🔁 rAF сглаживание скролла
+  useEffect(() => {
+    let raf
+    const update = () => {
+      smoothScroll.current += (rawScroll.current - smoothScroll.current) * 0.1 // ← чем меньше, тем плавнее
+      raf = requestAnimationFrame(update)
+    }
+    update()
+    return () => cancelAnimationFrame(raf)
+  }, [])
 
-  const explosionFactor =
-    smoothScroll.current > 1.5
-      ? Math.min((smoothScroll.current - 1.5) * 2, 1.0)
-      : 0
+  // 💥 Вспышка — tanh для мягкой кривой
+  const explosionFactor = smoothScroll.current > 1.5
+    ? Math.tanh((smoothScroll.current - 1.5) * 1.5)
+    : 0
 
   return (
     <>
