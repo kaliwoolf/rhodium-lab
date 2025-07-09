@@ -64,9 +64,9 @@ export default function GlassSaturn({ mouse }) {
         <directionalLight position={[-2, 0, -2]} intensity={0.5} />
 
         <pointLight
-          position={[1.5, -1, 1]}
-          intensity={2}
-          distance={3}
+          position={[0, 0.3, 0.3]}
+          intensity={4}
+          distance={2}
           decay={2}
           color="#ffffff"
         />
@@ -118,8 +118,8 @@ export default function GlassSaturn({ mouse }) {
               void main() {
                 vec2 center = vec2(0.25, 0.75); 
                 float d = distance(vUv, center);
-                float alpha = smoothstep(0.35, 0.1, d);
-                gl_FragColor = vec4(0.0, 0.0, 0.0, alpha * 0.8);
+                float alpha = smoothstep(0.1, 0.5, d); // градиент от центра (0.1) к краю (0.5)
+                gl_FragColor = vec4(0.0, 0.0, 0.0, (1.0 - alpha) * 0.95); // почти чёрный центр
               }
             `}
           />
