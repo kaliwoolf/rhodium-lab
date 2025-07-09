@@ -59,21 +59,12 @@ export default function GlassSaturn({ mouse }) {
       {/* 🪐 Стеклянные кольца */}
       <group ref={ringRef} position={[0, 0.1, 0]} rotation={[Math.PI / 2.2, 0, 0]}>
 
-        <ambientLight intensity={0.4} color="#ffffff" />
-        <directionalLight position={[2, 0, 2]} intensity={0.5} />
-        <directionalLight position={[-2, 0, -2]} intensity={0.5} />
+      
 
         <directionalLight
           position={[-1.5, -1, 1.5]}
           intensity={10}
           color="#d300ff"
-        />
-
-        <directionalLight
-          position={[0, 5, 0]} // сверху-справа
-          intensity={20}
-          color="#ffddaa" // мягкое холодное золото
-          castShadow={false}
         />
 
 
@@ -102,7 +93,7 @@ export default function GlassSaturn({ mouse }) {
         
       </group>
 
-      <mesh position={[-0.1, -0.3, 0.15]} rotation={[0.3, 0, 0]} renderOrder={5}>
+      <mesh position={[-0.22, -0.3, 0.15]} rotation={[0.3, 0, 0]} renderOrder={5}>
           <planeGeometry args={[1.7, 1.7]} />
           <shaderMaterial
             transparent
