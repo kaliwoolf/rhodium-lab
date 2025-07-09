@@ -121,10 +121,6 @@ function Starfield({ mouse, scrollRef, explosionFactor }) {
     colAttr.needsUpdate = true
   })
 
-  const scroll = scrollRef.current || 0
-  const explosionFactor = scroll > 1.5 ? Math.min((scroll - 1.5) * 2, 1.0) : 0
-
-
   return (
     <Points ref={pointsRef} positions={positions} colors={colors} stride={3} layers={0}>
       <PointMaterial
