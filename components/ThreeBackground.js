@@ -85,8 +85,6 @@ function Starfield({ mouse, scrollRef }) {
     const colAttr = pointsRef.current.geometry.attributes.color
     const col = colAttr.array
 
-    
-
     for (let i = 0; i < count; i++) {
       const i3 = i * 3
 
@@ -100,9 +98,10 @@ function Starfield({ mouse, scrollRef }) {
       const baseB = originalColorsRef.current[i3 + 2]
 
       // Вычисляем контрастную цель — например, смещаем к фиолетово-красным оттенкам
-      const targetR = 1.0
-      const targetG = 0.2
-      const targetB = 1.0 - baseB * 0.3  // чуть варьируем
+      const targetR = targetColorsRef.current[i3]
+      const targetG = targetColorsRef.current[i3 + 1]
+      const targetB = targetColorsRef.current[i3 + 2]
+
 
       let r = baseR * (1.0 - colorShift) + targetR * colorShift
       let g = baseG * (1.0 - colorShift) + targetG * colorShift
@@ -127,7 +126,7 @@ function Starfield({ mouse, scrollRef }) {
       <PointMaterial
         transparent
         vertexColors
-        size={0.1}
+         size={0.1 + explosionFactor * 0.4}
         sizeAttenuation
         depthWrite={true}
       />

@@ -6,9 +6,9 @@ export default function DynamicBloom({ scrollRef }) {
 
   return (
     <Bloom
-      intensity={0.3 + explosionFactor * 1.2} // базовый + вспышка
-      luminanceThreshold={0.2 - explosionFactor * 0.15} // светлее при взрыве
-      luminanceSmoothing={0.025}
+      intensity={0.4 + explosionFactor * 2.5}
+      luminanceThreshold={0.25 - explosionFactor * 0.2}
+      luminanceSmoothing={0.03}
     />
   )
 }
