@@ -1,10 +1,13 @@
 import { useRef, useEffect } from 'react'
 import * as THREE from 'three'
-import { Html } from '@react-three/drei'
+import { Html, useEnvironment } from '@react-three/drei'
 
 export default function GlassVideoPanel() {
   const videoRef = useRef()
   const textureRef = useRef()
+
+  // 👇 Вот это окружение будет применено только к панели
+  const envMap = useEnvironment({ preset: 'apartment' })
 
   useEffect(() => {
     if (videoRef.current) {
@@ -29,21 +32,19 @@ export default function GlassVideoPanel() {
       <mesh position={[0, 0, 0]}>
         <boxGeometry args={[3, 2, 0.05]} />
         <meshPhysicalMaterial
-          transparent
-          transmission={1} // для стекла
-          roughness={0.03}
-          thickness={0.2}
-          ior={1.5} // показатель преломления
-          reflectivity={0.7}
+          envMap={envMap} // 👈 используем окружение ТОЛЬКО для этой панели
+          envMapIntensity={1}
+          transmission={1}
+          roughness={0.05}
+          thickness={0.3}
+          ior={1.5}
+          reflectivity={0.8}
           clearcoat={1}
-          clearcoatRoughness={0.05}
-          attenuationDistance={1.5}
-          attenuationColor={'#ffffff'}
-          color="#ffffff"
+          transparent
+          opacity={1}
         />
       </mesh>
 
-      {/* Скрытое видео */}
       <Html style={{ display: 'none' }}>
         <video
           ref={videoRef}

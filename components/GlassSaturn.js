@@ -30,19 +30,32 @@ export default function GlassSaturn({ mouse, scrollRef }) {
     ref.current.rotation.y = t * 0.15 + scroll * 2.0
     }
 
-    if (wrapperRef.current) {
-      if (scale) {
-        const factor = Math.max(1 - scroll * 0.4, 0.25)
-        wrapperRef.current.scale.set(
-          scale[0] * factor,
-          scale[1] * factor,
-          scale[2] * factor
-        )
-      }
+  if (wrapperRef.current) {
+    wrapperRef.current.position.y = scroll * 1.2
+    wrapperRef.current.position.z = -scroll * 2.5
 
-      wrapperRef.current.position.y = scroll * 1.2
-      wrapperRef.current.position.z = -scroll * 2.5
-    }
+    const fade = Math.max(1 - scroll * 1.2, 0)
+
+    // Применяем fade ко всем материалам (в т.ч. чёрной маске и шейдерам)
+    wrapperRef.current.traverse((child) => {
+      if (child.material) {
+        child.material.transparent = true
+
+        // Если это массив материалов (редко, но бывает)
+        if (Array.isArray(child.material)) {
+          child.material.forEach((mat) => {
+            if ('opacity' in mat) mat.opacity = fade
+          })
+        } else {
+          if ('opacity' in child.material) {
+            child.material.opacity = fade
+          }
+        }
+      }
+    })
+  }
+
+
 
     if (ringRef.current) {
           ringRef.current.rotation.z = t * 0.02
@@ -232,7 +245,9 @@ export default function GlassSaturn({ mouse, scrollRef }) {
               <meshBasicMaterial
                 color="black"
                 side={BackSide}
-                depthWrite={true}
+                transparent={true}
+                opacity={1} 
+                depthWrite={false}
                 depthTest={true}
                 toneMapped={false}
               />
