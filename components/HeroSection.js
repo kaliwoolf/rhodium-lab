@@ -78,7 +78,7 @@ export default function HeroSection() {
               viewBox="0 0 54 10"
               width="54"
               height="10"
-              className="absolute top-[45%] left-[calc(50%-27px)] -translate-y-1/2"
+              className="absolute top-[43%] left-[calc(50%-27px)] -translate-y-1/2"
               animate={{
                 x: [0, 0.4, -0.3, 0.2, -0.2, 0],
                 y: [0, -0.2, 0.3, -0.1, 0],
@@ -91,7 +91,7 @@ export default function HeroSection() {
               }}
             >
               <motion.path
-                d="M 0,5 L 54,5"
+                d="M 0,4.5 L 54,4.5"
                 stroke="#ff003c"
                 strokeWidth="2"
                 fill="none"
