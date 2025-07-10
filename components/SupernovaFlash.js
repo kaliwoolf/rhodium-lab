@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 
 export default function SupernovaFlash({ explosionFactor }) {
@@ -8,32 +8,40 @@ export default function SupernovaFlash({ explosionFactor }) {
   const hasFlashed = useRef(false)
 
   useFrame((_, delta) => {
+    const ready = useRef(false)
     const triggered = explosionFactor > 0.95
+    const material = meshRef.current?.material
 
+    if (explosionFactor < 0.01) return
+      if (!ready.current) {
+        ready.current = true
+        return
+      }
+
+
+    // Вспышка срабатывает один раз
     if (triggered && !hasFlashed.current && !active.current) {
       active.current = true
       hasFlashed.current = true
       flashTime.current = 0
+      if (material) material.uniforms.uIntensity.value = 1
     }
 
+    // Сброс возможности вспышки, если вернулись вверх
     if (!triggered) {
       hasFlashed.current = false
     }
 
+    // Гашение вспышки
     if (active.current) {
       flashTime.current += delta
-      const material = meshRef.current?.material
       if (flashTime.current > 0.5) {
         active.current = false
-        material.uniforms.uIntensity.value = 0
+        if (material) material.uniforms.uIntensity.value = 0
       } else {
-        // Всплеск: быстро до пика за 0.1 сек → потом затухание
         const t = flashTime.current
-        const i = t < 0.1
-          ? t / 0.1                  // подъем
-          : 1 - (t - 0.1) / 0.4      // спад
-
-        material.uniforms.uIntensity.value = Math.max(i, 0)
+        const fade = t < 0.1 ? 1 : 1 - (t - 0.1) / 0.4
+        if (material) material.uniforms.uIntensity.value = Math.max(fade, 0)
       }
     }
   })
@@ -61,7 +69,7 @@ export default function SupernovaFlash({ explosionFactor }) {
 
           void main() {
             float dist = distance(vUv, vec2(0.5));
-            float core = smoothstep(0.02, 0.0, dist);
+            float core = smoothstep(0.03, 0.0, dist);
             float glow = smoothstep(0.2, 0.05, dist);
             vec3 color = mix(vec3(1.0, 0.8, 0.6), vec3(1.0), core);
             float alpha = uIntensity * (glow * 0.6 + core * 1.2);
