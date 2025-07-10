@@ -9,6 +9,7 @@ const Starfield = dynamic(() => import('./Starfield'), { ssr: false })
 const GlassSaturn = dynamic(() => import('./GlassSaturn'), { ssr: false })
 const DynamicBloom = dynamic(() => import('./DynamicBloom'), { ssr: false })
 const SupernovaFlash = dynamic(() => import('./SupernovaFlash'), { ssr: false })
+const GlassVideoPanel = dynamic(() => import('./GlassVideoPanel'), { ssr: false })
 
 
 export default function ThreeBackground({ children }) {
