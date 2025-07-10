@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 
 export default function SupernovaFlash({ explosionFactor }) {
@@ -6,22 +6,31 @@ export default function SupernovaFlash({ explosionFactor }) {
   const [opacity, setOpacity] = useState(0)
   const flashTime = useRef(0)
   const active = useRef(false)
+  const hasFlashed = useRef(false)
 
   useFrame((_, delta) => {
     const triggered = explosionFactor > 0.95
 
-    if (triggered && !active.current) {
+    // 👉 запускаем один раз
+    if (triggered && !hasFlashed.current && !active.current) {
       active.current = true
+      hasFlashed.current = true
       flashTime.current = 0
       setOpacity(1)
     }
 
+    // сбрасываем возможность вспышки, если прокрутка вернулась
+    if (!triggered) {
+      hasFlashed.current = false
+    }
+
+    // проигрываем затухание
     if (active.current) {
       flashTime.current += delta
       if (flashTime.current > 0.6) {
         active.current = false
+        setOpacity(0)
       } else {
-        // плавное затухание
         setOpacity(1 - flashTime.current / 0.6)
       }
     }
