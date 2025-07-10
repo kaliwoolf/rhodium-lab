@@ -1,19 +1,28 @@
-import { useScroll, useTransform, motion } from 'framer-motion'
+import { useEffect, useState } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
 
 export default function HeroSection() {
   const { scrollY } = useScroll()
+  const [pinned, setPinned] = useState(false)
 
-  // Расстояние от центра до верхнего края кнопки в начальной позиции
-  const initialOffset = 240 // подбери вручную: отступ от верха, где кнопка находится под слоганом
-
-  // Двигаем кнопку вверх от её начального положения до top: 24px
-  const y = useTransform(scrollY, [0, initialOffset], [0, -initialOffset + 24])
-
-  // Остальное — заголовок и слоган
+  // Заголовок и слоган
   const titleY = useTransform(scrollY, [0, 200], [0, -100])
   const titleOpacity = useTransform(scrollY, [0, 200], [1, 0])
   const sloganY = useTransform(scrollY, [0, 200], [0, -100])
   const sloganOpacity = useTransform(scrollY, [0, 200], [1, 0])
+
+  // Кнопка
+  const buttonY = useTransform(scrollY, [0, 300], [0, -80])
+  const buttonScale = useTransform(scrollY, [0, 300], [1, 0.85])
+  const buttonOpacity = useTransform(scrollY, [0, 300], [1, 0.9])
+
+  // Слежение за прилипанием
+  useEffect(() => {
+    const unsubscribe = scrollY.on('change', (y) => {
+      setPinned(y > 300)
+    })
+    return () => unsubscribe()
+  }, [scrollY])
 
   return (
     <main className="relative min-h-screen flex flex-col items-center justify-center text-white font-sans z-10">
@@ -32,44 +41,58 @@ export default function HeroSection() {
         Создаём структуры, в которых можно жить и думать.
       </motion.p>
 
-      {/* Фиксированная кнопка, но с анимацией по Y */}
-      <motion.div
+      {/* Обёртка: позиция зависит от pinned */}
+      <div
         style={{
-          position: 'fixed',
-          top: initialOffset,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          y,
+          position: pinned ? 'fixed' : 'relative',
+          top: pinned ? '24px' : 'auto',
+          left: pinned ? '50%' : 'auto',
+          transform: pinned ? 'translateX(-50%)' : 'none',
           zIndex: 50,
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          pointerEvents: 'none',
         }}
-        className="flex items-center gap-6 px-8 py-3 rounded-full border border-crimson text-base md:text-lg tracking-widest shadow-neon backdrop-blur-sm bg-white/5 hover:bg-white/10 transition-all"
       >
-        <button
-          onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
-          className="hover:scale-105 transition-transform"
+        <motion.div
+          style={{
+            y: pinned ? 0 : buttonY,
+            scale: buttonScale,
+            opacity: buttonOpacity,
+            pointerEvents: 'auto',
+          }}
+          className={`flex items-center gap-6 px-8 py-3 rounded-full border border-crimson text-base md:text-lg tracking-widest shadow-neon backdrop-blur-sm bg-white/5 hover:bg-white/10 transition-all ${
+            pinned ? '' : 'mt-12'
+          }`}
         >
-          ПРОЕКТЫ
-        </button>
+          <button
+            onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
+            className="hover:scale-105 transition-transform"
+          >
+            ПРОЕКТЫ
+          </button>
 
-        <div className="relative w-[60px] h-[14px]">
-          <svg viewBox="0 0 60 10" width="60" height="10" className="absolute top-2 left-0">
-            <path
-              d="M 0,5 L 60,5"
-              stroke="#ff003c"
-              strokeWidth="2"
-              fill="none"
-              style={{ filter: 'drop-shadow(0 0 4px #ff003c)' }}
-            />
-          </svg>
-        </div>
+          <div className="relative w-[60px] h-[14px]">
+            <svg viewBox="0 0 60 10" width="60" height="10" className="absolute top-2 left-0">
+              <path
+                d="M 0,5 L 60,5"
+                stroke="#ff003c"
+                strokeWidth="2"
+                fill="none"
+                style={{ filter: 'drop-shadow(0 0 4px #ff003c)' }}
+              />
+            </svg>
+          </div>
 
-        <button
-          onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-          className="hover:scale-105 transition-transform"
-        >
-          СВЯЗАТЬСЯ
-        </button>
-      </motion.div>
+          <button
+            onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+            className="hover:scale-105 transition-transform"
+          >
+            СВЯЗАТЬСЯ
+          </button>
+        </motion.div>
+      </div>
     </main>
   )
 }
