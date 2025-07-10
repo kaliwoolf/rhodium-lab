@@ -2,11 +2,18 @@ import Head from 'next/head'
 import ThreeBackground from '../components/ThreeBackground'
 import HeroSection from '../components/HeroSection'
 import { motion } from 'framer-motion'
-
 import GlassVideoPanel from '../components/GlassVideoPanel'
+import { useRef } from 'react'
+import { useInView } from 'react-intersection-observer'
 
 
 export default function Home() {
+  const { ref: projectsRef, inView: isProjectsInView } = useInView({
+    threshold: 0.2, // показывать, когда 20% блока видно
+    triggerOnce: false,
+  })
+
+
   return (
     <>
       <Head>

@@ -109,7 +109,13 @@ export default function ThreeBackground({ children }) {
             files="/env/starfield_2k.hdr"
             background={false}
           />
-          {children}
+          <group>
+            <Float speed={2} rotationIntensity={0.1} floatIntensity={0.3}>
+              <Suspense fallback={null}>
+                {children}
+              </Suspense>
+            </Float>
+          </group>
         </Suspense>
       </Canvas>
     </>
