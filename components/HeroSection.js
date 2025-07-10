@@ -93,7 +93,7 @@ export default function HeroSection() {
               <motion.path
                 d="M 0,4.5 L 54,4.5"
                 stroke="#ff003c"
-                strokeWidth="2"
+                strokeWidth="1"
                 fill="none"
                 style={{ filter: 'drop-shadow(0 0 4px #ff003c)' }}
               />
