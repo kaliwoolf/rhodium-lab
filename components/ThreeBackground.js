@@ -47,10 +47,33 @@ export default function ThreeBackground() {
     return () => cancelAnimationFrame(raf)
   }, [])
 
-  // 💥 Вспышка — tanh для мягкой кривой
+
+    // 💥 Вспышка — tanh для мягкой кривой
   const explosionFactor = smoothScroll.current > 1.5
     ? Math.tanh((smoothScroll.current - 1.5) * 1.5)
     : 0
+    
+  const [explosionFactor, setExplosionFactor] = useState(0)
+
+  useEffect(() => {
+    let raf
+    const update = () => {
+      smoothScroll.current += (rawScroll.current - smoothScroll.current) * 0.1
+
+      const newExplosion = smoothScroll.current > 1.5
+        ? Math.tanh((smoothScroll.current - 1.5) * 1.5)
+        : 0
+
+      setExplosionFactor(newExplosion)
+
+      raf = requestAnimationFrame(update)
+    }
+    update()
+    return () => cancelAnimationFrame(raf)
+  }, [])
+
+
+
 
   return (
     <>
