@@ -9,6 +9,8 @@ export default function GlassSaturn({ mouse, scrollRef }) {
   const ringRef = useRef()
   const wrapperRef = useRef()
   const [scale, setScale] = useState(null)
+  const maskRef = useRef()
+
 
 
   useEffect(() => {
@@ -39,6 +41,11 @@ export default function GlassSaturn({ mouse, scrollRef }) {
         scale[1] * fade,
         scale[2] * fade
       )
+    }
+
+    if (maskRef.current?.uniforms?.uFade) {
+      const maskFade = Math.max(1 - scroll * 1.6, 0) // ← исчезает раньше, чем всё остальное
+      maskRef.current.uniforms.uFade.value = maskFade
     }
 
 
@@ -106,12 +113,16 @@ export default function GlassSaturn({ mouse, scrollRef }) {
         <mesh position={[-0.3, -0.7, 0]} rotation={[0.3, 0, 0]} renderOrder={5}>
             <planeGeometry args={[2.6, 2.6]} />
             <shaderMaterial
+              ref={maskRef}
               transparent
               depthWrite={false}
               depthTest={false}
               toneMapped={false}
               blending={THREE.NormalBlending}
               side={THREE.DoubleSide}
+              uniforms={{
+                uFade: { value: 1.0 }
+              }}
                vertexShader={`
                   varying vec2 vUv;
                   void main() {
@@ -121,6 +132,7 @@ export default function GlassSaturn({ mouse, scrollRef }) {
                 `}
                 fragmentShader={`
                   varying vec2 vUv;
+                  uniform float uFade;
 
                   float random(vec2 st) {
                     return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
