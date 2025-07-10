@@ -11,7 +11,7 @@ const DynamicBloom = dynamic(() => import('./DynamicBloom'), { ssr: false })
 const SupernovaFlash = dynamic(() => import('./SupernovaFlash'), { ssr: false })
 
 
-export default function ThreeBackground() {
+export default function ThreeBackground({ children }) {
   const mouse = useRef({ x: 0, y: 0 })
   const rawScroll = useRef(0)
   const smoothScroll = useRef(0)
@@ -109,6 +109,7 @@ export default function ThreeBackground() {
             files="/env/starfield_2k.hdr"
             background={false}
           />
+          {children}
         </Suspense>
       </Canvas>
     </>
