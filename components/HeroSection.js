@@ -62,7 +62,7 @@ export default function HeroSection() {
             opacity: buttonOpacity,
             pointerEvents: 'auto',
           }}
-          className={`flex items-center gap-6 px-8 py-3 rounded-full border border-crimson text-base md:text-lg tracking-widest shadow-neon backdrop-blur-sm bg-white/5 hover:bg-white/10 transition-all ${
+          className={`flex items-center gap-4 px-4 py-2 rounded-full border border-crimson text-sm md:text-base tracking-wide shadow-neon backdrop-blur-sm bg-white/5 hover:bg-white/10 transition-all ${
             pinned ? '' : 'mt-12'
           }`}
         >
@@ -78,7 +78,7 @@ export default function HeroSection() {
               viewBox="0 0 54 10"
               width="54"
               height="10"
-              className="absolute top-2 left-1/2 -translate-x-1/2"
+              className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2"
             >
               <path
                 d="M 0,5 L 54,5"
