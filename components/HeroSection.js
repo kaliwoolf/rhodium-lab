@@ -55,17 +55,18 @@ export default function HeroSection() {
           pointerEvents: 'none', // позволяет кликать сквозь оболочку
         }}
       >
-        <motion.div
-          style={{
-            y: buttonY,
-            scale: buttonScale,
-            opacity: buttonOpacity,
-            pointerEvents: 'auto', // но сами кнопки кликабельны
-          }}
-          className={`flex items-center gap-6 px-8 py-3 rounded-full border border-crimson text-base md:text-lg tracking-widest shadow-neon backdrop-blur-sm bg-white/5 hover:bg-white/10 transition-all ${
-            pinned ? '' : 'mt-12'
-          }`}
-        >
+          <motion.div
+            style={{
+              y: pinned ? 0 : buttonY,
+              scale: buttonScale,
+              opacity: buttonOpacity,
+              pointerEvents: 'auto',
+            }}
+            className={`flex items-center gap-6 px-8 py-3 rounded-full border border-crimson text-base md:text-lg tracking-widest shadow-neon backdrop-blur-sm bg-white/5 hover:bg-white/10 transition-all ${
+              pinned ? '' : 'mt-12'
+            }`}
+          >
+
           <button
             onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
             className="hover:scale-105 transition-transform"
