@@ -78,7 +78,7 @@ export default function HeroSection() {
               viewBox="0 0 54 10"
               width="54"
               height="10"
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+              className="absolute top-[46%] left-1/2 -translate-x-1/2 -translate-y-1/2"
               animate={{
                 x: [0, 0.4, -0.3, 0.2, -0.2, 0],
                 y: [0, -0.2, 0.3, -0.1, 0],
