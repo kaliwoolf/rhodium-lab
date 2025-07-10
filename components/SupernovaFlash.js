@@ -1,30 +1,51 @@
 import { useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
-import * as THREE from 'three'
 
 export default function SupernovaFlash({ explosionFactor }) {
   const meshRef = useRef()
-  const [opacity, setOpacity] = useState(0)
+  const [intensity, setIntensity] = useState(0)
 
   useFrame(() => {
-    if (!meshRef.current) return
-
-    const flash = explosionFactor > 0.95
-    setOpacity((prev) =>
-      flash ? Math.min(prev + 0.15, 1) : Math.max(prev - 0.08, 0)
+    const shouldFlash = explosionFactor > 0.95
+    setIntensity((prev) =>
+      shouldFlash ? Math.min(prev + 0.1, 1) : Math.max(prev - 0.05, 0)
     )
-    meshRef.current.material.opacity = opacity
+
+    if (meshRef.current?.material?.uniforms) {
+      meshRef.current.material.uniforms.uIntensity.value = intensity
+    }
   })
 
   return (
     <mesh ref={meshRef} position={[0, 0, 0]}>
       <planeGeometry args={[100, 100]} />
-      <meshBasicMaterial
-        color="white"
+      <shaderMaterial
         transparent
-        opacity={opacity}
         depthWrite={false}
         toneMapped={false}
+        uniforms={{
+          uIntensity: { value: 0 },
+        }}
+        vertexShader={`
+          varying vec2 vUv;
+          void main() {
+            vUv = uv;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          }
+        `}
+        fragmentShader={`
+          varying vec2 vUv;
+          uniform float uIntensity;
+
+          void main() {
+            float dist = distance(vUv, vec2(0.5));
+            float glow = smoothstep(0.4, 0.0, dist);
+            float core = smoothstep(0.08, 0.0, dist);
+            vec3 color = mix(vec3(1.0, 0.8, 0.6), vec3(1.0), core);
+            float alpha = uIntensity * (glow * 0.9 + core * 1.0);
+            gl_FragColor = vec4(color, alpha);
+          }
+        `}
       />
     </mesh>
   )
