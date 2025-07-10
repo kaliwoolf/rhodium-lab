@@ -82,10 +82,10 @@ export default function ThreeBackground() {
             scrollRef={smoothScroll}
             explosionFactor={explosionFactor}
           />
+          <SupernovaFlash explosionFactor={explosionFactor} />
           <EffectComposer>
             <DynamicBloom explosionFactor={explosionFactor} />
-          </EffectComposer>
-            <SupernovaFlash explosionFactor={explosionFactor} />
+          </EffectComposer>           
         </Suspense>
       </Canvas>
 
