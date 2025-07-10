@@ -39,9 +39,10 @@ export default function SupernovaFlash({ explosionFactor }) {
 
           void main() {
             float dist = distance(vUv, vec2(0.5));
-            float glow = smoothstep(0.4, 0.0, dist);
-            float core = smoothstep(0.08, 0.0, dist);
-            vec3 color = mix(vec3(1.0, 0.8, 0.6), vec3(1.0), core);
+            float glow = smoothstep(0.25, 0.0, dist);
+            float core = smoothstep(0.03, 0.0, dist);
+            vec3 glowColor = vec3(1.0, 0.2, 0.9); // пурпурно-бело-фиолетовая
+            vec3 color = mix(vec3(0.0), glowColor, glow + core);
             float alpha = uIntensity * (glow * 0.9 + core * 1.0);
             gl_FragColor = vec4(color, alpha);
           }
