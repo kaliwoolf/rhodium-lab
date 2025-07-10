@@ -75,6 +75,7 @@ export default function HeroSection() {
 
           <div className="relative h-[44px] flex items-center justify-center w-[54px]">
             <motion.svg
+              initial={false} 
               viewBox="0 0 54 10"
               width="54"
               height="10"
