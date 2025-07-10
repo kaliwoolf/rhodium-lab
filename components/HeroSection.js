@@ -73,12 +73,12 @@ export default function HeroSection() {
             ПРОЕКТЫ
           </button>
 
-          <div className="relative w-[54px] h-[14px]">
+          <div className="relative h-[44px] flex items-center justify-center w-[54px]">
             <motion.svg
               viewBox="0 0 54 10"
               width="54"
               height="10"
-              className="absolute top-[36%] left-[calc(50%-27px)] -translate-y-1/2"
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
               animate={{
                 x: [0, 0.4, -0.3, 0.2, -0.2, 0],
                 y: [0, -0.2, 0.3, -0.1, 0],
@@ -91,7 +91,7 @@ export default function HeroSection() {
               }}
             >
               <motion.path
-                d="M 0,4.5 L 54,4.5"
+                d="M 0,4.2 L 54,4.2"
                 stroke="#ff003c"
                 strokeWidth="1"
                 fill="none"
@@ -99,6 +99,7 @@ export default function HeroSection() {
               />
             </motion.svg>
           </div>
+
 
           <button
             onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
