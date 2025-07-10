@@ -13,6 +13,8 @@ export default function ThreeBackground() {
   const mouse = useRef({ x: 0, y: 0 })
   const rawScroll = useRef(0)
   const smoothScroll = useRef(0)
+  const [explosionFactor, setExplosionFactor] = useState(0)
+
 
   // Scroll event → rawScroll
   useEffect(() => {
@@ -40,24 +42,6 @@ export default function ThreeBackground() {
   useEffect(() => {
     let raf
     const update = () => {
-      smoothScroll.current += (rawScroll.current - smoothScroll.current) * 0.1 // ← чем меньше, тем плавнее
-      raf = requestAnimationFrame(update)
-    }
-    update()
-    return () => cancelAnimationFrame(raf)
-  }, [])
-
-
-    // 💥 Вспышка — tanh для мягкой кривой
-  const explosionFactor = smoothScroll.current > 1.5
-    ? Math.tanh((smoothScroll.current - 1.5) * 1.5)
-    : 0
-    
-  const [explosionFactor, setExplosionFactor] = useState(0)
-
-  useEffect(() => {
-    let raf
-    const update = () => {
       smoothScroll.current += (rawScroll.current - smoothScroll.current) * 0.1
 
       const newExplosion = smoothScroll.current > 1.5
@@ -71,8 +55,6 @@ export default function ThreeBackground() {
     update()
     return () => cancelAnimationFrame(raf)
   }, [])
-
-
 
 
   return (
