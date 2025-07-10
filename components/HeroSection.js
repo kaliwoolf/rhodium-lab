@@ -1,28 +1,18 @@
-import { useEffect, useState } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { useScroll, useTransform, motion } from 'framer-motion'
 
 export default function HeroSection() {
   const { scrollY } = useScroll()
-  const [pinned, setPinned] = useState(false)
 
-  // Анимации заголовка и слогана
+  // Заголовок и слоган — исчезают
   const titleY = useTransform(scrollY, [0, 200], [0, -100])
   const titleOpacity = useTransform(scrollY, [0, 200], [1, 0])
-
   const sloganY = useTransform(scrollY, [0, 200], [0, -100])
   const sloganOpacity = useTransform(scrollY, [0, 200], [1, 0])
 
-  // Анимации кнопки
-  const buttonY = useTransform(scrollY, [0, 300], [0, -100])
-  const buttonScale = useTransform(scrollY, [0, 300], [1, 0.85])
-  const buttonOpacity = useTransform(scrollY, [0, 300], [1, 0.9])
-
-  useEffect(() => {
-    const unsubscribe = scrollY.on('change', (y) => {
-      setPinned(y > 300)
-    })
-    return () => unsubscribe()
-  }, [scrollY])
+  // Кнопка — поднимается и фиксируется
+  const yTransform = useTransform(scrollY, [0, 300], [0, -80])
+  const scale = useTransform(scrollY, [0, 300], [1, 0.85])
+  const opacity = useTransform(scrollY, [0, 300], [1, 0.9])
 
   return (
     <main className="relative min-h-screen flex flex-col items-center justify-center text-white font-sans z-10">
@@ -41,32 +31,29 @@ export default function HeroSection() {
         Создаём структуры, в которых можно жить и думать.
       </motion.p>
 
-      {/* Внешняя оболочка для центрации */}
+      {/* Центрирующий фиксированный контейнер */}
       <div
         style={{
-          position: pinned ? 'fixed' : 'relative',
-          top: pinned ? '24px' : 'auto',
-          left: pinned ? '50%' : 'auto',
-          transform: pinned ? 'translateX(-50%)' : 'none',
+          position: 'fixed',
+          top: '24px',
+          left: '50%',
+          transform: 'translateX(-50%)',
           zIndex: 50,
+          width: '100%',
           display: 'flex',
           justifyContent: 'center',
-          width: '100%',
-          pointerEvents: 'none', // позволяет кликать сквозь оболочку
+          pointerEvents: 'none',
         }}
       >
-          <motion.div
-            style={{
-              y: pinned ? 0 : buttonY,
-              scale: buttonScale,
-              opacity: buttonOpacity,
-              pointerEvents: 'auto',
-            }}
-            className={`flex items-center gap-6 px-8 py-3 rounded-full border border-crimson text-base md:text-lg tracking-widest shadow-neon backdrop-blur-sm bg-white/5 hover:bg-white/10 transition-all ${
-              pinned ? '' : 'mt-12'
-            }`}
-          >
-
+        <motion.div
+          style={{
+            y: yTransform,
+            scale,
+            opacity,
+            pointerEvents: 'auto',
+          }}
+          className="flex items-center gap-6 px-8 py-3 rounded-full border border-crimson text-base md:text-lg tracking-widest shadow-neon backdrop-blur-sm bg-white/5 hover:bg-white/10 transition-all"
+        >
           <button
             onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
             className="hover:scale-105 transition-transform"
