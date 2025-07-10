@@ -245,7 +245,6 @@ export default function GlassSaturn({ mouse, scrollRef }) {
               <meshBasicMaterial
                 color="black"
                 side={BackSide}
-                opacity={1} 
                 depthWrite={true}
                 depthTest={true}
                 toneMapped={false}
