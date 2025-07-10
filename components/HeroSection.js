@@ -1,18 +1,28 @@
-import { useScroll, useTransform, motion } from 'framer-motion'
+import { useEffect, useState } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
 
 export default function HeroSection() {
   const { scrollY } = useScroll()
+  const [pinned, setPinned] = useState(false)
 
-  // Заголовок и слоган — исчезают
+  // Заголовок и слоган
   const titleY = useTransform(scrollY, [0, 200], [0, -100])
   const titleOpacity = useTransform(scrollY, [0, 200], [1, 0])
   const sloganY = useTransform(scrollY, [0, 200], [0, -100])
   const sloganOpacity = useTransform(scrollY, [0, 200], [1, 0])
 
-  // Кнопка — поднимается и фиксируется
-  const yTransform = useTransform(scrollY, [0, 300], [0, -80])
-  const scale = useTransform(scrollY, [0, 300], [1, 0.85])
-  const opacity = useTransform(scrollY, [0, 300], [1, 0.9])
+  // Кнопка
+  const buttonY = useTransform(scrollY, [0, 300], [0, -80])
+  const buttonScale = useTransform(scrollY, [0, 300], [1, 0.85])
+  const buttonOpacity = useTransform(scrollY, [0, 300], [1, 0.9])
+
+  // Слежение за прилипанием
+  useEffect(() => {
+    const unsubscribe = scrollY.on('change', (y) => {
+      setPinned(y > 300)
+    })
+    return () => unsubscribe()
+  }, [scrollY])
 
   return (
     <main className="relative min-h-screen flex flex-col items-center justify-center text-white font-sans z-10">
@@ -31,13 +41,13 @@ export default function HeroSection() {
         Создаём структуры, в которых можно жить и думать.
       </motion.p>
 
-      {/* Центрирующий фиксированный контейнер */}
+      {/* Обёртка: позиция зависит от pinned */}
       <div
         style={{
-          position: 'fixed',
-          top: '24px',
-          left: '50%',
-          transform: 'translateX(-50%)',
+          position: pinned ? 'fixed' : 'relative',
+          top: pinned ? '24px' : 'auto',
+          left: pinned ? '50%' : 'auto',
+          transform: pinned ? 'translateX(-50%)' : 'none',
           zIndex: 50,
           width: '100%',
           display: 'flex',
@@ -47,12 +57,14 @@ export default function HeroSection() {
       >
         <motion.div
           style={{
-            y: yTransform,
-            scale,
-            opacity,
+            y: pinned ? 0 : buttonY,
+            scale: buttonScale,
+            opacity: buttonOpacity,
             pointerEvents: 'auto',
           }}
-          className="flex items-center gap-6 px-8 py-3 rounded-full border border-crimson text-base md:text-lg tracking-widest shadow-neon backdrop-blur-sm bg-white/5 hover:bg-white/10 transition-all"
+          className={`flex items-center gap-6 px-8 py-3 rounded-full border border-crimson text-base md:text-lg tracking-widest shadow-neon backdrop-blur-sm bg-white/5 hover:bg-white/10 transition-all ${
+            pinned ? '' : 'mt-12'
+          }`}
         >
           <button
             onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
