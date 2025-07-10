@@ -53,7 +53,6 @@ export default function HeroSection() {
           display: 'flex',
           justifyContent: 'center',
           pointerEvents: 'none',
-          transition: 'top 0.4s ease, transform 0.4s ease',
         }}
       >
         <motion.div
