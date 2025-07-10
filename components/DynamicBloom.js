@@ -7,7 +7,7 @@ const boosted = explosionFactor > 0.95
   return (
     <Bloom
       intensity={boosted ? 3.5 : 0.4 + explosionFactor * 2.5}
-      luminanceThreshold={boosted ? 0 : 0.25 - explosionFactor * 0.2}3}
+      luminanceThreshold={boosted ? 0 : 0.25 - explosionFactor * 0.2}
     />
   )
 }
