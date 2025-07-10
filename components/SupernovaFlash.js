@@ -3,7 +3,6 @@ import { useFrame } from '@react-three/fiber'
 
 export default function SupernovaFlash({ explosionFactor }) {
   const meshRef = useRef()
-  const [opacity, setOpacity] = useState(0)
   const flashTime = useRef(0)
   const active = useRef(false)
   const hasFlashed = useRef(false)
@@ -11,44 +10,64 @@ export default function SupernovaFlash({ explosionFactor }) {
   useFrame((_, delta) => {
     const triggered = explosionFactor > 0.95
 
-    // 👉 запускаем один раз
     if (triggered && !hasFlashed.current && !active.current) {
       active.current = true
       hasFlashed.current = true
       flashTime.current = 0
-      setOpacity(1)
     }
 
-    // сбрасываем возможность вспышки, если прокрутка вернулась
     if (!triggered) {
       hasFlashed.current = false
     }
 
-    // проигрываем затухание
     if (active.current) {
       flashTime.current += delta
-      if (flashTime.current > 0.6) {
+      const material = meshRef.current?.material
+      if (flashTime.current > 0.5) {
         active.current = false
-        setOpacity(0)
+        material.uniforms.uIntensity.value = 0
       } else {
-        setOpacity(1 - flashTime.current / 0.6)
-      }
-    }
+        // Всплеск: быстро до пика за 0.1 сек → потом затухание
+        const t = flashTime.current
+        const i = t < 0.1
+          ? t / 0.1                  // подъем
+          : 1 - (t - 0.1) / 0.4      // спад
 
-    if (meshRef.current?.material) {
-      meshRef.current.material.opacity = opacity
+        material.uniforms.uIntensity.value = Math.max(i, 0)
+      }
     }
   })
 
   return (
     <mesh ref={meshRef} position={[0, 0, 0]}>
       <planeGeometry args={[100, 100]} />
-      <meshBasicMaterial
-        color="white"
+      <shaderMaterial
         transparent
-        opacity={0}
         depthWrite={false}
         toneMapped={false}
+        uniforms={{
+          uIntensity: { value: 0 },
+        }}
+        vertexShader={`
+          varying vec2 vUv;
+          void main() {
+            vUv = uv;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          }
+        `}
+        fragmentShader={`
+          varying vec2 vUv;
+          uniform float uIntensity;
+
+          void main() {
+            float dist = distance(vUv, vec2(0.5));
+            float core = smoothstep(0.02, 0.0, dist);
+            float glow = smoothstep(0.2, 0.05, dist);
+            vec3 color = mix(vec3(1.0, 0.8, 0.6), vec3(1.0), core);
+            float alpha = uIntensity * (glow * 0.6 + core * 1.2);
+            gl_FragColor = vec4(color, alpha);
+          }
+        `}
       />
     </mesh>
   )
