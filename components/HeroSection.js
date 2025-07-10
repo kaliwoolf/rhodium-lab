@@ -1,9 +1,14 @@
 import { useEffect, useState } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { motion, useScroll, useTransform, useMotionValueEvent } from 'framer-motion'
 
 export default function HeroSection() {
   const { scrollY } = useScroll()
   const [pinned, setPinned] = useState(false)
+
+  // Плавное движение
+  const y = useTransform(scrollY, [0, 300], [0, -80])
+  const scale = useTransform(scrollY, [0, 300], [1, 0.85])
+  const opacity = useTransform(scrollY, [0, 300], [1, 0.9])
 
   // Заголовок и слоган
   const titleY = useTransform(scrollY, [0, 200], [0, -100])
@@ -11,18 +16,10 @@ export default function HeroSection() {
   const sloganY = useTransform(scrollY, [0, 200], [0, -100])
   const sloganOpacity = useTransform(scrollY, [0, 200], [1, 0])
 
-  // Кнопка
-  const buttonY = useTransform(scrollY, [0, 300], [0, -80])
-  const buttonScale = useTransform(scrollY, [0, 300], [1, 0.85])
-  const buttonOpacity = useTransform(scrollY, [0, 300], [1, 0.9])
-
-  // Слежение за прилипанием
-  useEffect(() => {
-    const unsubscribe = scrollY.on('change', (y) => {
-      setPinned(y > 300)
-    })
-    return () => unsubscribe()
-  }, [scrollY])
+  // Плавный переход к pinned
+  useMotionValueEvent(scrollY, 'change', (latest) => {
+    setPinned(latest > 300)
+  })
 
   return (
     <main className="relative min-h-screen flex flex-col items-center justify-center text-white font-sans z-10">
@@ -41,7 +38,7 @@ export default function HeroSection() {
         Создаём структуры, в которых можно жить и думать.
       </motion.p>
 
-      {/* Обёртка: позиция зависит от pinned */}
+      {/* Обёртка, которая плавно становится fixed */}
       <div
         style={{
           position: pinned ? 'fixed' : 'relative',
@@ -53,13 +50,14 @@ export default function HeroSection() {
           display: 'flex',
           justifyContent: 'center',
           pointerEvents: 'none',
+          transition: 'all 0.4s ease',
         }}
       >
         <motion.div
           style={{
-            y: pinned ? 0 : buttonY,
-            scale: buttonScale,
-            opacity: buttonOpacity,
+            y: pinned ? 0 : y,
+            scale,
+            opacity,
             pointerEvents: 'auto',
           }}
           className={`flex items-center gap-6 px-8 py-3 rounded-full border border-crimson text-base md:text-lg tracking-widest shadow-neon backdrop-blur-sm bg-white/5 hover:bg-white/10 transition-all ${
