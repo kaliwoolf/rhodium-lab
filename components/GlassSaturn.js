@@ -247,7 +247,7 @@ export default function GlassSaturn({ mouse, scrollRef }) {
                 side={BackSide}
                 transparent={true}
                 opacity={1} 
-                depthWrite={false}
+                depthWrite={true}
                 depthTest={true}
                 toneMapped={false}
               />
