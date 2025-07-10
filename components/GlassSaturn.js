@@ -32,8 +32,6 @@ export default function GlassSaturn({ mouse, scrollRef }) {
     ref.current.rotation.y = t * 0.15 + scroll * 2.0
     }
 
-    const fade = Math.max(1 - scroll * 1.2, 0)
-
     if (wrapperRef.current) {
       wrapperRef.current.visible = fade > 0.01
       wrapperRef.current.scale.set(
