@@ -32,21 +32,16 @@ export default function GlassSaturn({ mouse, scrollRef }) {
     ref.current.rotation.y = t * 0.15 + scroll * 2.0
     }
 
-    wrapperRef.current.traverse((child) => {
-      if (child.material) {
-        const mat = child.material
+    const fade = Math.max(1 - scroll * 1.2, 0)
 
-        // Пропускаем физическое стекло
-        const isPhysicalGlass = mat.transmission !== undefined
-
-        if (!isPhysicalGlass) {
-          mat.transparent = true
-          if ('opacity' in mat) {
-            mat.opacity = fade
-          }
-        }
-      }
-    })
+    if (wrapperRef.current) {
+      wrapperRef.current.visible = fade > 0.01
+      wrapperRef.current.scale.set(
+        scale[0] * fade,
+        scale[1] * fade,
+        scale[2] * fade
+      )
+    }
 
 
     if (ringRef.current) {
