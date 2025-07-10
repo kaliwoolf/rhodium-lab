@@ -8,6 +8,8 @@ import dynamic from 'next/dynamic'
 const Starfield = dynamic(() => import('./Starfield'), { ssr: false })
 const GlassSaturn = dynamic(() => import('./GlassSaturn'), { ssr: false })
 const DynamicBloom = dynamic(() => import('./DynamicBloom'), { ssr: false })
+const SupernovaFlash = dynamic(() => import('./SupernovaFlash'), { ssr: false })
+
 
 export default function ThreeBackground() {
   const mouse = useRef({ x: 0, y: 0 })
@@ -83,6 +85,7 @@ export default function ThreeBackground() {
           <EffectComposer>
             <DynamicBloom explosionFactor={explosionFactor} />
           </EffectComposer>
+            <SupernovaFlash explosionFactor={explosionFactor} />
         </Suspense>
       </Canvas>
 
