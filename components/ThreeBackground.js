@@ -47,7 +47,7 @@ export default function ThreeBackground() {
       smoothScroll.current += (rawScroll.current - smoothScroll.current) * 0.1
 
       const newExplosion = smoothScroll.current > 1.0
-        ? Math.tanh((smoothScroll.current - 1.0) * 2.2)
+        ? Math.tanh((smoothScroll.current - 1.0) * 3.3)
         : 0
 
       setExplosionFactor(newExplosion)
