@@ -53,6 +53,7 @@ export default function HeroSection() {
           display: 'flex',
           justifyContent: 'center',
           pointerEvents: 'none',
+          transition: 'top 0.4s ease, transform 0.4s ease',
         }}
       >
         <motion.div
@@ -73,10 +74,15 @@ export default function HeroSection() {
             ПРОЕКТЫ
           </button>
 
-          <div className="relative w-[60px] h-[14px]">
-            <svg viewBox="0 0 60 10" width="60" height="10" className="absolute top-2 left-0">
+          <div className="relative w-[54px] h-[14px]">
+            <svg
+              viewBox="0 0 54 10"
+              width="54"
+              height="10"
+              className="absolute top-2 left-1/2 -translate-x-1/2"
+            >
               <path
-                d="M 0,5 L 60,5"
+                d="M 0,5 L 54,5"
                 stroke="#ff003c"
                 strokeWidth="2"
                 fill="none"
