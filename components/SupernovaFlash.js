@@ -47,7 +47,7 @@ export default function SupernovaFlash({ explosionFactor }) {
   })
 
   return (
-    <mesh ref={meshRef} position={[0, 0, 0]}>
+    <mesh ref={meshRef} position={[0, 0, -4]} renderOrder={100}>
       <planeGeometry args={[100, 100]} />
       <shaderMaterial
         transparent
