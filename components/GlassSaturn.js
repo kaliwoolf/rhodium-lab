@@ -224,38 +224,17 @@ export default function GlassSaturn({ mouse, scrollRef }) {
             />
           </mesh>
 
+          {/* 🌑 Внутренняя чёрная маска — в конце, позади колец */}
           <mesh scale={[0.985, 0.985, 0.985]} renderOrder={-1}>
-            <sphereGeometry args={[0.52, 128, 128]} />
-            <shaderMaterial
-              transparent
-              depthWrite={true}
-              depthTest={true}
-              toneMapped={false}
-              side={BackSide}
-              blending={THREE.NormalBlending}
-              vertexShader={`
-                varying vec3 vNormal;
-                void main() {
-                  vNormal = normalize(normalMatrix * normal);
-                  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-                }
-              `}
-              fragmentShader={`
-                varying vec3 vNormal;
-
-                void main() {
-                  float topMask = smoothstep(0.1, -0.6, vNormal.y); // затемнение снизу
-                  float sideMask = smoothstep(0.3, 1.0, length(vNormal.xy)); // затемнение по краю
-
-                  float alpha = clamp(topMask * sideMask, 0.0, 1.0);
-                  gl_FragColor = vec4(0.0, 0.0, 0.0, alpha * 0.9);
-                }
-              `}
-            />
+              <sphereGeometry args={[0.52, 128, 128]} />
+              <meshBasicMaterial
+                color="black"
+                side={BackSide}
+                depthWrite={true}
+                depthTest={true}
+                toneMapped={false}
+              />
           </mesh>
-
-
-          
   </group>  
 )
 
