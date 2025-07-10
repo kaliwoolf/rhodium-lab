@@ -1,11 +1,10 @@
-// components/GlassVideoPanel.js
 import { useRef, useEffect } from 'react'
 import * as THREE from 'three'
 import { Html } from '@react-three/drei'
 
 export default function GlassVideoPanel() {
-  const videoRef = useRef(null)
-  const textureRef = useRef(null)
+  const videoRef = useRef()
+  const textureRef = useRef()
 
   useEffect(() => {
     if (videoRef.current) {
@@ -18,30 +17,33 @@ export default function GlassVideoPanel() {
 
   return (
     <>
-      {/* Стекло */}
-      <mesh position={[0, 0, 0]}>
-        <boxGeometry args={[3, 2, 0.05]} />
-        <meshPhysicalMaterial
-          transmission={1}
-          roughness={0.1}
-          thickness={0.2}
-          transparent
-          opacity={0.95}
-          ior={1.5}
-          reflectivity={0.6}
-          clearcoat={1}
-        />
-      </mesh>
-
-      {/* Видео внутри */}
+      {/* Задняя видеоплоскость */}
       {textureRef.current && (
-        <mesh position={[0, 0, -0.031]}>
+        <mesh position={[0, 0, -0.03]}>
           <planeGeometry args={[2.8, 1.8]} />
           <meshBasicMaterial map={textureRef.current} toneMapped={false} />
         </mesh>
       )}
 
-      {/* Скрытое HTML-видео */}
+      {/* Стеклянная панель */}
+      <mesh position={[0, 0, 0]}>
+        <boxGeometry args={[3, 2, 0.05]} />
+        <meshPhysicalMaterial
+          transparent
+          transmission={1} // для стекла
+          roughness={0.03}
+          thickness={0.2}
+          ior={1.5} // показатель преломления
+          reflectivity={0.7}
+          clearcoat={1}
+          clearcoatRoughness={0.05}
+          attenuationDistance={1.5}
+          attenuationColor={'#ffffff'}
+          color="#ffffff"
+        />
+      </mesh>
+
+      {/* Скрытое видео */}
       <Html style={{ display: 'none' }}>
         <video
           ref={videoRef}
