@@ -30,10 +30,13 @@ export default function GlassVideoPanel({ scrollRef }) {
 
   useFrame(() => {
     const scroll = scrollRef?.current || 0
-    const shouldShow = scroll > 1.6
+
+    // Включаем только между 1.7 и 3.0
+    const isVisible = scroll >= 1.7 && scroll <= 3.0
 
     if (groupRef.current) {
-      groupRef.current.visible = shouldShow
+      groupRef.current.visible = isVisible
+      groupRef.current.scale.set(1, 1, 1)
     }
   })
 
@@ -48,11 +51,7 @@ export default function GlassVideoPanel({ scrollRef }) {
       )}
 
       {/* Стеклянная панель */}
-      <mesh
-        ref={meshRef}
-        position={[0, 0, 0]}
-        rotation={[0.1, 0.15, 0]}
-      >
+      <mesh ref={meshRef} position={[0, 0, 0]} rotation={[0.1, 0.15, 0]}>
         <boxGeometry args={[3, 2, 0.05]} />
         <meshPhysicalMaterial
           transmission={1}
@@ -66,11 +65,11 @@ export default function GlassVideoPanel({ scrollRef }) {
         />
       </mesh>
 
-      {/* Видео элемент скрыт в DOM */}
+      {/* Скрытое видео в DOM */}
       <Html style={{ display: 'none' }}>
         <video
           ref={videoRef}
-          src="/videos/00002.mp4"
+          src="/videos/sample.mp4"
           muted
           loop
           playsInline

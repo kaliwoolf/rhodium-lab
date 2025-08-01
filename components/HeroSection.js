@@ -30,7 +30,7 @@ export default function HeroSection() {
         style={{ y: titleY, opacity: titleOpacity }}
         className="text-[clamp(2.5rem,8vw,7rem)] font-bold tracking-[0.15em] text-center leading-tight backdrop-blur-sm"
       >
-        RHODIUM LAB
+        RHODIUM
       </motion.h1>
 
       <motion.p
