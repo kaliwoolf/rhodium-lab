@@ -1,34 +1,35 @@
 import Head from 'next/head'
-import ThreeBackground from '../components/ThreeBackground'
+import dynamic from 'next/dynamic'
 import HeroSection from '../components/HeroSection'
 import { motion } from 'framer-motion'
-import GlassVideoPanel from '../components/GlassVideoPanel'
 import { useRef } from 'react'
 import { useInView } from 'react-intersection-observer'
 
+// ⬇ отключаем SSR для GlassVideoPanel (обязательно!)
+const GlassVideoPanel = dynamic(() => import('../components/GlassVideoPanel'), { ssr: false })
+
+// ⬇ пробрасываем showPanel в ThreeBackground
+const ThreeBackground = dynamic(() => import('../components/ThreeBackground'), { ssr: false })
 
 export default function Home() {
   const { ref: projectsRef, inView: isProjectsInView } = useInView({
-    threshold: 0.2, // показывать, когда 20% блока видно
+    threshold: 0.2,
     triggerOnce: false,
   })
-
 
   return (
     <>
       <Head>
-        <title>RHODIUM LAB</title>
+        <title>RHODIUM</title>
       </Head>
 
-      <ThreeBackground>
-        {/* Только если пользователь прокрутил до projects */}
-        {isProjectsInView && <GlassVideoPanel />}
-      </ThreeBackground>
+      {/* ⬇ передаём showPanel как флаг */}
+      <ThreeBackground showPanel={isProjectsInView} />
 
       <main className="relative z-10">
-          <HeroSection />
+        <HeroSection />
 
-      {/* Projects */}
+        {/* Projects */}
         <motion.section
           id="projects"
           ref={projectsRef}
@@ -50,17 +51,7 @@ export default function Home() {
         >
           <p className="text-4xl">Контакты</p>
         </motion.section>
-
-      <motion.section
-          id="contact"
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="h-screen bg-transparent text-white flex items-center justify-center"
-      >
-          <p className="text-4xl">Контакты</p>
-        </motion.section>
-    </main>
+      </main>
     </>
   )
 }
