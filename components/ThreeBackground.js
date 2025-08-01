@@ -1,82 +1,124 @@
-import React, { useRef, useEffect } from 'react'
+import React, { Suspense, useRef, useEffect, useMemo, useState } from 'react'
+import { Canvas, useFrame } from '@react-three/fiber'
+import { EffectComposer } from '@react-three/postprocessing'
+import { Points, PointMaterial, Environment, Float } from '@react-three/drei'
 import * as THREE from 'three'
-import { Html, useEnvironment } from '@react-three/drei'
-import { useFrame } from '@react-three/fiber'
+import dynamic from 'next/dynamic'
 
-export default function GlassVideoPanel({ scrollRef }) {
-  const videoRef = useRef()
-  const textureRef = useRef()
-  const meshRef = useRef()
-  const groupRef = useRef()
+const Starfield = dynamic(() => import('./Starfield'), { ssr: false })
+const GlassSaturn = dynamic(() => import('./GlassSaturn'), { ssr: false })
+const DynamicBloom = dynamic(() => import('./DynamicBloom'), { ssr: false })
+const SupernovaFlash = dynamic(() => import('./SupernovaFlash'), { ssr: false })
+const GlassVideoPanel = dynamic(() => import('./GlassVideoPanel'), { ssr: false })
 
-  const envMap = useEnvironment({ preset: 'apartment' })
 
+export default function ThreeBackground({ children }) {
+  const mouse = useRef({ x: 0, y: 0 })
+  const rawScroll = useRef(0)
+  const smoothScroll = useRef(0)
+  const [explosionFactor, setExplosionFactor] = useState(0)
+
+
+  // Scroll event → rawScroll
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.play()
-      const texture = new THREE.VideoTexture(videoRef.current)
-      texture.encoding = THREE.sRGBEncoding
-      textureRef.current = texture
+    const handleScroll = () => {
+      rawScroll.current = window.scrollY / window.innerHeight
     }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  // Mouse tracking
   useEffect(() => {
-    if (meshRef.current && envMap) {
-      meshRef.current.material.envMap = envMap
-      meshRef.current.material.envMapIntensity = 1
-      meshRef.current.material.needsUpdate = true
+    const handleMouseMove = (e) => {
+      const targetX = (e.clientX / window.innerWidth - 0.5) * 2
+      const targetY = -(e.clientY / window.innerHeight - 0.5) * 2
+      mouse.current.x += (targetX - mouse.current.x) * 0.05
+      mouse.current.y += (targetY - mouse.current.y) * 0.05
     }
-  }, [envMap])
 
-  useFrame(() => {
-    const scroll = scrollRef?.current || 0
-    const shouldShow = scroll > 1.6
+    window.addEventListener('mousemove', handleMouseMove)
+    return () => window.removeEventListener('mousemove', handleMouseMove)
+  }, [])
 
-    if (groupRef.current) {
-      groupRef.current.visible = shouldShow
+  // 🔁 rAF сглаживание скролла
+  useEffect(() => {
+    let raf
+    const update = () => {
+      smoothScroll.current += (rawScroll.current - smoothScroll.current) * 0.1
+
+      const newExplosion = smoothScroll.current > 1.0
+        ? Math.tanh((smoothScroll.current - 1.0) * 3.3)
+        : 0
+
+      setExplosionFactor(newExplosion)
+
+      raf = requestAnimationFrame(update)
     }
-  })
+    update()
+    return () => cancelAnimationFrame(raf)
+  }, [])
+
 
   return (
-    <group ref={groupRef}>
-      {/* Задняя видеоплоскость */}
-      {textureRef.current && (
-        <mesh position={[0, 0, -0.03]}>
-          <planeGeometry args={[2.8, 1.8]} />
-          <meshBasicMaterial map={textureRef.current} toneMapped={false} />
-        </mesh>
-      )}
-
-      {/* Стеклянная панель */}
-      <mesh
-        ref={meshRef}
-        position={[0, 0, 0]}
-        rotation={[0.1, 0.15, 0]}
+    <>
+      <Canvas
+        camera={{ position: [0, 0, 9], fov: 35 }}
+        gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping }}
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          zIndex: -2,
+          pointerEvents: 'none',
+          background: '#000000'
+        }}
+        onCreated={({ camera }) => camera.layers.set(0)}
       >
-        <boxGeometry args={[3, 2, 0.05]} />
-        <meshPhysicalMaterial
-          transmission={1}
-          thickness={0.4}
-          roughness={0.05}
-          ior={1.5}
-          reflectivity={0.4}
-          clearcoat={1}
-          transparent
-          opacity={1}
-        />
-      </mesh>
+        <Suspense fallback={null}>
+          <Starfield
+            mouse={mouse}
+            scrollRef={smoothScroll}
+            explosionFactor={explosionFactor}
+          />
+          <SupernovaFlash explosionFactor={explosionFactor} />
+          <EffectComposer>
+            <DynamicBloom explosionFactor={explosionFactor} />
+          </EffectComposer>           
+        </Suspense>
+      </Canvas>
 
-      {/* Видео элемент скрыт в DOM */}
-      <Html style={{ display: 'none' }}>
-        <video
-          ref={videoRef}
-          src="/videos/00002.mp4"
-          muted
-          loop
-          playsInline
-          crossOrigin="anonymous"
-        />
-      </Html>
-    </group>
+      <Canvas
+        camera={{ position: [0, 0, 8], fov: 35 }}
+        gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping }}
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          zIndex: -1,
+          pointerEvents: 'none'
+        }}
+        onCreated={({ camera }) => camera.layers.enable(1)}
+      >
+        <Suspense fallback={null}>
+          <GlassSaturn mouse={mouse} scrollRef={smoothScroll} />
+          <Environment
+            files="/env/starfield_2k.hdr"
+            background={false}
+          />
+          <group>
+            <Float speed={2} rotationIntensity={0.1} floatIntensity={0.3}>
+              <Suspense fallback={null}>
+                <GlassVideoPanel scrollRef={smoothScroll} />
+              </Suspense>
+            </Float>
+          </group>
+        </Suspense>
+      </Canvas>
+    </>
   )
 }
