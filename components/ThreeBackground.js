@@ -12,7 +12,7 @@ const SupernovaFlash = dynamic(() => import('./SupernovaFlash'), { ssr: false })
 const GlassVideoPanel = dynamic(() => import('./GlassVideoPanel'), { ssr: false })
 
 
-export default function ThreeBackground({ showPanel }) {
+export default function ThreeBackground() {
   const mouse = useRef({ x: 0, y: 0 })
   const rawScroll = useRef(0)
   const smoothScroll = useRef(0)
@@ -111,13 +111,11 @@ export default function ThreeBackground({ showPanel }) {
             background={false}
           />
           {/* ⬇ Панель появляется только если showPanel === true */}
-          {showPanel && (
             <Float speed={2} rotationIntensity={0.1} floatIntensity={0.3}>
               <Suspense fallback={null}>
                 <GlassVideoPanel scrollRef={smoothScroll} />
               </Suspense>
             </Float>
-          )}
         </Suspense>
       </Canvas>
     </>
