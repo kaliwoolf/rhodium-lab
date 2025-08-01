@@ -3,7 +3,7 @@ import * as THREE from 'three'
 import { Html, useEnvironment } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 
-export default function GlassVideoPanel({ scrollRef }) {
+export default function GlassVideoPanel({ scrollRef, center = 1.0 }) {
   const videoRef = useRef()
   const textureRef = useRef()
   const meshRef = useRef()
@@ -30,7 +30,7 @@ export default function GlassVideoPanel({ scrollRef }) {
 
   useFrame(() => {
     const scroll = scrollRef?.current || 0
-    const fade = Math.max(1 - Math.abs(scroll - 2.0) * 2.5, 0) // появление в центре экрана
+    const fade = Math.max(1 - Math.abs(scroll - center) * 2.5, 0)
     const visible = fade > 0.01
 
     if (groupRef.current) {

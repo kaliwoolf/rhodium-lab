@@ -113,7 +113,7 @@ export default function ThreeBackground() {
           {/* ⬇ Панель появляется только если showPanel === true */}
             <Float speed={2} rotationIntensity={0.1} floatIntensity={0.3}>
               <Suspense fallback={null}>
-                <GlassVideoPanel scrollRef={smoothScroll} />
+                <GlassVideoPanel scrollRef={smoothScroll} center={1.0} />
               </Suspense>
             </Float>
         </Suspense>
