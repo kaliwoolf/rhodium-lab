@@ -30,13 +30,12 @@ export default function GlassVideoPanel({ scrollRef }) {
 
   useFrame(() => {
     const scroll = scrollRef?.current || 0
-
-    // Включаем только между 1.7 и 3.0
-    const isVisible = scroll >= 1.7 && scroll <= 3.0
+    const fade = Math.max(1 - Math.abs(scroll - 2.0) * 2.5, 0) // появление в центре экрана
+    const visible = fade > 0.01
 
     if (groupRef.current) {
-      groupRef.current.visible = isVisible
-      groupRef.current.scale.set(1, 1, 1)
+      groupRef.current.visible = visible
+      groupRef.current.scale.set(fade, fade, fade)
     }
   })
 
