@@ -9,6 +9,25 @@ export default function GlassVideoPanel() {
 
   const envMap = useEnvironment({ preset: 'apartment' })
 
+  useFrame(() => {
+  const scroll = scrollRef?.current || 0
+
+  // Показываем панель только между 1.8 и 2.8
+  let fade = 0
+  if (scroll > 1.8 && scroll < 2.8) {
+    fade = (scroll - 1.8) / 1.0
+  } else if (scroll >= 2.8) {
+    fade = 1.0
+  } else {
+    fade = 0 // ← обязательно!
+  }
+
+  if (groupRef.current) {
+    groupRef.current.visible = fade > 0.01
+    groupRef.current.scale.set(fade, fade, fade)
+  }
+})
+
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.play()
