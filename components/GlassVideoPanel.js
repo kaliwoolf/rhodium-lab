@@ -11,25 +11,6 @@ export default function GlassVideoPanel({ scrollRef }) {
 
   const envMap = useEnvironment({ preset: 'apartment' })
 
-  // 🔁 fade по scrollRef
-  useFrame(() => {
-    const scroll = scrollRef?.current || 0
-
-    let fade = 0
-    if (scroll > 1.8 && scroll < 2.8) {
-      fade = (scroll - 1.8) / 1.0
-    } else if (scroll >= 2.8) {
-      fade = 1.0
-    } else {
-      fade = 0
-    }
-
-    if (groupRef.current) {
-      groupRef.current.visible = fade > 0.01
-      groupRef.current.scale.set(fade, fade, fade)
-    }
-  })
-
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.play()
@@ -46,6 +27,25 @@ export default function GlassVideoPanel({ scrollRef }) {
       meshRef.current.material.needsUpdate = true
     }
   }, [envMap])
+
+  useFrame(() => {
+    const scroll = scrollRef?.current || 0
+
+    // Показываем панель только между 1.6 и 2.6
+    let fade = 0
+    if (scroll > 1.6 && scroll < 2.6) {
+      fade = (scroll - 1.6) / 1.0
+    } else if (scroll >= 2.6) {
+      fade = 1.0
+    } else {
+      fade = 0
+    }
+
+    if (groupRef.current) {
+      groupRef.current.visible = fade > 0.01
+      groupRef.current.scale.set(fade, fade, fade)
+    }
+  })
 
   return (
     <group ref={groupRef}>
@@ -72,7 +72,7 @@ export default function GlassVideoPanel({ scrollRef }) {
         />
       </mesh>
 
-      {/* Видео в DOM */}
+      {/* Видео элемент скрыт в DOM */}
       <Html style={{ display: 'none' }}>
         <video
           ref={videoRef}
