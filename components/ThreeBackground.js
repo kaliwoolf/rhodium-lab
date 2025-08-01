@@ -113,7 +113,7 @@ export default function ThreeBackground({ children }) {
           <group>
             <Float speed={2} rotationIntensity={0.1} floatIntensity={0.3}>
               <Suspense fallback={null}>
-                {smoothScroll.current > 0.9 && <GlassVideoPanel />}
+                <GlassVideoPanel scrollRef={smoothScroll} />
               </Suspense>
             </Float>
           </group>
