@@ -1,4 +1,4 @@
-.glass-contact {
+.glassContact {
   backdrop-filter: blur(18px) brightness(0.8);
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -6,7 +6,7 @@
   position: relative;
 }
 
-.glass-contact::before {
+.glassContact::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -18,7 +18,7 @@
   mix-blend-mode: overlay;
 }
 
-.glass-input {
+.glassInput {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 8px;
@@ -28,7 +28,7 @@
   backdrop-filter: blur(12px);
 }
 
-.glass-button {
+.glassButton {
   background: rgba(255, 0, 100, 0.15);
   color: white;
   padding: 0.7rem 1.2rem;
@@ -38,6 +38,6 @@
   transition: background 0.3s ease;
 }
 
-.glass-button:hover {
+.glassButton:hover {
   background: rgba(255, 0, 100, 0.3);
 }

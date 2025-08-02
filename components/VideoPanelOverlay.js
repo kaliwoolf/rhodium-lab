@@ -15,13 +15,17 @@ export default function VideoPanelOverlay() {
       setVisible(isVisible)
     }
 
-    handleScroll()
-    window.addEventListener('scroll', handleScroll)
-    window.addEventListener('resize', handleScroll)
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-      window.removeEventListener('resize', handleScroll)
+    const handleScroll = () => {
+      const section = document.getElementById('projects')
+      const rect = section?.getBoundingClientRect()
+      if (!rect) return
+
+      const topVisible = rect.top < window.innerHeight * 0.4
+      const bottomAbove = rect.bottom > window.innerHeight * 0.5
+
+      setVisible(topVisible && bottomAbove)
     }
+
   }, [])
 
   return (
@@ -38,7 +42,9 @@ export default function VideoPanelOverlay() {
           />
         </div>
         <div className={styles.content}>
-          <h2 className="text-xl font-bold mb-4">🧪 Актуальные курсы</h2>
+          <h3 className="text-white text-xl font-semibold px-6 py-2 rounded-full bg-[rgba(255,255,255,0.1)] backdrop-blur-md border border-white/20 shadow-md mb-6 w-fit mx-auto">
+            ✨ Актуальные проекты
+          </h3>
           <CourseSlider />
         </div>
 
