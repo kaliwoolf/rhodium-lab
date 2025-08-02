@@ -1,4 +1,3 @@
-// components/VideoPanelOverlay.jsx
 import { useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import styles from '../styles/VideoPanelOverlay.module.css'
@@ -13,12 +12,11 @@ eexport default function VideoPanelOverlay() {
 
   return (
     <>
-      {/* Триггер ставим в видимую область — напротив секции \"Проекты\" */}
       <div ref={ref} id="video-trigger" style={{ height: '100px', marginTop: '-80vh' }} />
 
       <div className={`${styles.panel} ${visible ? styles.show : ''}`}>
         <video
-          src=\"/videos/00002.mp4\"
+          src="/videos/00002.mp4"
           autoPlay
           muted
           loop
@@ -28,4 +26,3 @@ eexport default function VideoPanelOverlay() {
     </>
   )
 }
-
