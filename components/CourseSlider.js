@@ -41,7 +41,7 @@ export default function CourseSlider() {
   const sliderRef = useRef()
   const [activeIndex, setActiveIndex] = useState(middleIndex)
 
-  const scrollToCard = (index) => {
+  const scrollToCard = (index, smooth = true) => {
     const clampedIndex = Math.max(0, Math.min(index, courses.length - 1))
     setActiveIndex(clampedIndex)
 
@@ -57,7 +57,7 @@ export default function CourseSlider() {
 
     slider.scrollTo({
       left: scrollOffset,
-       behavior: smooth ? 'smooth' : 'auto',
+      behavior: smooth ? 'smooth' : 'auto',
     })
   }
 
