@@ -9,12 +9,10 @@
 }
 
 .card:hover {
-  transform: scale(1.03);
   z-index: 2;
 }
 
 .card.focused {
-  transform: scale(1.15);
   z-index: 3;
 }
 
