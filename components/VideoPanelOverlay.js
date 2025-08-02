@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import styles from '../styles/VideoPanelOverlay.module.css'
 
-eexport default function VideoPanelOverlay() {
+export default function VideoPanelOverlay() {
   const { ref, inView } = useInView({ threshold: 0.3 })
   const [visible, setVisible] = useState(false)
 
