@@ -17,7 +17,7 @@
   -webkit-overflow-scrolling: touch;
   gap: 2rem;
   scroll-behavior: smooth;
-  padding: 0 5vw;
+  padding: 5vw;
 }
 
 .slider::-webkit-scrollbar {
@@ -29,6 +29,7 @@
   scroll-snap-align: center;
   flex: 0 0 auto;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 20px;
   /*
   position: relative;
   width: 320px; 
