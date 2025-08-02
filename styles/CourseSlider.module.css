@@ -8,7 +8,7 @@
   margin: 0 auto;
 }
 
-.wrapper::before,
+/*.wrapper::before,
 .wrapper::after {
   content: '';
   position: absolute;
@@ -27,7 +27,7 @@
 .wrapper::after {
   right: 0;
   background: linear-gradient(to left, rgba(0, 0, 0, 0.4), transparent);
-}
+} */
 
 .slider {
   display: flex;
@@ -82,27 +82,22 @@
   overflow: hidden;
 }
 
-
 .leftButton,
 .rightButton {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 10;
+  z-index: 5;
   width: 48px;
   height: 48px;
-  margin: 0 10px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(8px);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   color: white;
+  font-size: 24px;
   cursor: pointer;
+  backdrop-filter: blur(8px);
   transition: background 0.3s ease;
-}
-
-.leftButton:hover,
-.rightButton:hover {
-  background: rgba(255, 255, 255, 0.15);
 }
 
 .leftButton {
@@ -111,4 +106,9 @@
 
 .rightButton {
   right: 0;
+}
+
+.leftButton:hover,
+.rightButton:hover {
+  background: rgba(255, 255, 255, 0.15);
 }

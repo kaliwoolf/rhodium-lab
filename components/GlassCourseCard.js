@@ -1,10 +1,11 @@
 import { useRef, useState } from 'react'
+import classNames from 'classnames'
 import styles from '../styles/GlassCourseCard.module.css'
 import GlassVideoEffect from '../components/GlassVideoEffect'
 
 export default function GlassCourseCard({ title, description, link, video, texture, sliderRef }) {
   const videoRef = useRef(null)
-   const [isHovered, setIsHovered] = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
 
   const handleMouseEnter = () => {
     setIsHovered(true)
@@ -17,7 +18,6 @@ export default function GlassCourseCard({ title, description, link, video, textu
     videoRef.current.currentTime = 0
   }
 
-  // Проброс wheel-события в родительский слайдер
   const handleWheel = (e) => {
     if (!sliderRef?.current) return
     e.preventDefault()
@@ -30,7 +30,12 @@ export default function GlassCourseCard({ title, description, link, video, textu
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <GlassVideoEffect src={video} texture={texture} className={styles.videoWrapper} videoRef={videoRef}  className={classNames(styles.videoWrapper, { [styles.visible]: isHovered })}/>
+      <GlassVideoEffect
+        src={video}
+        texture={texture}
+        videoRef={videoRef}
+        className={classNames(styles.videoWrapper, { [styles.visible]: isHovered })}
+      />
 
       <div className={styles.overlay}>
         <h3 className={styles.title}>{title}</h3>
