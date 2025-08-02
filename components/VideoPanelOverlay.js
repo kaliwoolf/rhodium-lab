@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import styles from '../styles/VideoPanelOverlay.module.css'
+import CourseSlider from '../components/CourseSlider'
+
 
 export default function VideoPanelOverlay() {
   const [visible, setVisible] = useState(false)
@@ -36,9 +38,10 @@ export default function VideoPanelOverlay() {
           />
         </div>
         <div className={styles.content}>
-          <p>✨ Это панель со стеклом и видеофоном</p>
-          <p>Можно добавить сюда любой текст, кнопку или SVG</p>
+          <h2 className="text-xl font-bold mb-4">🧪 Актуальные курсы</h2>
+          <CourseSlider />
         </div>
+
       </div>
     </div>
   )
