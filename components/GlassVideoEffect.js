@@ -12,7 +12,7 @@ export default function GlassVideoEffect({ src, className = '' }) {
           loop
           playsInline
           preload="auto"
-          className={styles.video}
+          className="video"
         />
         <div className={styles.overlay} />
       </div>

@@ -46,7 +46,7 @@
   filter: contrast(1.2) brightness(1.05) saturate(1.1);
 }
 
-.card:hover .videoWrapper video {
+.card:hover .video {
   visibility: visible;
   opacity: 1;
 }
