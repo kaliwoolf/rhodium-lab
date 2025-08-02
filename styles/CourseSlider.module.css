@@ -61,6 +61,13 @@
   overflow: hidden;
 }
 
+.sliderOuterWrapper {
+  width: 100%;
+  max-width: 1000px; /* или что тебе нужно */
+  margin: 0 auto;
+  position: relative;
+}
+
 .leftButton,
 .rightButton {
   position: absolute;

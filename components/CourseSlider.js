@@ -86,17 +86,18 @@ export default function CourseSlider() {
   }, [activeIndex])
 
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.sliderContainer}>
-        {activeIndex > 0 && (
-          <button
-            className={styles.leftButton}
-            onClick={() => scrollToCard(activeIndex - 1)}
-          >
-            ‹
-          </button>
-        )}
+  <div className={styles.wrapper}>
+    <div className={styles.sliderOuterWrapper}>
+      {activeIndex > 0 && (
+        <button
+          className={styles.leftButton}
+          onClick={() => scrollToCard(activeIndex - 1)}
+        >
+          ‹
+        </button>
+      )}
 
+      <div className={styles.sliderContainer}>
         <div className={styles.slider} ref={sliderRef}>
           {courses.map((course, index) => (
             <div
@@ -112,16 +113,16 @@ export default function CourseSlider() {
             </div>
           ))}
         </div>
-
-        {activeIndex < courses.length - 1 && (
-          <button
-            className={styles.rightButton}
-            onClick={() => scrollToCard(activeIndex + 1)}
-          >
-            ›
-          </button>
-        )}
       </div>
+
+      {activeIndex < courses.length - 1 && (
+        <button
+          className={styles.rightButton}
+          onClick={() => scrollToCard(activeIndex + 1)}
+        >
+          ›
+        </button>
+      )}
     </div>
-  )
-}
+  </div>
+)
