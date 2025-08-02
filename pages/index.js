@@ -22,32 +22,16 @@ export default function Home() {
       <main className="relative z-10">
         <HeroSection />
 
-        {/* Projects */}
-        <motion.section
-          id="projects"
-          ref={projectsRef}
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="h-screen bg-transparent text-white flex items-center justify-center"
-        >
-          <div id="projects-observe-anchor">
-            <p className="text-4xl">Проекты будут здесь ✨</p>
-          </div>
-        </motion.section>
+        <section id="projects" className="h-screen flex items-center justify-center text-white">
+          <p className="text-4xl">Проекты будут здесь ✨</p>
+        </section>
 
-      <VideoPanelOverlay inView={isProjectsInView} />
+        <VideoPanelOverlay />
 
-        {/* Contact */}
-        <motion.section
-          id="contact"
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="h-screen bg-transparent text-white flex items-center justify-center"
-        >
+        <section id="contact" className="h-screen flex items-center justify-center text-white">
           <p className="text-4xl">Контакты</p>
-        </motion.section>
+        </section>
+        
       </main>
     </>
   )

@@ -1,24 +1,37 @@
 import { useEffect, useState } from 'react'
-import { useInView } from 'react-intersection-observer'
 import styles from '../styles/VideoPanelOverlay.module.css'
 
 export default function VideoPanelOverlay() {
-  const { ref, inView } = useInView({ threshold: 0.5 })
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
-    setVisible(inView)
-  }, [inView])
+    const handleScroll = () => {
+      const section = document.getElementById('projects')
+      if (!section) return
+      const rect = section.getBoundingClientRect()
+      const isVisible = rect.top < window.innerHeight * 0.6 && rect.bottom > window.innerHeight * 0.3
+      setVisible(isVisible)
+    }
 
-  useEffect(() => {
-    const anchor = document.getElementById('projects-observe-anchor')
-    if (anchor) ref(anchor)
-  }, [ref])
+    handleScroll()
+    window.addEventListener('scroll', handleScroll)
+    window.addEventListener('resize', handleScroll)
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('resize', handleScroll)
+    }
+  }, [])
 
   return (
     <div className={`${styles.panel} ${visible ? styles.show : ''}`}>
       <div className={styles.inner}>
-        <p>Панель на секции Проекты</p>
+        <video
+          src="/videos/00002.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+        />
       </div>
     </div>
   )
