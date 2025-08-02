@@ -37,57 +37,59 @@ const baseCourses = [
 const courses = baseCourses
 const middleIndex = Math.floor(courses.length / 2)
 
-
 export default function CourseSlider() {
   const sliderRef = useRef()
-  const [centerIndex, setCenterIndex] = useState(middleIndex)
   const [activeIndex, setActiveIndex] = useState(middleIndex)
 
+  const scrollToCard = (index) => {
+    const clampedIndex = Math.max(0, Math.min(index, courses.length - 1))
+    setActiveIndex(clampedIndex)
 
-  const scroll = (dir) => {
-  const newIndex = Math.min(
-    Math.max(0, activeIndex + dir),
-    courses.length - 1
-  )
-  setActiveIndex(newIndex)
+    const slider = sliderRef.current
+    if (!slider) return
 
-  if (sliderRef.current) {
-    const scrollAmount = 340 // карточка + gap
-    sliderRef.current.scrollTo({
-      left: newIndex * scrollAmount,
-      behavior: 'smooth'
+    const card = slider.querySelector(`[data-index="${clampedIndex}"]`)
+    if (!card) return
+
+    const sliderRect = slider.getBoundingClientRect()
+    const cardRect = card.getBoundingClientRect()
+    const scrollOffset = card.offsetLeft - (sliderRect.width / 2 - cardRect.width / 2)
+
+    slider.scrollTo({
+      left: scrollOffset,
+      behavior: 'smooth',
     })
   }
-}
-
 
   // swipe на мобилках
   useEffect(() => {
     const slider = sliderRef.current
     if (!slider) return
+
     let startX = 0
     let endX = 0
+
     const onTouchStart = (e) => startX = e.touches[0].clientX
     const onTouchEnd = (e) => {
       endX = e.changedTouches[0].clientX
       const delta = startX - endX
-      if (delta > 50) scroll(1)
-      if (delta < -50) scroll(-1)
+      if (delta > 50) scrollToCard(activeIndex + 1)
+      if (delta < -50) scrollToCard(activeIndex - 1)
     }
+
     slider.addEventListener('touchstart', onTouchStart)
     slider.addEventListener('touchend', onTouchEnd)
     return () => {
       slider.removeEventListener('touchstart', onTouchStart)
       slider.removeEventListener('touchend', onTouchEnd)
     }
-  }, [])
-
+  }, [activeIndex])
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.sliderContainer}>
-        <button className={styles.leftButton} onClick={() => scroll(-1)}>‹</button>
-        
+        <button className={styles.leftButton} onClick={() => scrollToCard(activeIndex - 1)}>‹</button>
+
         <div className={styles.slider} ref={sliderRef}>
           {courses.map((course, index) => (
             <div
@@ -103,10 +105,9 @@ export default function CourseSlider() {
             </div>
           ))}
         </div>
-        
-        <button className={styles.rightButton} onClick={() => scroll(1)}>›</button>
+
+        <button className={styles.rightButton} onClick={() => scrollToCard(activeIndex + 1)}>›</button>
       </div>
     </div>
-
   )
 }
