@@ -25,13 +25,16 @@ export default function VideoPanelOverlay() {
   return (
     <div className={`${styles.panel} ${visible ? styles.show : ''}`}>
       <div className={styles.inner}>
-        <video
-          src="/video/00002.mp4"
-          autoPlay
-          muted
-          loop
-          playsInline
-        />
+        <div className={styles.videoWrapper}>
+          <video
+            src="/video/00002.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+          />
+        </div>
         <div className={styles.content}>
           <p>✨ Это панель со стеклом и видеофоном</p>
           <p>Можно добавить сюда любой текст, кнопку или SVG</p>

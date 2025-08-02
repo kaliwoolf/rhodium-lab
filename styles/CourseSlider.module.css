@@ -1,0 +1,20 @@
+.sliderContainer {
+  width: 100%;
+  overflow-x: auto;
+  padding: 2rem 0;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+}
+
+.sliderContainer::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+.slider {
+  display: flex;
+  gap: 1.5rem;
+  padding: 0 2rem;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}

@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
 import HeroSection from '../components/HeroSection'
+import styles from '../styles/ContactBlock.module.css'
 import { motion } from 'framer-motion'
 import { useRef } from 'react'
 import { useInView } from 'react-intersection-observer'
@@ -27,9 +28,17 @@ export default function Home() {
 
         <VideoPanelOverlay />
 
-        <section id="contact" className="h-screen flex items-center justify-center text-white">
-          <p className="text-4xl">Контакты</p>
+        <section id="contact" className="relative h-screen flex items-center justify-center px-4">
+          <div className="glass-contact w-full max-w-xl p-8 rounded-2xl">
+            <h2 className="text-3xl font-bold mb-6 text-white">Связаться с лабораторией</h2>
+            <form className="flex flex-col gap-4">
+              <input type="email" placeholder="Ваш e-mail" className="glass-input" />
+              <textarea rows="4" placeholder="Сообщение" className="glass-input" />
+              <button type="submit" className="glass-button">Отправить</button>
+            </form>
+          </div>
         </section>
+
 
       </main>
     </>
