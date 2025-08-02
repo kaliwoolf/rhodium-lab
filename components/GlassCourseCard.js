@@ -1,29 +1,17 @@
 // components/GlassCourseCard.js
 import styles from '../styles/GlassCourseCard.module.css'
-import GlassVideoEffect from '../components/GlassVideoEffect'
+import GlassVideoEffect from './GlassVideoEffect'
 
-export default function GlassCourseCard({ title, description, link, video, isFocused }) {
+export default function GlassCourseCard({ title, description, link, video }) {
   return (
+    <div className={styles.card}>
+      <GlassVideoEffect src={video} className={styles.videoWrapper} />
 
-   <GlassVideoEffect src={video} className={styles.videoWrapper} />
-    
-   <div className={styles.card}>
-      <div className={styles.videoWrapper}>
-        <video
-          src={video}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-        />
-      </div>
       <div className={styles.overlay}>
         <h3 className={styles.title}>{title}</h3>
         <p className={styles.description}>{description}</p>
         <a href={link} className={styles.button}>Перейти →</a>
       </div>
     </div>
-
   )
 }
