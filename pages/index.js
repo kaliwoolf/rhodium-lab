@@ -13,14 +13,19 @@ export default function Home() {
     triggerOnce: false,
   })
 
-  export default function Home() {
   return (
     <>
+      <Head>
+        <title>RHODIUM</title>
+      </Head>
+
       <main className="relative z-10">
         <HeroSection />
 
+        {/* Projects */}
         <motion.section
           id="projects"
+          ref={projectsRef}
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
@@ -31,9 +36,16 @@ export default function Home() {
           </div>
         </motion.section>
 
-        <VideoPanelOverlay />
+      <VideoPanelOverlay inView={isProjectsInView} />
 
-        <motion.section id="contact" ...>
+        {/* Contact */}
+        <motion.section
+          id="contact"
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          className="h-screen bg-transparent text-white flex items-center justify-center"
+        >
           <p className="text-4xl">Контакты</p>
         </motion.section>
       </main>
