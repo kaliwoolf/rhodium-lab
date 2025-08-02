@@ -32,6 +32,10 @@ export default function VideoPanelOverlay() {
           loop
           playsInline
         />
+        <div className={styles.content}>
+          <p>✨ Это панель со стеклом и видеофоном</p>
+          <p>Можно добавить сюда любой текст, кнопку или SVG</p>
+        </div>
       </div>
     </div>
   )
