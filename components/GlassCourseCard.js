@@ -25,23 +25,24 @@ export default function GlassCourseCard({ title, description, link, video, textu
   }
 
   return (
-    <div
-      className={classNames(styles.card, { [styles.focused]: isFocused })}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onWheel={handleWheel}
-    >
-      <GlassVideoEffect
-        src={video}
-        texture={texture}
-        videoRef={videoRef}
-        className={classNames(styles.videoWrapper, { [styles.visible]: isHovered })}
-      />
+    <div className={styles.card} onWheel={handleWheel}>
+      <div
+        className={classNames(styles.inner, { [styles.focused]: isFocused })}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <GlassVideoEffect
+          src={video}
+          texture={texture}
+          videoRef={videoRef}
+          className={isHovered ? styles.visible : ''}
+        />
 
-      <div className={styles.overlay}>
-        <h3 className={styles.title}>{title}</h3>
-        <p className={styles.description}>{description}</p>
-        <a href={link} className={styles.button}>Перейти →</a>
+        <div className={styles.overlay}>
+          <h3 className={styles.title}>{title}</h3>
+          <p className={styles.description}>{description}</p>
+          <a href={link} className={styles.button}>Перейти →</a>
+        </div>
       </div>
     </div>
   )
