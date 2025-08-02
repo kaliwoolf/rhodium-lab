@@ -20,6 +20,10 @@
   box-shadow: 0 0 40px rgba(255, 0, 120, 0.35);
 }
 
+.card:hover .videoWrapper video {
+  opacity: 1;
+}
+
 .focused {
   transform: scale(1.15);
   box-shadow: 0 0 30px rgba(255, 0, 100, 0.3);
