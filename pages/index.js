@@ -23,7 +23,6 @@ export default function Home() {
         <HeroSection />
 
         <section id="projects" className="h-screen flex items-center justify-center text-white">
-          <p className="text-4xl">Проекты будут здесь ✨</p>
         </section>
 
         <VideoPanelOverlay />
@@ -31,7 +30,7 @@ export default function Home() {
         <section id="contact" className="h-screen flex items-center justify-center text-white">
           <p className="text-4xl">Контакты</p>
         </section>
-        
+
       </main>
     </>
   )
