@@ -23,17 +23,17 @@
 }
 
 .card {
-  flex: 0 0 auto;
-  scroll-snap-align: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  transform: scale(0.92); /* ← базовый размер */
-  opacity: 0.8;
+  flex: 0 0 260px;
+  margin: 0 12px;
 }
 
-.card:has(video:visible) {
-  transform: scale(1.03);
-  opacity: 1;
+.focused {
+  transform: scale(1.07);
+  box-shadow: 0 0 20px rgba(255, 0, 150, 0.4), 0 0 60px rgba(255, 0, 255, 0.2);
+  z-index: 1;
 }
+
 
 .leftButton,
 .rightButton {
