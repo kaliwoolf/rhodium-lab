@@ -35,7 +35,7 @@ export default function GlassCourseCard({ title, description, link, video, textu
           src={video}
           texture={texture}
           videoRef={videoRef}
-          className={isHovered ? styles.visible : ''}
+          className={classNames(styles.videoWrapper, { [styles.visible]: isHovered })}
         />
 
         <div className={styles.overlay}>
