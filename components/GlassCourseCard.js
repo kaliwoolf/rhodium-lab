@@ -2,10 +2,12 @@ import { useRef, useState } from 'react'
 import classNames from 'classnames'
 import styles from '../styles/GlassCourseCard.module.css'
 import GlassVideoEffect from '../components/GlassVideoEffect'
+import { useRouter } from 'next/router'
 
 export default function GlassCourseCard({ title, description, link, video, texture, sliderRef, isFocused }) {
   const videoRef = useRef(null)
   const [isHovered, setIsHovered] = useState(false)
+  const router = useRouter()
 
   const handleMouseEnter = () => {
     setIsHovered(true)
@@ -41,7 +43,18 @@ export default function GlassCourseCard({ title, description, link, video, textu
         <div className={styles.overlay}>
           <h3 className={styles.title}>{title}</h3>
           <p className={styles.description}>{description}</p>
-          <a href={link} className={styles.button}>Перейти →</a>
+
+          {isFocused && (
+            <button
+              className={styles.button}
+              onClick={(e) => {
+                e.stopPropagation()
+                router.push(link)
+              }}
+            >
+              Перейти →
+            </button>
+          )}
         </div>
       </div>
     </div>
