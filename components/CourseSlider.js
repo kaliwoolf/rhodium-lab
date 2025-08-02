@@ -70,7 +70,12 @@ export default function CourseSlider() {
       }
     }, [hasInitialized]);
 
-
+  useEffect(() => {
+  if (autoFocusOnMount) {
+    requestAnimationFrame(() => scrollToCard(activeIndex, true))
+  }
+}, [autoFocusOnMount])  
+    
   // swipe на мобилках
   useEffect(() => {
     const slider = sliderRef.current
