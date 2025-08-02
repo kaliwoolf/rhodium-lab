@@ -41,21 +41,6 @@ export default function CourseSlider() {
     }
   }
 
-  // горизонтальный скролл, блокируем вертикальный
-  useEffect(() => {
-    const slider = sliderRef.current
-    if (!slider) return
-
-    const onWheel = (e) => {
-      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-        e.preventDefault()
-      }
-    }
-
-    slider.addEventListener('wheel', onWheel, { passive: false })
-    return () => slider.removeEventListener('wheel', onWheel)
-  }, [])
-
   // swipe на мобилках
   useEffect(() => {
     const slider = sliderRef.current

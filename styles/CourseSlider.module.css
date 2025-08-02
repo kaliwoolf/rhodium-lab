@@ -15,6 +15,7 @@
   gap: 1rem;
   padding: 1rem 2rem;
   scroll-behavior: smooth; /* ✅ для плавности при прокрутке */
+  scrollbar-width: none; /* Firefox */
 }
 
 .slider::-webkit-scrollbar {
