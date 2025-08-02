@@ -1,24 +1,3 @@
-.card {
-  position: relative;
-  width: 800px;
-  height: 450px;
-  display: flex;
-  flex-direction: column; /* или row, если хочешь текст рядом с видео */
-  justify-content: center;
-  padding: 2rem;
-  border-radius: 20px;
-  overflow: hidden;
-
-  backdrop-filter: blur(16px);
-  background: rgba(15, 15, 20, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 0 30px rgba(255, 0, 120, 0.25);
-
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  z-index: 1;
-}
-
-
 .card:hover {
   transform: scale(1.03);
   box-shadow: 0 0 40px rgba(255, 0, 120, 0.35);
@@ -28,28 +7,34 @@
   opacity: 0.25;
 }
 
+.card {
+  position: relative;
+  width: 800px;
+  height: 550px;
+  overflow: visible; /* не обрезает масштабированное */
+  pointer-events: auto;
+}
+
+.inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 30px rgba(255, 0, 120, 0.25);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  transition: transform 0.4s ease;
+}
+
 .focused {
   transform: scale(1.15);
-  box-shadow: 0 0 30px rgba(255, 0, 100, 0.3);
   z-index: 2;
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
 }
-
-.glowWrapper {
-  position: relative;
-  z-index: 1;
-}
-
-.card.focused::after {
-  content: '';
-  position: absolute;
-  inset: -20px;
-  border-radius: 30px;
-  box-shadow: 0 0 80px rgba(255, 0, 120, 0.3);
-  z-index: 0;
-  pointer-events: none;
-}
-
 .videoWrapper {
   position: absolute;
   inset: 0;
