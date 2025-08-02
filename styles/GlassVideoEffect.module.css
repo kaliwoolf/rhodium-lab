@@ -37,5 +37,5 @@
 }
 
 .videoWrapper.visible .video {
-  opacity: 0.9; /* или меньше, если нужно мягче */
+  opacity: 0; /* или меньше, если нужно мягче */
 }
