@@ -51,6 +51,16 @@
   transition: transform 0.4s ease, box-shadow 0.4s ease;
 }
 
+.focused::after {
+  content: '';
+  position: absolute;
+  inset: -20px;
+  border-radius: 30px;
+  box-shadow: 0 0 80px rgba(255, 0, 120, 0.3);
+  z-index: 0;
+  pointer-events: none;
+}
+
 .videoWrapper {
   position: absolute;
   inset: 0;
