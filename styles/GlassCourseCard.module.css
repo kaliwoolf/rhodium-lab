@@ -67,6 +67,7 @@
 }
 
 .overlay {
+  background: none; 
   position: relative;
   z-index: 1;
   padding: 2rem;
