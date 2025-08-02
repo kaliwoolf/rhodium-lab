@@ -3,19 +3,42 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  overflow: hidden; /* ✅ убирает вертикальный скролл */
+  overflow: hidden;
+  max-width: 1100px; /* ≈ 3 карточки + gap */
+  margin: 0 auto;
 }
+
+.wrapper::before,
+.wrapper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 60px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.wrapper::before {
+  left: 0;
+  background: linear-gradient(to right, rgba(0,0,0,0.4), transparent);
+}
+
+.wrapper::after {
+  right: 0;
+  background: linear-gradient(to left, rgba(0,0,0,0.4), transparent);
+}
+
 
 .slider {
   display: flex;
   overflow-x: auto;
-  overflow-y: hidden; /* ✅ запрет на вертикальный скролл */
+  overflow-y: hidden;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
   gap: 1rem;
-  padding: 1rem 2rem;
-  scroll-behavior: smooth; /* ✅ для плавности при прокрутке */
-  scrollbar-width: none; /* Firefox */
+  scroll-behavior: smooth;
+  padding: 0; /* ← удаляем, чтобы выровнять по краям */
 }
 
 .slider::-webkit-scrollbar {

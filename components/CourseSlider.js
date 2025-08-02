@@ -43,13 +43,14 @@ export default function CourseSlider() {
   const [centerIndex, setCenterIndex] = useState(middleIndex)
 
   const scroll = (dir) => {
-    if (sliderRef.current) {
-      sliderRef.current.scrollBy({
-        left: dir * 300,
-        behavior: 'smooth'
-      })
-    }
+  if (sliderRef.current) {
+    const scrollAmount = 340; // ширина карточки + gap
+    sliderRef.current.scrollBy({
+      left: dir * scrollAmount,
+      behavior: 'smooth'
+    })
   }
+}
 
   // swipe на мобилках
   useEffect(() => {
