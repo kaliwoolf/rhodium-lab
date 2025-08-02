@@ -37,7 +37,7 @@ const baseCourses = [
 const courses = baseCourses
 const middleIndex = Math.floor(courses.length / 2)
 
-export default function CourseSlider({ autoFocusOnMount = false }) {
+export default function CourseSlider() {
   const sliderRef = useRef()
   const [activeIndex, setActiveIndex] = useState(middleIndex)
 
@@ -70,13 +70,6 @@ export default function CourseSlider({ autoFocusOnMount = false }) {
       }
     }, [hasInitialized]);
 
-  useEffect(() => {
-    if (autoFocusOnMount) {
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => scrollToCard(activeIndex, true))
-      })
-    }
-  }, [autoFocusOnMount])
     
   // swipe на мобилках
   useEffect(() => {
