@@ -20,6 +20,13 @@
   box-shadow: 0 0 40px rgba(255, 0, 120, 0.35);
 }
 
+.focused {
+  transform: scale(1.15);
+  box-shadow: 0 0 30px rgba(255, 0, 100, 0.3);
+  z-index: 2;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
 .videoWrapper {
   position: absolute;
   inset: 0;

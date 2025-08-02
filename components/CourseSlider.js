@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import GlassCourseCard from '../components/GlassCourseCard'
 import styles from '../styles/CourseSlider.module.css'
 
@@ -7,6 +7,7 @@ const courses = [
     title: 'КОД СТЫДА',
     description: 'Онлайн-курс из 12 занятий по системной проработке механизмов стыда',
     link: '/courses/kod-styda'
+    video: '/video/ks.mp4'
   },
   {
     title: 'ИНКВИЗИЦИЯ БОГАТСТВА',
@@ -76,7 +77,7 @@ export default function CourseSlider() {
     }
   }, [])
 
-  
+
   // 🎯 выделение центральной карточки
   useEffect(() => {
     const slider = sliderRef.current
@@ -105,7 +106,13 @@ export default function CourseSlider() {
       <button className={styles.leftButton} onClick={() => scroll(-1)}>‹</button>
       <div className={styles.slider} ref={sliderRef}>
         {courses.map((course, index) => (
-          <GlassCourseCard key={index} {...course} />
+          <div
+            key={index}
+            data-index={index}
+            className={`${styles.card} ${index === centerIndex ? styles.focused : ''}`}
+          >
+            <GlassCourseCard {...course} isFocused={index === centerIndex} />
+          </div>
         ))}
       </div>
       <button className={styles.rightButton} onClick={() => scroll(1)}>›</button>

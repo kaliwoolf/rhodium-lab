@@ -1,9 +1,9 @@
 // components/GlassCourseCard.js
 import styles from '../styles/GlassCourseCard.module.css'
 
-export default function GlassCourseCard({ title, description, link, video }) {
+export default function GlassCourseCard({ title, description, link, video, isFocused }) {
   return (
-    <div className={styles.card}>
+    <div className={`${styles.card} ${isFocused ? styles.focused : ''}`}>
       <div className={styles.videoWrapper}>
         <video
           src={video}
