@@ -9,14 +9,6 @@ export default function VideoPanelOverlay() {
   useEffect(() => {
     const handleScroll = () => {
       const section = document.getElementById('projects')
-      if (!section) return
-      const rect = section.getBoundingClientRect()
-      const isVisible = rect.top < window.innerHeight * 0.6 && rect.bottom > window.innerHeight * 0.3
-      setVisible(isVisible)
-    }
-
-    const handleScroll = () => {
-      const section = document.getElementById('projects')
       const rect = section?.getBoundingClientRect()
       if (!rect) return
 
@@ -26,6 +18,13 @@ export default function VideoPanelOverlay() {
       setVisible(topVisible && bottomAbove)
     }
 
+    handleScroll()
+    window.addEventListener('scroll', handleScroll)
+    window.addEventListener('resize', handleScroll)
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('resize', handleScroll)
+    }
   }, [])
 
   return (
