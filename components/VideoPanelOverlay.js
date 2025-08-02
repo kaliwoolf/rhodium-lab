@@ -26,7 +26,7 @@ export default function VideoPanelOverlay() {
     <div className={`${styles.panel} ${visible ? styles.show : ''}`}>
       <div className={styles.inner}>
         <video
-          src="/videos/00002.mp4"
+          src="/video/00002.mp4"
           autoPlay
           muted
           loop
