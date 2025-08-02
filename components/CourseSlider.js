@@ -19,18 +19,18 @@ const baseCourses = [
     texture: '/textures/glass-gold.jpg'
   },
   {
-    title: 'ПРОФАЙЛИНГ',
-    description: 'Анализ архетипов и поведения через системную оптику и карты',
-    link: '/courses/profiling-thoth',
-    video: '/video/profiling.mp4',
-    texture: '/textures/glass-blue.jpg'
-  },
-  {
     title: 'ПРИДВОРНЫЕ КАРТЫ',
     description: 'I Модуль по психотипам',
     link: '/courses/profiling-thoth',
     video: '/video/profiling.mp4',
     texture: '/textures/glass-neon.jpg'
+  },
+  {
+    title: 'ТАРО БОТ',
+    description: 'Бот Телеграм для определения психотипа',
+    link: 'https://t.me/portolux',
+    video: '/video/bot.mp4',
+    texture: '/textures/glass-ice.jpg'
   }
 ]
 
