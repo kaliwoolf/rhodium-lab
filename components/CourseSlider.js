@@ -88,7 +88,7 @@ export default function CourseSlider() {
             data-index={index}
             className={`${styles.card} ${index === centerIndex ? styles.focused : ''}`}
           >
-            <GlassCourseCard {...course} isFocused={index === centerIndex} />
+            <GlassCourseCard {...course} isFocused={index === centerIndex} sliderRef={sliderRef} />
           </div>
         ))}
       </div>

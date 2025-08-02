@@ -14,6 +14,13 @@ export default function GlassCourseCard({ title, description, link, video }) {
     videoRef.current.currentTime = 0
   }
 
+  // Проброс wheel-события в родительский слайдер
+  const handleWheel = (e) => {
+    if (!sliderRef?.current) return
+    e.preventDefault()
+    sliderRef.current.scrollLeft += e.deltaY
+  }
+
   return (
     <div
       className={styles.card}
