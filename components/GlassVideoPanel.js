@@ -68,7 +68,7 @@ export default function GlassVideoPanel({ scrollRef, center = 1.0 }) {
       <Html style={{ display: 'none' }}>
         <video
           ref={videoRef}
-          src="/videos/sample.mp4"
+          src="/videos/00002.mp4"
           muted
           loop
           playsInline
