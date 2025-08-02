@@ -3,31 +3,40 @@
   align-items: center;
   justify-content: center;
   position: relative;
+  overflow: hidden; /* ✅ убирает вертикальный скролл */
 }
 
 .slider {
   display: flex;
   overflow-x: auto;
+  overflow-y: hidden; /* ✅ запрет на вертикальный скролл */
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
   gap: 1rem;
   padding: 1rem 2rem;
+  scroll-behavior: smooth; /* ✅ для плавности при прокрутке */
 }
+
+.slider::-webkit-scrollbar {
+  display: none; /* ✅ скрываем вертикальный скролл */
+}
+
 
 .card {
   position: relative;
   scroll-snap-align: center;
   flex: 0 0 auto;
-  width: 300px;
-  height: 480px;
+  width: 320px; /* ✅ чуть больше для пропорции */
+  height: 420px;
   border-radius: 20px;
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .focused {
-  transform: scale(1.08);
-  box-shadow: 0 0 20px rgba(255, 0, 100, 0.5);
+  transform: scale(1.15); /* ✅ чуть больше */
+  box-shadow: 0 0 30px rgba(255, 0, 100, 0.4);
+  z-index: 1;
 }
 
 .leftButton,
@@ -35,22 +44,28 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 10;
+  z-index: 5;
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   color: white;
   font-size: 24px;
   cursor: pointer;
   backdrop-filter: blur(6px);
+  transition: background 0.3s ease;
+}
+
+.leftButton:hover,
+.rightButton:hover {
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .leftButton {
-  left: -20px;
+  left: 10px;
 }
 
 .rightButton {
-  right: -20px;
+  right: 10px;
 }
