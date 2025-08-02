@@ -33,7 +33,7 @@ export default function VideoPanelOverlay() {
     }
   }, [hasAppeared])
 
-  if (!visible) return null
+  if (!visible && !hasAppeared) return null
 
   return (
     <div className={styles.panel}>
