@@ -20,10 +20,6 @@
   box-shadow: 0 0 40px rgba(255, 0, 120, 0.35);
 }
 
-.card:hover .videoWrapper video {
-  opacity: 1;
-}
-
 .focused {
   transform: scale(1.15);
   box-shadow: 0 0 30px rgba(255, 0, 100, 0.3);
@@ -49,9 +45,25 @@
   filter: contrast(1.2) brightness(1.05) saturate(1.1);
 }
 
+.card:hover .videoWrapper video {
+  opacity: 1;
+}
+
+.videoWrapper::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('/textures/glass-noise.png');
+  background-size: cover;
+  mix-blend-mode: overlay;
+  opacity: 0.12;
+  pointer-events: none;
+  z-index: 1;
+}
+
 .overlay {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   padding: 1.5rem;
   display: flex;
   flex-direction: column;

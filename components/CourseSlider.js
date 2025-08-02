@@ -24,9 +24,9 @@ const baseCourses = [
   }
 ]
 
-// дублируем для псевдо-бесконечности
-const courses = [...baseCourses, ...baseCourses, ...baseCourses]
-const middleIndex = baseCourses.length
+const courses = baseCourses
+const middleIndex = Math.floor(courses.length / 2)
+
 
 export default function CourseSlider() {
   const sliderRef = useRef()
