@@ -6,7 +6,7 @@ const courses = [
   {
     title: 'КОД СТЫДА',
     description: 'Онлайн-курс из 12 занятий по системной проработке механизмов стыда',
-    link: '/courses/kod-styda'
+    link: '/courses/kod-styda',
     video: '/video/ks.mp4'
   },
   {
