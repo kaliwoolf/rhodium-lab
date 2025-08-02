@@ -61,6 +61,16 @@ export default function CourseSlider() {
     })
   }
 
+  const [hasInitialized, setHasInitialized] = useState(false);
+
+    useEffect(() => {
+      if (!hasInitialized) {
+        scrollToCard(activeIndex);
+        setHasInitialized(true);
+      }
+    }, [hasInitialized]);
+
+
   // swipe на мобилках
   useEffect(() => {
     const slider = sliderRef.current
