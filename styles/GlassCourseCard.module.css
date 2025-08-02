@@ -21,7 +21,7 @@
 }
 
 .card:hover .videoWrapper video {
-  opacity: 1;
+  opacity: 0.25;
 }
 
 .focused {
@@ -30,7 +30,6 @@
   z-index: 2;
   transition: transform 0.4s ease, box-shadow 0.4s ease;
 }
-
 
 .videoWrapper {
   position: absolute;
@@ -42,7 +41,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.25;
+  opacity: 0.15;
   pointer-events: none;
   display: block;
 }
