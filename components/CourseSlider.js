@@ -77,28 +77,6 @@ export default function CourseSlider() {
     }
   }, [])
 
-  // центральная карточка
-  useEffect(() => {
-    const slider = sliderRef.current
-    const updateFocus = () => {
-      const children = slider.querySelectorAll('[data-index]')
-      let closest = 0
-      let minDiff = Infinity
-      children.forEach((child, i) => {
-        const rect = child.getBoundingClientRect()
-        const diff = Math.abs(rect.left + rect.width / 2 - window.innerWidth / 2)
-        if (diff < minDiff) {
-          closest = i
-          minDiff = diff
-        }
-      })
-      setCenterIndex(closest)
-    }
-
-    updateFocus()
-    slider.addEventListener('scroll', updateFocus)
-    return () => slider.removeEventListener('scroll', updateFocus)
-  }, [])
 
   return (
     <div className={styles.wrapper}>
