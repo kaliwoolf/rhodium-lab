@@ -9,7 +9,6 @@ const Starfield = dynamic(() => import('./Starfield'), { ssr: false })
 const GlassSaturn = dynamic(() => import('./GlassSaturn'), { ssr: false })
 const DynamicBloom = dynamic(() => import('./DynamicBloom'), { ssr: false })
 const SupernovaFlash = dynamic(() => import('./SupernovaFlash'), { ssr: false })
-const GlassVideoPanel = dynamic(() => import('./GlassVideoPanel'), { ssr: false })
 
 
 export default function ThreeBackground() {
@@ -109,13 +108,7 @@ export default function ThreeBackground() {
           <Environment
             files="/env/starfield_2k.hdr"
             background={false}
-          />
-          {/* ⬇ Панель появляется только если showPanel === true */}
-            <Float speed={2} rotationIntensity={0.1} floatIntensity={0.3}>
-              <Suspense fallback={null}>
-                <GlassVideoPanel scrollRef={smoothScroll} center={1.45} />
-              </Suspense>
-            </Float>
+          />          
         </Suspense>
       </Canvas>
     </>

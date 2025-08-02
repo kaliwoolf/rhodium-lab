@@ -4,9 +4,8 @@ import HeroSection from '../components/HeroSection'
 import { motion } from 'framer-motion'
 import { useRef } from 'react'
 import { useInView } from 'react-intersection-observer'
+import VideoPanelOverlay from '../components/VideoPanelOverlay'
 
-// ⬇ отключаем SSR для GlassVideoPanel (обязательно!)
-const GlassVideoPanel = dynamic(() => import('../components/GlassVideoPanel'), { ssr: false })
 
 // ⬇ пробрасываем showPanel в ThreeBackground
 const ThreeBackground = dynamic(() => import('../components/ThreeBackground'), { ssr: false })
@@ -23,8 +22,7 @@ export default function Home() {
         <title>RHODIUM</title>
       </Head>
 
-      {/* ⬇ передаём showPanel как флаг */}
-      <ThreeBackground showPanel={isProjectsInView} />
+      <ThreeBackground />
 
       <main className="relative z-10">
         <HeroSection />
@@ -40,6 +38,9 @@ export default function Home() {
         >
           <p className="text-4xl">Проекты будут здесь ✨</p>
         </motion.section>
+
+
+      <VideoPanelOverlay />
 
         {/* Contact */}
         <motion.section
