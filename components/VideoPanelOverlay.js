@@ -27,6 +27,8 @@ export default function VideoPanelOverlay() {
     }
   }, [])
 
+  if (!visible) return null
+
   return (
     <div className={`${styles.panel} ${visible ? styles.show : ''}`}>
       <div className={styles.inner}>
