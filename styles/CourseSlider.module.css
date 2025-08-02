@@ -1,41 +1,37 @@
 .wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
-  width: 100%;
-  overflow: hidden;
-  padding: 0 48px;
-  box-sizing: border-box;
 }
 
 .slider {
   display: flex;
-  gap: 2rem;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  scroll-padding: 0 20px;
-  padding: 2rem 1rem;
-  justify-content: center;
-  align-items: center;
   -webkit-overflow-scrolling: touch;
-}
-
-.slider::-webkit-scrollbar {
-  display: none;
+  gap: 1rem;
+  padding: 1rem 2rem;
 }
 
 .card {
+  position: relative;
+  scroll-snap-align: center;
+  flex: 0 0 auto;
+  width: 300px;
+  height: 480px;
+  border-radius: 20px;
+  overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  flex: 0 0 260px;
-  margin: 0 12px;
 }
 
 .focused {
-  transform: scale(1.07);
-  box-shadow: 0 0 20px rgba(255, 0, 150, 0.4), 0 0 60px rgba(255, 0, 255, 0.2);
-  z-index: 1;
+  transform: scale(1.08);
+  box-shadow: 0 0 20px rgba(255, 0, 100, 0.5);
 }
 
-
-.leftButton, .rightButton {
+.leftButton,
+.rightButton {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -43,20 +39,12 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: white;
   font-size: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   cursor: pointer;
-  backdrop-filter: blur(8px);
-  transition: background 0.3s ease;
-}
-
-.leftButton:hover, .rightButton:hover {
-  background: rgba(255, 0, 100, 0.3);
+  backdrop-filter: blur(6px);
 }
 
 .leftButton {

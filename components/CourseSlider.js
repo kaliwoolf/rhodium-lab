@@ -1,6 +1,6 @@
 // components/CourseSlider.js
 import { useRef, useEffect, useState } from 'react'
-import GlassCourseCard from './GlassCourseCard'
+import GlassCourseCard from '../components/GlassCourseCard'
 import styles from '../styles/CourseSlider.module.css'
 
 const baseCourses = [
@@ -41,7 +41,7 @@ export default function CourseSlider() {
     }
   }
 
-  // горизонтальный скролл, свайп, защита от вертикального скролла
+  // горизонтальный скролл, блокируем вертикальный
   useEffect(() => {
     const slider = sliderRef.current
     if (!slider) return

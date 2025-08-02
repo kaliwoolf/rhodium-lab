@@ -1,3 +1,4 @@
+/* GlassVideoEffect.module.css */
 .wrapper {
   position: absolute;
   inset: 0;
@@ -7,21 +8,14 @@
   z-index: 0;
 }
 
-.videoContainer {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
 .video {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   filter: contrast(1.2) brightness(1.05) saturate(1.2);
-  opacity: 0;
-  transition: opacity 0.5s ease;
-  position: absolute;
-  inset: 0;
+  opacity: 1;
   z-index: 1;
 }
 
@@ -34,9 +28,4 @@
   mix-blend-mode: overlay;
   z-index: 2;
   pointer-events: none;
-}
-
-/* Показать видео по hover */
-.wrapper:hover .video {
-  opacity: 1;
 }
