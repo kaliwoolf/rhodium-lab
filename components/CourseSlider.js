@@ -57,7 +57,7 @@ export default function CourseSlider() {
 
     slider.scrollTo({
       left: scrollOffset,
-      behavior: 'smooth',
+       behavior: smooth ? 'smooth' : 'auto',
     })
   }
 
@@ -65,7 +65,7 @@ export default function CourseSlider() {
 
     useEffect(() => {
       if (!hasInitialized) {
-        scrollToCard(activeIndex);
+        requestAnimationFrame(() => scrollToCard(activeIndex, false));
         setHasInitialized(true);
       }
     }, [hasInitialized]);
