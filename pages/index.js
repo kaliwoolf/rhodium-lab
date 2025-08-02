@@ -22,8 +22,6 @@ export default function Home() {
         <title>RHODIUM</title>
       </Head>
 
-      <ThreeBackground />
-
       <main className="relative z-10">
         <HeroSection />
 
