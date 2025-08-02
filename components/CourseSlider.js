@@ -1,8 +1,9 @@
+// components/CourseSlider.js
 import { useRef, useEffect, useState } from 'react'
-import GlassCourseCard from '../components/GlassCourseCard'
+import GlassCourseCard from './GlassCourseCard'
 import styles from '../styles/CourseSlider.module.css'
 
-const courses = [
+const baseCourses = [
   {
     title: 'КОД СТЫДА',
     description: 'Онлайн-курс из 12 занятий по системной проработке механизмов стыда',
@@ -12,18 +13,24 @@ const courses = [
   {
     title: 'ИНКВИЗИЦИЯ БОГАТСТВА',
     description: 'Курс о власти, деньгах и родовых ограничениях через архетипы',
-    link: '/courses/wealth-inquisition'
+    link: '/courses/wealth-inquisition',
+    video: '/video/wealth.mp4'
   },
   {
     title: 'ПРОФАЙЛИНГ И ТАРО ТОТА',
     description: 'Анализ архетипов и поведения через системную оптику и карты',
-    link: '/courses/profiling-thoth'
+    link: '/courses/profiling-thoth',
+    video: '/video/profiling.mp4'
   }
 ]
 
+// дублируем для псевдо-бесконечности
+const courses = [...baseCourses, ...baseCourses, ...baseCourses]
+const middleIndex = baseCourses.length
+
 export default function CourseSlider() {
   const sliderRef = useRef()
-  const [centerIndex, setCenterIndex] = useState(0)
+  const [centerIndex, setCenterIndex] = useState(middleIndex)
 
   const scroll = (dir) => {
     if (sliderRef.current) {
@@ -34,51 +41,43 @@ export default function CourseSlider() {
     }
   }
 
-  // ⛔️ блокируем вертикальный scroll колёсиком
-  useEffect(() => {
-    const container = sliderRef.current
-    if (!container) return
-
-    const preventScroll = (e) => {
-      if (e.deltaY !== 0) {
-        e.preventDefault()
-      }
-    }
-
-    container.addEventListener('wheel', preventScroll, { passive: false })
-
-    return () => container.removeEventListener('wheel', preventScroll)
-  }, [])
-
+  // горизонтальный скролл, свайп, защита от вертикального скролла
   useEffect(() => {
     const slider = sliderRef.current
     if (!slider) return
 
-    let startX = 0
-    let endX = 0
-
-    const onTouchStart = (e) => {
-      startX = e.touches[0].clientX
+    const onWheel = (e) => {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        e.preventDefault()
+      }
     }
 
+    slider.addEventListener('wheel', onWheel, { passive: false })
+    return () => slider.removeEventListener('wheel', onWheel)
+  }, [])
+
+  // swipe на мобилках
+  useEffect(() => {
+    const slider = sliderRef.current
+    if (!slider) return
+    let startX = 0
+    let endX = 0
+    const onTouchStart = (e) => startX = e.touches[0].clientX
     const onTouchEnd = (e) => {
       endX = e.changedTouches[0].clientX
       const delta = startX - endX
       if (delta > 50) scroll(1)
-      else if (delta < -50) scroll(-1)
+      if (delta < -50) scroll(-1)
     }
-
     slider.addEventListener('touchstart', onTouchStart)
     slider.addEventListener('touchend', onTouchEnd)
-
     return () => {
       slider.removeEventListener('touchstart', onTouchStart)
       slider.removeEventListener('touchend', onTouchEnd)
     }
   }, [])
 
-
-  // 🎯 выделение центральной карточки
+  // центральная карточка
   useEffect(() => {
     const slider = sliderRef.current
     const updateFocus = () => {
