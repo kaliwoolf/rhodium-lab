@@ -35,33 +35,34 @@
 }
 
 
-.leftButton,
-.rightButton {
+.leftButton, .rightButton {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 100;
-  font-size: 2.5rem;
-  background: rgba(0, 0, 0, 0.3);
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: white;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(8px);
   transition: background 0.3s ease;
 }
 
-.leftButton:hover,
-.rightButton:hover {
-  background: rgba(255, 0, 100, 0.4);
+.leftButton:hover, .rightButton:hover {
+  background: rgba(255, 0, 100, 0.3);
 }
 
 .leftButton {
-  left: 8px;
+  left: -20px;
 }
 
 .rightButton {
-  right: 8px;
+  right: -20px;
 }
