@@ -1,3 +1,5 @@
+/* GlassVideoEffect.module.css */
+
 .wrapper {
   position: absolute;
   inset: 0;
@@ -13,6 +15,8 @@
   opacity: 0;
   transition: opacity 0.4s ease;
   filter: contrast(1.2) brightness(1.05) saturate(1.2);
+  z-index: 0;
+  position: relative;
 }
 
 .overlay {
@@ -23,7 +27,7 @@
   opacity: 0.12;
   pointer-events: none;
   mix-blend-mode: overlay;
-  z-index: 1;
+  z-index: 1; /* текстура поверх видео */
 }
 
 /* эффект при наведении */
