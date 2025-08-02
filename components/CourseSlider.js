@@ -41,16 +41,25 @@ const middleIndex = Math.floor(courses.length / 2)
 export default function CourseSlider() {
   const sliderRef = useRef()
   const [centerIndex, setCenterIndex] = useState(middleIndex)
+  const [activeIndex, setActiveIndex] = useState(middleIndex)
+
 
   const scroll = (dir) => {
+  const newIndex = Math.min(
+    Math.max(0, activeIndex + dir),
+    courses.length - 1
+  )
+  setActiveIndex(newIndex)
+
   if (sliderRef.current) {
-    const scrollAmount = 340; // ширина карточки + gap
-    sliderRef.current.scrollBy({
-      left: dir * scrollAmount,
+    const scrollAmount = 340 // карточка + gap
+    sliderRef.current.scrollTo({
+      left: newIndex * scrollAmount,
       behavior: 'smooth'
     })
   }
 }
+
 
   // swipe на мобилках
   useEffect(() => {
@@ -82,9 +91,17 @@ export default function CourseSlider() {
           <div
             key={index}
             data-index={index}
-            className={`${styles.card} ${index === centerIndex ? styles.focused : ''}`}
+            className={`${styles.card} ${
+              index === activeIndex
+                ? styles.focused
+                : styles.dimmed
+            }`}
           >
-            <GlassCourseCard {...course} isFocused={index === centerIndex} sliderRef={sliderRef} />
+            <GlassCourseCard
+              {...course}
+              isFocused={index === activeIndex}
+              sliderRef={sliderRef}
+            />
           </div>
         ))}
       </div>
