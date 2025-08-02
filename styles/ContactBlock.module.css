@@ -10,7 +10,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background-image: url('/textures/glass-gold.jpg');
+  background-image: url('/textures/glass-particles.jpg');
   background-size: cover;
   opacity: 0.15;
   z-index: 0;
