@@ -35,3 +35,7 @@
   z-index: 2;
   pointer-events: none;
 }
+
+.videoWrapper.visible .video {
+  opacity: 0.9; /* или меньше, если нужно мягче */
+}

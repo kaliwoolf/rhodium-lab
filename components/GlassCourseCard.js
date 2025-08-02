@@ -1,15 +1,18 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import styles from '../styles/GlassCourseCard.module.css'
 import GlassVideoEffect from '../components/GlassVideoEffect'
 
 export default function GlassCourseCard({ title, description, link, video, texture, sliderRef }) {
   const videoRef = useRef(null)
+   const [isHovered, setIsHovered] = useState(false)
 
   const handleMouseEnter = () => {
+    setIsHovered(true)
     videoRef.current?.play()
   }
 
   const handleMouseLeave = () => {
+    setIsHovered(false)
     videoRef.current?.pause()
     videoRef.current.currentTime = 0
   }
@@ -27,7 +30,7 @@ export default function GlassCourseCard({ title, description, link, video, textu
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <GlassVideoEffect src={video} texture={texture} className={styles.videoWrapper} videoRef={videoRef} />
+      <GlassVideoEffect src={video} texture={texture} className={styles.videoWrapper} videoRef={videoRef}  className={classNames(styles.videoWrapper, { [styles.visible]: isHovered })}/>
 
       <div className={styles.overlay}>
         <h3 className={styles.title}>{title}</h3>
