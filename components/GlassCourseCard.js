@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import styles from '../styles/GlassCourseCard.module.css'
 import GlassVideoEffect from '../components/GlassVideoEffect'
 
-export default function GlassCourseCard({ title, description, link, video }) {
+export default function GlassCourseCard({ title, description, link, video, texture, sliderRef }) {
   const videoRef = useRef(null)
 
   const handleMouseEnter = () => {
