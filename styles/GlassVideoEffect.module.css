@@ -19,7 +19,7 @@
 .overlay {
   position: absolute;
   inset: 0;
-  background-image: url('/textures/ice-noise.png');
+  background-image: url('/textures/glass-noise.png');
   background-size: cover;
   opacity: 0.12;
   pointer-events: none;
