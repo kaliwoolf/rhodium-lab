@@ -3,10 +3,9 @@
   inset: 0;
   border-radius: inherit;
   overflow: hidden;
-  pointer-events: none; /* ← оставить */
+  pointer-events: none;
   z-index: 0;
 }
-
 
 .videoContainer {
   position: relative;
@@ -20,7 +19,6 @@
   object-fit: cover;
   filter: contrast(1.2) brightness(1.05) saturate(1.2);
   opacity: 0;
-  visibility: hidden;
   transition: opacity 0.5s ease;
   position: absolute;
   inset: 0;
@@ -36,4 +34,9 @@
   mix-blend-mode: overlay;
   z-index: 2;
   pointer-events: none;
+}
+
+/* Показать видео по hover */
+.wrapper:hover .video {
+  opacity: 1;
 }
