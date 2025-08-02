@@ -8,19 +8,29 @@ const baseCourses = [
     title: 'КОД СТЫДА',
     description: 'Онлайн-курс из 12 занятий по системной проработке механизмов стыда',
     link: '/courses/kod-styda',
-    video: '/video/ks.mp4'
+    video: '/video/ks.mp4',
+    texture: '/textures/glass-noise.png'
   },
   {
     title: 'ИНКВИЗИЦИЯ БОГАТСТВА',
     description: 'Курс о власти, деньгах и родовых ограничениях через архетипы',
     link: '/courses/wealth-inquisition',
-    video: '/video/wealth.mp4'
+    video: '/video/wealth.mp4',
+    texture: '/textures/glass-gold.jpg'
   },
   {
-    title: 'ПРОФАЙЛИНГ И ТАРО ТОТА',
+    title: 'ПРОФАЙЛИНГ',
     description: 'Анализ архетипов и поведения через системную оптику и карты',
     link: '/courses/profiling-thoth',
-    video: '/video/profiling.mp4'
+    video: '/video/profiling.mp4',
+    texture: '/textures/glass-blue.jpg'
+  },
+  {
+    title: 'ПРИДВОРНЫЕ КАРТЫ',
+    description: 'I Модуль по психотипам',
+    link: '/courses/profiling-thoth',
+    video: '/video/profiling.mp4',
+    texture: '/textures/glass-neon.jpg'
   }
 ]
 

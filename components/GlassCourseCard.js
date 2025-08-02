@@ -27,7 +27,7 @@ export default function GlassCourseCard({ title, description, link, video }) {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <GlassVideoEffect src={video} className={styles.videoWrapper} videoRef={videoRef} />
+      <GlassVideoEffect src={video} texture={texture} className={styles.videoWrapper} videoRef={videoRef} />
 
       <div className={styles.overlay}>
         <h3 className={styles.title}>{title}</h3>
