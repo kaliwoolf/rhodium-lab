@@ -4,7 +4,7 @@
   justify-content: center;
   position: relative;
   overflow: hidden;
-  max-width: 360px; /* ≈ 3 карточки + gap */
+  max-width: 90vw;
   margin: 0 auto;
 }
 
@@ -35,9 +35,9 @@
   overflow-y: hidden;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
-  gap: 1rem;
+  gap: 2rem;
   scroll-behavior: smooth;
-  padding: 0; /* ← удаляем, чтобы выровнять по краям */
+  padding: 0 5vw;
 }
 
 .slider::-webkit-scrollbar {
@@ -58,16 +58,19 @@
 
 .focused {
   box-shadow: 0 0 30px rgba(255, 0, 100, 0.4);
-  transform: scale(1);
+  transform: scale(1) translateY(0);
   opacity: 1;
   z-index: 2;
+  filter: none;
+  transition: all 0.4s ease;
 }
 
 .dimmed {
-  transform: scale(0.85);
-  opacity: 0.5;
+  transform: scale(0.85) translateY(10px);
+  opacity: 0.4;
   z-index: 1;
   filter: brightness(0.6) blur(1px);
+  transition: all 0.4s ease;
 }
 
 .leftButton,
