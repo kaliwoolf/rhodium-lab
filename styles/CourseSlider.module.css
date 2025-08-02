@@ -46,14 +46,15 @@
 
 
 .card {
-  position: relative;
   scroll-snap-align: center;
   flex: 0 0 auto;
-  width: 320px; /* ✅ чуть больше для пропорции */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  /*
+  position: relative;
+  width: 320px; 
   height: 420px;
   border-radius: 20px;
-  overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;*/
 }
 
 .focused {
@@ -78,16 +79,15 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 5;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  z-index: 10;
+  width: 48px;
+  height: 48px;
+  margin: 0 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
   color: white;
-  font-size: 24px;
   cursor: pointer;
-  backdrop-filter: blur(6px);
   transition: background 0.3s ease;
 }
 
@@ -97,9 +97,9 @@
 }
 
 .leftButton {
-  left: 10px;
+  left: 0;
 }
 
 .rightButton {
-  right: 10px;
+  right: 0;
 }
