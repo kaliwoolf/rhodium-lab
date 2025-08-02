@@ -9,7 +9,7 @@ import VideoPanelOverlay from '../components/VideoPanelOverlay'
 
 export default function Home() {
   const { ref: projectsRef, inView: isProjectsInView } = useInView({
-    threshold: 0.2,
+    threshold: 0.5,
     triggerOnce: false,
   })
 
@@ -34,7 +34,7 @@ export default function Home() {
           <p className="text-4xl">Проекты будут здесь ✨</p>
         </motion.section>
 
-      <VideoPanelOverlay />
+      <VideoPanelOverlay inView={isProjectsInView} />
 
         {/* Contact */}
         <motion.section
