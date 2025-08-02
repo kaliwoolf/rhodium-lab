@@ -15,7 +15,7 @@ const baseCourses = [
     title: 'ИНКВИЗИЦИЯ БОГАТСТВА',
     description: 'Курс о власти, деньгах и родовых ограничениях через архетипы',
     link: '/courses/wealth-inquisition',
-    video: '/video/wealth.mp4',
+    video: '/video/p2.mp4',
     texture: '/textures/glass-gold.jpg'
   },
   {

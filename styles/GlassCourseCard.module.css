@@ -2,6 +2,26 @@
   position: relative;
   width: 800px;
   height: 450px;
+  display: flex;
+  flex-direction: column; /* или row, если хочешь текст рядом с видео */
+  justify-content: center;
+  padding: 2rem;
+  border-radius: 20px;
+  overflow: hidden;
+
+  backdrop-filter: blur(16px);
+  background: rgba(15, 15, 20, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 30px rgba(255, 0, 120, 0.25);
+
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+
+/*.card {
+  position: relative;
+  width: 800px;
+  height: 450px;
   border-radius: 20px;
   overflow: hidden;
   backdrop-filter: blur(16px);
@@ -13,7 +33,7 @@
   justify-content: space-between;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   scroll-snap-align: start;
-}
+} */
 
 .card:hover {
   transform: scale(1.03);
