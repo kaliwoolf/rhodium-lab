@@ -8,15 +8,31 @@
 
 .slider {
   display: flex;
-  gap: 24px;
+  gap: 2rem;
   overflow-x: auto;
-  scroll-behavior: smooth;
-  padding: 20px 0;
-  scrollbar-width: none;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 0 20px;
+  padding: 2rem 1rem;
+  justify-content: center;
+  align-items: center;
+  -webkit-overflow-scrolling: touch;
 }
 
 .slider::-webkit-scrollbar {
   display: none;
+}
+
+.card {
+  flex: 0 0 auto;
+  scroll-snap-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transform: scale(0.92); /* ← базовый размер */
+  opacity: 0.8;
+}
+
+.card:has(video:visible) {
+  transform: scale(1.03);
+  opacity: 1;
 }
 
 .leftButton,

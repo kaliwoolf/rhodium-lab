@@ -30,7 +30,7 @@ export default function Home() {
 
         <section id="contact" className="relative h-screen flex items-center justify-center px-4">
           <div className={`${styles.glassContact} w-full max-w-xl p-8 rounded-2xl`}>
-            <h2 className="text-3xl font-bold mb-6 text-white">Связаться с лабораторией</h2>
+            <h2 className={styles.contactHeading}>Связаться</h2>
             <form className="flex flex-col gap-4">
               <input
                 type="email"
