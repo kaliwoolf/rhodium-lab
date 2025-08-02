@@ -1,20 +1,51 @@
-.sliderContainer {
+.wrapper {
+  position: relative;
   width: 100%;
-  overflow-x: auto;
-  padding: 2rem 0;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none; /* Firefox */
-}
-
-.sliderContainer::-webkit-scrollbar {
-  display: none; /* Chrome, Safari */
+  overflow: hidden;
+  padding: 0 48px;
+  box-sizing: border-box;
 }
 
 .slider {
   display: flex;
-  gap: 1.5rem;
-  padding: 0 2rem;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
+  gap: 24px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 20px 0;
+  scrollbar-width: none;
+}
+
+.slider::-webkit-scrollbar {
+  display: none;
+}
+
+.leftButton,
+.rightButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  font-size: 2.5rem;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: background 0.3s ease;
+}
+
+.leftButton:hover,
+.rightButton:hover {
+  background: rgba(255, 0, 100, 0.4);
+}
+
+.leftButton {
+  left: 8px;
+}
+
+.rightButton {
+  right: 8px;
 }

@@ -17,9 +17,9 @@
 
 .inner {
   position: relative;
-  width: 90vw;
-  max-width: 800px;
-  height:680px;
+  width: 94vw;
+  max-width: 1300px;
+  height:740px;
   border-radius: 20px;
   overflow: hidden;
   backdrop-filter: blur(20px);

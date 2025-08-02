@@ -29,16 +29,28 @@ export default function Home() {
         <VideoPanelOverlay />
 
         <section id="contact" className="relative h-screen flex items-center justify-center px-4">
-          <div className="glass-contact w-full max-w-xl p-8 rounded-2xl">
+          <div className={`${styles.glassContact} w-full max-w-xl p-8 rounded-2xl`}>
             <h2 className="text-3xl font-bold mb-6 text-white">Связаться с лабораторией</h2>
             <form className="flex flex-col gap-4">
-              <input type="email" placeholder="Ваш e-mail" className="glass-input" />
-              <textarea rows="4" placeholder="Сообщение" className="glass-input" />
-              <button type="submit" className="glass-button">Отправить</button>
+              <input
+                type="email"
+                placeholder="Ваш e-mail"
+                className={styles.glassInput}
+              />
+              <textarea
+                rows="4"
+                placeholder="Сообщение"
+                className={styles.glassInput}
+              />
+              <button
+                type="submit"
+                className={styles.glassButton}
+              >
+                Отправить
+              </button>
             </form>
           </div>
         </section>
-
 
       </main>
     </>
