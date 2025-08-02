@@ -3,7 +3,7 @@ import classNames from 'classnames'
 import styles from '../styles/GlassCourseCard.module.css'
 import GlassVideoEffect from '../components/GlassVideoEffect'
 
-export default function GlassCourseCard({ title, description, link, video, texture, sliderRef }) {
+export default function GlassCourseCard({ title, description, link, video, texture, sliderRef, isFocused }) {
   const videoRef = useRef(null)
   const [isHovered, setIsHovered] = useState(false)
 

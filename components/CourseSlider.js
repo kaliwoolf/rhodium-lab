@@ -88,7 +88,14 @@ export default function CourseSlider() {
   return (
     <div className={styles.wrapper}>
       <div className={styles.sliderContainer}>
-        <button className={styles.leftButton} onClick={() => scrollToCard(activeIndex - 1)}>‹</button>
+        {activeIndex > 0 && (
+          <button
+            className={styles.leftButton}
+            onClick={() => scrollToCard(activeIndex - 1)}
+          >
+            ‹
+          </button>
+        )}
 
         <div className={styles.slider} ref={sliderRef}>
           {courses.map((course, index) => (
@@ -106,7 +113,14 @@ export default function CourseSlider() {
           ))}
         </div>
 
-        <button className={styles.rightButton} onClick={() => scrollToCard(activeIndex + 1)}>›</button>
+        {activeIndex < courses.length - 1 && (
+          <button
+            className={styles.rightButton}
+            onClick={() => scrollToCard(activeIndex + 1)}
+          >
+            ›
+          </button>
+        )}
       </div>
     </div>
   )
