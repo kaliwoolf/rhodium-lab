@@ -71,10 +71,12 @@ export default function CourseSlider({ autoFocusOnMount = false }) {
     }, [hasInitialized]);
 
   useEffect(() => {
-  if (autoFocusOnMount) {
-    requestAnimationFrame(() => scrollToCard(activeIndex, true))
-  }
-}, [autoFocusOnMount])  
+    if (autoFocusOnMount) {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => scrollToCard(activeIndex, true))
+      })
+    }
+  }, [autoFocusOnMount])
     
   // swipe на мобилках
   useEffect(() => {
