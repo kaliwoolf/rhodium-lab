@@ -37,7 +37,7 @@ const baseCourses = [
 const courses = baseCourses
 const middleIndex = Math.floor(courses.length / 2)
 
-export default function CourseSlider() {
+export default function CourseSlider({ autoFocusOnMount = false }) {
   const sliderRef = useRef()
   const [activeIndex, setActiveIndex] = useState(middleIndex)
 
