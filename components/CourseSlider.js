@@ -99,17 +99,11 @@ export default function CourseSlider() {
 
         <div className={styles.slider} ref={sliderRef}>
           {courses.map((course, index) => (
-            <div
-              key={index}
-              data-index={index}
-              className={`${styles.card} ${index === activeIndex ? styles.focused : styles.dimmed}`}
-            >
               <GlassCourseCard
                 {...course}
                 isFocused={index === activeIndex}
                 sliderRef={sliderRef}
               />
-            </div>
           ))}
         </div>
 
