@@ -29,13 +29,14 @@
   backdrop-filter: blur(16px);
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 0 30px rgba(255, 0, 120, 0.25);
 }
 
 .card.focused .inner {
-  backdrop-filter: blur(24px);
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 80px rgba(255, 0, 120, 0.35);
+    backdrop-filter: blur(24px);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow:
+      0 0 40px rgba(180, 230, 255, 0.15),
+      0 0 100px rgba(180, 230, 255, 0.25);
 }
 
 .card:not(.focused) .inner {
