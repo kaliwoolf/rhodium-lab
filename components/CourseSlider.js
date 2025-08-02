@@ -85,27 +85,28 @@ export default function CourseSlider() {
 
   return (
     <div className={styles.wrapper}>
-      <button className={styles.leftButton} onClick={() => scroll(-1)}>‹</button>
-      <div className={styles.slider} ref={sliderRef}>
-        {courses.map((course, index) => (
-          <div
-            key={index}
-            data-index={index}
-            className={`${styles.card} ${
-              index === activeIndex
-                ? styles.focused
-                : styles.dimmed
-            }`}
-          >
-            <GlassCourseCard
-              {...course}
-              isFocused={index === activeIndex}
-              sliderRef={sliderRef}
-            />
-          </div>
-        ))}
+      <div className={styles.sliderContainer}>
+        <button className={styles.leftButton} onClick={() => scroll(-1)}>‹</button>
+        
+        <div className={styles.slider} ref={sliderRef}>
+          {courses.map((course, index) => (
+            <div
+              key={index}
+              data-index={index}
+              className={`${styles.card} ${index === activeIndex ? styles.focused : styles.dimmed}`}
+            >
+              <GlassCourseCard
+                {...course}
+                isFocused={index === activeIndex}
+                sliderRef={sliderRef}
+              />
+            </div>
+          ))}
+        </div>
+        
+        <button className={styles.rightButton} onClick={() => scroll(1)}>›</button>
       </div>
-      <button className={styles.rightButton} onClick={() => scroll(1)}>›</button>
     </div>
+
   )
 }
