@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import styles from '../styles/VideoPanelOverlay.module.css'
 
-export default function VideoPanelOverlay() {
-  const { ref, inView } = useInView({ threshold: 0.4 })
+eexport default function VideoPanelOverlay() {
+  const { ref, inView } = useInView({ threshold: 0.3 })
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -13,13 +13,12 @@ export default function VideoPanelOverlay() {
 
   return (
     <>
-      {/* Триггерная точка для панели */}
-      <div ref={ref} id="video-trigger" style={{ height: '1px' }} />
+      {/* Триггер ставим в видимую область — напротив секции \"Проекты\" */}
+      <div ref={ref} id="video-trigger" style={{ height: '100px', marginTop: '-80vh' }} />
 
-      {/* Плавающая панель */}
       <div className={`${styles.panel} ${visible ? styles.show : ''}`}>
         <video
-          src="/videos/00002.mp4"
+          src=\"/videos/00002.mp4\"
           autoPlay
           muted
           loop
@@ -29,3 +28,4 @@ export default function VideoPanelOverlay() {
     </>
   )
 }
+

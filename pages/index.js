@@ -7,9 +7,6 @@ import { useInView } from 'react-intersection-observer'
 import VideoPanelOverlay from '../components/VideoPanelOverlay'
 
 
-// ⬇ пробрасываем showPanel в ThreeBackground
-const ThreeBackground = dynamic(() => import('../components/ThreeBackground'), { ssr: false })
-
 export default function Home() {
   const { ref: projectsRef, inView: isProjectsInView } = useInView({
     threshold: 0.2,
@@ -36,7 +33,6 @@ export default function Home() {
         >
           <p className="text-4xl">Проекты будут здесь ✨</p>
         </motion.section>
-
 
       <VideoPanelOverlay />
 
