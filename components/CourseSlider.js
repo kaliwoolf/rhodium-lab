@@ -86,43 +86,44 @@ export default function CourseSlider() {
   }, [activeIndex])
 
   return (
-  <div className={styles.wrapper}>
-    <div className={styles.sliderOuterWrapper}>
-      {activeIndex > 0 && (
-        <button
-          className={styles.leftButton}
-          onClick={() => scrollToCard(activeIndex - 1)}
-        >
-          ‹
-        </button>
-      )}
+    <div className={styles.wrapper}>
+      <div className={styles.sliderOuterWrapper}>
+        {activeIndex > 0 && (
+          <button
+            className={styles.leftButton}
+            onClick={() => scrollToCard(activeIndex - 1)}
+          >
+            ‹
+          </button>
+        )}
 
-      <div className={styles.sliderContainer}>
-        <div className={styles.slider} ref={sliderRef}>
-          {courses.map((course, index) => (
-            <div
-              key={index}
-              data-index={index}
-              className={`${styles.card} ${index === activeIndex ? styles.focused : styles.dimmed}`}
-            >
-              <GlassCourseCard
-                {...course}
-                isFocused={index === activeIndex}
-                sliderRef={sliderRef}
-              />
-            </div>
-          ))}
+        <div className={styles.sliderContainer}>
+          <div className={styles.slider} ref={sliderRef}>
+            {courses.map((course, index) => (
+              <div
+                key={index}
+                data-index={index}
+                className={`${styles.card} ${index === activeIndex ? styles.focused : styles.dimmed}`}
+              >
+                <GlassCourseCard
+                  {...course}
+                  isFocused={index === activeIndex}
+                  sliderRef={sliderRef}
+                />
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
 
-      {activeIndex < courses.length - 1 && (
-        <button
-          className={styles.rightButton}
-          onClick={() => scrollToCard(activeIndex + 1)}
-        >
-          ›
-        </button>
-      )}
+        {activeIndex < courses.length - 1 && (
+          <button
+            className={styles.rightButton}
+            onClick={() => scrollToCard(activeIndex + 1)}
+          >
+            ›
+          </button>
+        )}
+      </div>
     </div>
-  </div>
-)
+  )
+}
