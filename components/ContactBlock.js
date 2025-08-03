@@ -10,9 +10,10 @@ export default function ContactBlock() {
         loop
         muted
         playsInline
-        className="absolute inset-0 w-full h-full object-cover opacity-80 z-[-2]"
+        className="absolute left-1/2 top-1/2 w-full max-w-7xl -translate-x-1/2 -translate-y-1/2 object-cover rounded-3xl opacity-80 z-[-2] max-h-[700px]"
         src="/video/ice.mp4"
       />
+
 
       {/* 🌫️ Мягкий стеклянный ореол поверх видео */}
       <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-fuchsia-800/10 blur-3xl z-[-1]" />
