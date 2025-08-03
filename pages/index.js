@@ -7,6 +7,7 @@ import { useRef } from 'react'
 import { useInView } from 'react-intersection-observer'
 import VideoPanelOverlay from '../components/VideoPanelOverlay'
 import ScrambleLinkMenu from '../components/ScrambleLinkMenu'
+import ContactForm from '../components/ContactForm'
 
 export default function Home() {
   const { ref: projectsRef, inView: isProjectsInView } = useInView({
@@ -32,24 +33,7 @@ export default function Home() {
         <section id="contact" className="relative h-screen flex items-center justify-center px-4">
           <div className={`${styles.glassContact} w-full max-w-xl p-8 rounded-2xl`}>
             <h2 className={styles.contactHeading}>Связаться</h2>
-            <form className="flex flex-col gap-4">
-              <input
-                type="email"
-                placeholder="Ваш e-mail"
-                className={styles.glassInput}
-              />
-              <textarea
-                rows="4"
-                placeholder="Сообщение"
-                className={styles.glassInput}
-              />
-              <button
-                type="submit"
-                className={styles.glassButton}
-              >
-                Отправить
-              </button>
-            </form>
+            <ContactForm />
           </div>
         </section>
 
