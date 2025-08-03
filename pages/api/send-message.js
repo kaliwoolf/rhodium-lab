@@ -8,21 +8,33 @@ export default async function handler(req, res) {
   })
 
   const recaptchaJson = await recaptchaRes.json()
-  if (!recaptchaJson.success) /* || recaptchaJson.score < 0.5) */ {
-    return res.status(403).json({ error: 'Failed CAPTCHA verification' })
+  console.log('reCAPTCHA response:', recaptchaJson)
+
+  if (!recaptchaJson.success || recaptchaJson.score < 0.3) {
+    return res.status(403).json({ error: 'Failed CAPTCHA verification', score: recaptchaJson.score })
   }
 
-
-  // Отправка в Telegram
   const telegramToken = process.env.TELEGRAM_BOT_TOKEN
   const chatId = process.env.TELEGRAM_CHAT_ID
   const text = `📩 Новое сообщение:\n\n✉️ Email: ${email}\n📝 Сообщение:\n${message}`
 
-  await fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ chat_id: chatId, text }),
-  })
+  try {
+    const tgRes = await fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: chatId, text }),
+    })
 
-  return res.status(200).json({ success: true })
+    if (!tgRes.ok) {
+      const errText = await tgRes.text()
+      console.error('Telegram error:', errText)
+      return res.status(500).json({ error: 'Telegram API failed' })
+    }
+
+    return res.status(200).json({ success: true })
+
+  } catch (err) {
+    console.error('Unexpected error:', err)
+    return res.status(500).json({ error: 'Unexpected error' })
+  }
 }
