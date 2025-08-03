@@ -22,8 +22,11 @@ const fragmentShader = `
     vec3 baseColor = texture2D(uTexture, uv + (dist < radius ? refractOffset : vec2(0.0))).rgb;
 
     // ✨ Свечение по краю линзы
-    float glow = smoothstep(radius - 0.01, radius, dist);   // Узкая кайма
+    float glow = exp(-50.0 * pow(dist - radius, 2.0));       // Узкая кайма
     vec3 glowColor = vec3(1.5, 0.4, 1.2) * glow;             // 💡 усилили цвет
+
+    float vignette = smoothstep(0.0, radius, dist);
+    baseColor *= 0.95 + 0.05 * vignette;
 
     gl_FragColor = vec4(baseColor + glowColor, 1.0);
   }

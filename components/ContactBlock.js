@@ -24,7 +24,7 @@ export default function ContactBlock() {
       }}
     >
       {/* 🔮 Фоновая линза */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-10 pointer-events-none mix-blend-screen">
         <GlassLensCanvas mouse={mouse} />
       </div>
 
@@ -43,7 +43,7 @@ export default function ContactBlock() {
           loop
           muted
           playsInline
-          className="absolute inset-0 w-full h-full object-cover opacity-80 blur-sm"
+          className="absolute inset-0 w-full h-full object-cover opacity-80"
           src="/video/ice.mp4"
         />
 
