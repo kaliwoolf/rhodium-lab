@@ -3,10 +3,10 @@ import { Canvas } from '@react-three/fiber'
 import * as THREE from 'three'
 import Tilt from 'react-parallax-tilt'
 import Image from 'next/image'
-import RippleShaderPlane from './RippleShaderPlane'
+import GlassLensShader from '../components/GlassLensShader'
 
 export default function ContactBlock() {
-  const mouse = useRef({ x: 0.5, y: 0.5 })
+  const mouse = useRef(new THREE.Vector2(0.5, 0.5))
 
   return (
     <section
@@ -14,20 +14,20 @@ export default function ContactBlock() {
       className="relative text-white min-h-screen flex items-center justify-center px-4 py-24 overflow-hidden"
       onMouseMove={(e) => {
         const rect = e.currentTarget.getBoundingClientRect()
-        mouse.current = {
-          x: (e.clientX - rect.left) / rect.width,
-          y: (e.clientY - rect.top) / rect.height,
-        }
+        mouse.current.set(e.clientX - rect.left, rect.height - (e.clientY - rect.top))
       }}
     >
-      {/* Ripple canvas фон */}
+      {/* 🔮 Фоновая линза с Canvas */}
       <div className="absolute inset-0 z-0">
         <Canvas orthographic camera={{ zoom: 1, position: [0, 0, 100] }}>
-          <RippleShaderPlane mouse={mouse} />
+          <GlassLensShader
+            texture={new THREE.TextureLoader().load('/video/ice-blurred.jpg')}
+            mouse={mouse}
+          />
         </Canvas>
       </div>
 
-      {/* Контактная панель */}
+      {/* 🧊 Подложка с Tilt */}
       <Tilt
         glareEnable
         glareMaxOpacity={0.15}
@@ -35,7 +35,7 @@ export default function ContactBlock() {
         transitionSpeed={2500}
         tiltMaxAngleX={6}
         tiltMaxAngleY={6}
-        className="relative w-[90vw] max-w-[960px] h-[720px] rounded-3xl overflow-hidden shadow-[0_0_120px_rgba(255,255,255,0.1)] z-10"
+        className="w-[90vw] max-w-[960px] h-[720px] relative rounded-3xl overflow-hidden shadow-[0_0_120px_rgba(255,255,255,0.1)]"
       >
         <video
           autoPlay
@@ -45,25 +45,28 @@ export default function ContactBlock() {
           className="absolute inset-0 w-full h-full object-cover opacity-80 blur-sm"
           src="/video/ice.mp4"
         />
+
         <div className="relative z-10 w-full h-full flex flex-col items-center justify-center gap-10 px-4">
           <div className="uppercase tracking-widest text-sm text-white/60 flex items-center gap-2">
             <span className="text-white/40">✦</span>
             СВЯЗАТЬСЯ
             <span className="text-white/40">✦</span>
           </div>
+
           <a
             href="mailto:hi@rhodium.vision"
             className="text-2xl md:text-4xl font-mono font-light tracking-[0.15em] md:tracking-[0.3em] text-center text-fuchsia-300 drop-shadow-[0_0_6px_rgba(255,0,255,0.3)] hover:drop-shadow-[0_0_10px_rgba(255,0,255,0.5)] transition"
           >
             HI@RHODIUM.VISION
           </a>
+
           <div className="relative w-[160px] sm:w-[180px] h-[200px] sm:h-[220px] rounded-xl overflow-hidden border border-white/20 shadow-xl">
             <video
               autoPlay
               loop
               muted
               playsInline
-              className="absolute inset-0 w-full h-full object-cover opacity-80 blur-[1px]"
+              className="absolute inset-0 w-full h-full object-cover opacity-80"
               src="/video/ice.mp4"
             />
             <div className="relative z-10 flex flex-col items-center justify-center h-full p-4">
