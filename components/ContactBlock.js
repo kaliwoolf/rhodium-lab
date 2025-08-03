@@ -1,12 +1,19 @@
+'use client'
+
 import { useRef } from 'react'
-import { Canvas } from '@react-three/fiber'
-import * as THREE from 'three'
-import Tilt from 'react-parallax-tilt'
+import dynamic from 'next/dynamic'
 import Image from 'next/image'
-import GlassLensShader from '../components/GlassLensShader'
+import Tilt from 'react-parallax-tilt'
+import * as THREE from 'three'
+import { TextureLoader } from 'three'
+import { useLoader } from '@react-three/fiber'
+
+// 🌀 без SSR, чтобы избежать document is not defined
+const GlassLensCanvas = dynamic(() => import('../components/GlassLensCanvas'), { ssr: false })
 
 export default function ContactBlock() {
   const mouse = useRef(new THREE.Vector2(0.5, 0.5))
+  const texture = useLoader(TextureLoader, '/video/ice-blurred.jpg') // ← загружаем тут
 
   return (
     <section
@@ -17,17 +24,12 @@ export default function ContactBlock() {
         mouse.current.set(e.clientX - rect.left, rect.height - (e.clientY - rect.top))
       }}
     >
-      {/* 🔮 Фоновая линза с Canvas */}
+      {/* 🔮 Фоновая линза */}
       <div className="absolute inset-0 z-0">
-        <Canvas orthographic camera={{ zoom: 1, position: [0, 0, 100] }}>
-          <GlassLensShader
-            texture={new THREE.TextureLoader().load('/video/ice-blurred.jpg')}
-            mouse={mouse}
-          />
-        </Canvas>
+        <GlassLensCanvas mouse={mouse} texture={texture} />
       </div>
 
-      {/* 🧊 Подложка с Tilt */}
+      {/* 🧊 Панель с Tilt и видеофоном */}
       <Tilt
         glareEnable
         glareMaxOpacity={0.15}
@@ -46,6 +48,7 @@ export default function ContactBlock() {
           src="/video/ice.mp4"
         />
 
+        {/* Контент поверх видео */}
         <div className="relative z-10 w-full h-full flex flex-col items-center justify-center gap-10 px-4">
           <div className="uppercase tracking-widest text-sm text-white/60 flex items-center gap-2">
             <span className="text-white/40">✦</span>
