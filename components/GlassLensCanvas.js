@@ -1,15 +1,24 @@
 'use client'
+import { useEffect, useRef, useState } from 'react'
 import { Canvas } from '@react-three/fiber'
+import * as THREE from 'three'
 import GlassLensShader from '../components/GlassLensShader'
-import { useLoader } from '@react-three/fiber'
-import { TextureLoader } from 'three'
 
 export default function GlassLensCanvas({ mouse }) {
-  const texture = useLoader(TextureLoader, '/video/ice-blurred.jpg')
+  const [texture, setTexture] = useState(null)
+
+  useEffect(() => {
+    const loader = new THREE.TextureLoader()
+    loader.load('/video/ice-blurred.jpg', (loaded) => {
+      setTexture(loaded)
+    })
+  }, [])
+
+  if (!texture) return null // Не рендерим Canvas до загрузки
 
   return (
     <Canvas orthographic camera={{ zoom: 1, position: [0, 0, 100] }}>
-      <GlassLensShader mouse={mouse} texture={texture} />
+      <GlassLensShader texture={texture} mouse={mouse} />
     </Canvas>
   )
 }
