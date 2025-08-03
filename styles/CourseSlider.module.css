@@ -95,3 +95,11 @@
 .rightButton:hover {
   background: rgba(255, 255, 255, 0.15);
 }
+
+@media (max-width: 640px) {
+  .leftButton,
+  .rightButton {
+    display: none;
+  }
+}
+
