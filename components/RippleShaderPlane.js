@@ -1,64 +1,59 @@
 import { useRef } from 'react'
-import { useFrame, extend } from '@react-three/fiber'
-import { shaderMaterial } from '@react-three/drei'
+import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
-import glsl from 'babel-plugin-glsl/macro'
 
-const RippleMaterial = shaderMaterial(
-  {
-    uTime: 0,
-    uMouse: new THREE.Vector2(0.5, 0.5),
-    uResolution: new THREE.Vector2(1, 1)
-  },
-  // Vertex shader
-  glsl`
-    varying vec2 vUv;
-    void main() {
-      vUv = uv;
-      gl_Position = vec4(position, 1.0);
-    }
-  `,
-  // Fragment shader
-  glsl`
-    precision mediump float;
+const fragmentShader = `
+  uniform float uTime;
+  uniform vec2 uMouse;
+  uniform vec2 uResolution;
+  varying vec2 vUv;
 
-    uniform float uTime;
-    uniform vec2 uMouse;
-    uniform vec2 uResolution;
+  void main() {
+    vec2 uv = vUv;
+    vec2 dir = uv - uMouse;
+    float dist = length(dir);
 
-    varying vec2 vUv;
+    float ripple = 0.03 * sin(40.0 * dist - uTime * 5.0);
+    uv += normalize(dir) * ripple * smoothstep(0.2, 0.0, dist);
 
-    void main() {
-      vec2 uv = vUv;
-      vec2 dir = uv - uMouse;
-      float dist = length(dir);
-      
-      float ripple = 0.03 * sin(40.0 * dist - uTime * 5.0);
-      uv += normalize(dir) * ripple * smoothstep(0.2, 0.0, dist);
+    vec3 color = vec3(0.05, 0.015, 0.1);
+    float vignette = smoothstep(0.9, 0.2, dist);
+    gl_FragColor = vec4(color + ripple * 0.5, vignette);
+  }
+`
 
-      vec3 color = vec3(0.02, 0.015, 0.03); // оттенок стекла
-      float vignette = smoothstep(0.9, 0.2, dist);
-      gl_FragColor = vec4(color + ripple * 0.4, vignette);
-    }
-  `
-)
-
-extend({ RippleMaterial })
+const vertexShader = `
+  varying vec2 vUv;
+  void main() {
+    vUv = uv;
+    gl_Position = vec4(position, 1.0);
+  }
+`
 
 export default function RippleShaderPlane({ mouse }) {
   const materialRef = useRef()
 
   useFrame(({ clock, size }) => {
     if (!materialRef.current) return
-    materialRef.current.uTime = clock.getElapsedTime()
-    materialRef.current.uMouse.set(mouse.current.x, 1.0 - mouse.current.y)
-    materialRef.current.uResolution.set(size.width, size.height)
+    materialRef.current.uniforms.uTime.value = clock.getElapsedTime()
+    materialRef.current.uniforms.uMouse.value = mouse.current
+    materialRef.current.uniforms.uResolution.value.set(size.width, size.height)
   })
 
   return (
     <mesh>
       <planeGeometry args={[2, 2]} />
-      <rippleMaterial ref={materialRef} transparent />
+      <shaderMaterial
+        ref={materialRef}
+        fragmentShader={fragmentShader}
+        vertexShader={vertexShader}
+        transparent
+        uniforms={{
+          uTime: { value: 0 },
+          uMouse: { value: new THREE.Vector2(0.5, 0.5) },
+          uResolution: { value: new THREE.Vector2(1, 1) },
+        }}
+      />
     </mesh>
   )
 }
