@@ -27,6 +27,7 @@
     "react-parallax-tilt": "^1.7.73"
   },
   "devDependencies": {
-  "babel-plugin-glsl": "^1.0.0"
+    "@babel/core": "^7.24.0",  
+    "babel-plugin-glsl": "^1.0.0"
   }
 }
