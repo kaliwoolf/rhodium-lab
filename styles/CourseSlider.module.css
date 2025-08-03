@@ -24,6 +24,11 @@
   display: none; /* ✅ скрываем вертикальный скролл */
 }
 
+.slider::before,
+.slider::after {
+  content: '';
+  flex: 0 0 clamp(40px, 8vw, 100px);
+}
 
 .card {
   scroll-snap-align: center;
@@ -95,3 +100,11 @@
 .rightButton:hover {
   background: rgba(255, 255, 255, 0.15);
 }
+
+@media (max-width: 640px) {
+  .leftButton,
+  .rightButton {
+    display: none;
+  }
+}
+

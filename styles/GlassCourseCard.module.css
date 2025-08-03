@@ -133,3 +133,34 @@
     transform: translateY(-10px);
   }
 }
+
+@media (max-width: 640px) {
+  
+ .card {
+    width: 80vw;
+    height: auto;
+    aspect-ratio: 3 / 4;
+  }
+  
+  .title {
+    font-size: 1.4rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .description {
+    font-size: 1rem;
+    max-width: 95%;
+    margin-bottom: 1.2rem;
+    line-height: 1.4;
+  }
+
+  .button {
+    font-size: 0.95rem;
+    padding: 0.5rem 1.2rem;
+  }
+
+  .overlay {
+    padding: 1.2rem;
+  }
+}
+

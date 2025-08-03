@@ -1,12 +1,11 @@
-// components/ScrambleLink.js
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 
 export default function ScrambleLink({ text, onClick, className = '', delay = 30, duration = 1000 }) {
   const spanRef = useRef(null)
 
   const scramble = () => {
     const el = spanRef.current
-    const chars = '!<>-_\/[]{}~=+*^?#________'
+    const chars = '!<>-_\\/[]{}—=+*^?#________'
     const original = text
     let output = ''
     let frame = 0
@@ -32,9 +31,12 @@ export default function ScrambleLink({ text, onClick, className = '', delay = 30
   }
 
   const handleClick = (e) => {
-    scramble()
     if (onClick) {
-      setTimeout(() => onClick(e), duration + 50)
+      e.preventDefault()
+      scramble()
+      setTimeout(() => {
+        onClick()
+      }, duration)
     }
   }
 
