@@ -14,27 +14,19 @@ const fragmentShader = `
     vec2 uv = vUv;
 
     float dist = distance(uv, mouseUV);
-    float strength = 0.1;
-    float radius = 0.25;
+    float strength = 0.2;    // 💥 было 0.05
+    float radius = 0.2;      // 💥 чуть меньше, чтобы резче
 
-    vec3 baseColor = texture2D(uTexture, uv).rgb;
+    // 💧 Преломление
+    vec2 refractOffset = normalize(uv - mouseUV) * strength * smoothstep(radius, 0.0, dist);
+    vec3 baseColor = texture2D(uTexture, uv + (dist < radius ? refractOffset : vec2(0.0))).rgb;
 
-    // 🔮 Преломление внутри радиуса
-    if (dist < radius) {
-      vec2 offset = normalize(uv - mouseUV) * strength * smoothstep(radius, 0.0, dist);
-      uv += offset;
-      baseColor = texture2D(uTexture, uv).rgb;
-    }
-
-    // ✨ Подсветка по краю линзы
-    float glow = smoothstep(radius - 0.015, radius, dist) * 1.2;
-
-    // 🧪 Цвет свечения — пурпурно-белый
-    vec3 glowColor = vec3(1.0, 0.5, 1.0) * glow;
+    // ✨ Свечение по краю линзы
+    float glow = smoothstep(radius - 0.01, radius, dist);   // Узкая кайма
+    vec3 glowColor = vec3(1.5, 0.4, 1.2) * glow;             // 💡 усилили цвет
 
     gl_FragColor = vec4(baseColor + glowColor, 1.0);
   }
-
 `
 
 const vertexShader = `
