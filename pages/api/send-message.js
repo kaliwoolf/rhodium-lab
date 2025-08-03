@@ -9,7 +9,7 @@ export default async function handler(req, res) {
   })
 
   const recaptchaJson = await recaptchaRes.json()
-  if (!recaptchaJson.success /* || recaptchaJson.score < 0.5) */ {
+  if (!recaptchaJson.success) /* || recaptchaJson.score < 0.5) */ {
     return res.status(403).json({ error: 'Failed CAPTCHA verification' })
   }
 
