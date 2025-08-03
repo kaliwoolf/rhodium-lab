@@ -14,10 +14,7 @@ export default function ContactBlock() {
 
     const section = document.getElementById('contact')
     if (section) section.addEventListener('mousemove', handleMouseMove)
-
-    return () => {
-      if (section) section.removeEventListener('mousemove', handleMouseMove)
-    }
+    return () => section?.removeEventListener('mousemove', handleMouseMove)
   }, [])
 
   return (
@@ -25,15 +22,15 @@ export default function ContactBlock() {
       id="contact"
       className="relative text-white min-h-screen flex items-center justify-center px-4 py-24 overflow-hidden"
     >
-      {/* 🔮 Свет от мышки — вне Tilt */}
+      {/* 🔮 Усиленное световое пятно */}
       <div
-        className="pointer-events-none absolute w-64 h-64 rounded-full bg-fuchsia-500/10 blur-2xl z-[-1] transition-transform duration-100"
+        className="pointer-events-none absolute w-80 h-80 rounded-full bg-fuchsia-400/20 blur-[90px] z-[-1] transition-transform duration-100"
         style={{
-          transform: `translate(${pos.x - 128}px, ${pos.y - 128}px)`
+          transform: `translate(${pos.x - 160}px, ${pos.y - 160}px)`
         }}
       />
 
-      {/* 🧊 Вся панель в Tilt */}
+      {/* 🧊 Подложка в Tilt с 4:3 */}
       <Tilt
         glareEnable
         glareMaxOpacity={0.15}
@@ -41,9 +38,9 @@ export default function ContactBlock() {
         transitionSpeed={2500}
         tiltMaxAngleX={6}
         tiltMaxAngleY={6}
-        className="w-[90vw] max-w-5xl h-[430px] sm:h-[400px] relative rounded-3xl overflow-hidden shadow-[0_0_100px_rgba(255,255,255,0.1)]"
+        className="w-[90vw] max-w-[960px] h-[720px] relative rounded-3xl overflow-hidden shadow-[0_0_120px_rgba(255,255,255,0.1)]"
       >
-        {/* 🎞 Видеоподложка */}
+        {/* 🎞 Видеофон */}
         <video
           autoPlay
           loop
@@ -53,7 +50,7 @@ export default function ContactBlock() {
           src="/video/ice.mp4"
         />
 
-        {/* 📬 Контент поверх видео */}
+        {/* 📬 Контент */}
         <div className="relative z-10 w-full h-full flex flex-col items-center justify-center gap-10 px-4">
           <div className="uppercase tracking-widest text-sm text-white/60 flex items-center gap-2">
             <span className="text-white/40">✦</span>
