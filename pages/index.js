@@ -29,7 +29,7 @@ export default function Home() {
 
         <VideoPanelOverlay />
 
-        <section id="contact">
+        <section id="contact" className="h-screen flex items-center justify-center">
           <ContactBlock />
         </section>
 

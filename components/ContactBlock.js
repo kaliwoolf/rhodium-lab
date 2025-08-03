@@ -1,12 +1,12 @@
 import Image from 'next/image'
-import QR from '/public/qr-code.png' // заранее сгенерируй QR и положи в /public
+import QR from '/public/qr-code.png' 
 
 export default function ContactBlock() {
   return (
     <section className="relative text-white py-16 px-6 flex flex-col items-center gap-6">
       <div className="uppercase tracking-widest text-sm text-white/60 flex items-center gap-2">
         <span className="text-white/40">✦</span>
-        CONTACT US
+        СВЯЗАТЬСЯ
         <span className="text-white/40">✦</span>
       </div>
 
