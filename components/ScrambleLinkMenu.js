@@ -11,8 +11,10 @@ export default function ScrambleLinkMenu() {
       <ScrambleLink
           text="Кабинет"
           onClick={() => {
-            window.open('https://mysteriumlab.pro/teach/control', '_blank')
-          }}
+            setTimeout(() => {
+                window.open('https://mysteriumlab.pro/teach/control', '_blank')
+              }, 1000)
+            }}
         />
     </div>
   )
