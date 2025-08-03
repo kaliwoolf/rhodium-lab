@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 
-export default function ScrambleLink({ text, onClick, className = '', delay = 30, duration = 1000 }) {
+export default function ScrambleLink({ text, href, className = '', delay = 30, duration = 1000 }) {
   const spanRef = useRef(null)
 
   const scramble = () => {
@@ -26,18 +26,19 @@ export default function ScrambleLink({ text, onClick, className = '', delay = 30
       if (frame >= totalFrames) {
         clearInterval(interval)
         el.textContent = original
-        onClick?.() // ← вызываем точно после scramble
       }
     }, delay)
   }
 
   return (
-    <span
-      ref={spanRef}
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      onMouseDown={scramble}
       className={`cursor-pointer inline-block transition-all ${className}`}
-      onClick={scramble}
     >
-      {text}
-    </span>
+      <span ref={spanRef}>{text}</span>
+    </a>
   )
 }
