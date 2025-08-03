@@ -4,32 +4,38 @@ import * as THREE from 'three'
 
 const fragmentShader = `
   uniform sampler2D uTexture;
-  uniform vec2 uMouse;
-  uniform vec2 uResolution;
-  uniform float uTime;
-  varying vec2 vUv;
+uniform vec2 uMouse;
+uniform vec2 uResolution;
+uniform float uTime;
+varying vec2 vUv;
 
-  void main() {
-    vec2 mouseUV = uMouse / uResolution;
-    vec2 uv = vUv;
+void main() {
+  vec2 uv = vUv;
+  vec2 mouseUV = uMouse / uResolution;
 
-    float dist = distance(uv, mouseUV);
-    float strength = 0.2;    // 💥 было 0.05
-    float radius = 0.2;      // 💥 чуть меньше, чтобы резче
+  float dist = distance(uv, mouseUV);
+  float radius = 0.15;
+  float strength = 0.08;
 
-    // 💧 Преломление
-    vec2 refractOffset = normalize(uv - mouseUV) * strength * smoothstep(radius, 0.0, dist);
-    vec3 baseColor = texture2D(uTexture, uv + (dist < radius ? refractOffset : vec2(0.0))).rgb;
+  // Только внутри радиуса — делаем преломление
+  if (dist < radius) {
+    vec2 offset = normalize(uv - mouseUV) * strength * smoothstep(radius, 0.0, dist);
+    
+    // Хроматическая аберрация
+    float r = texture2D(uTexture, uv + offset * 0.98).r;
+    float g = texture2D(uTexture, uv + offset * 1.00).g;
+    float b = texture2D(uTexture, uv + offset * 1.02).b;
 
-    // ✨ Свечение по краю линзы
-    float glow = exp(-50.0 * pow(dist - radius, 2.0));       // Узкая кайма
-    vec3 glowColor = vec3(1.5, 0.4, 1.2) * glow;             // 💡 усилили цвет
+    // Свечение на краю
+    float glow = smoothstep(radius - 0.01, radius, dist);
+    vec3 glowColor = vec3(1.4, 0.3, 1.5) * glow;
 
-    float vignette = smoothstep(0.0, radius, dist);
-    baseColor *= 0.95 + 0.05 * vignette;
-
-    gl_FragColor = vec4(baseColor + glowColor, 1.0);
+    gl_FragColor = vec4(vec3(r, g, b) + glowColor, 1.0);
+  } else {
+    // Вне линзы — ничего не отображаем
+    gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
   }
+}
 `
 
 const vertexShader = `
