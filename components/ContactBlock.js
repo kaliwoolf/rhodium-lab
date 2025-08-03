@@ -23,6 +23,18 @@ export default function ContactBlock() {
         mouse.current.set(e.clientX - rect.left, rect.height - (e.clientY - rect.top))
       }}
     >
+      
+      {/* 🔹 Размытая и тусклая версия видео — фон под линзой */}
+      <video
+        className="absolute inset-0 w-full h-full object-cover blur-xl brightness-50 opacity-60 z-0 pointer-events-none"
+        src="/video/ice.mp4"
+        autoPlay
+        muted
+        loop
+        playsInline
+      />
+
+
       {/* 🔮 Фоновая линза */}
       <div className="absolute inset-0 z-10 pointer-events-none mix-blend-screen">
         <GlassLensCanvas mouse={mouse} />
@@ -36,7 +48,7 @@ export default function ContactBlock() {
         transitionSpeed={2500}
         tiltMaxAngleX={6}
         tiltMaxAngleY={6}
-        className="w-[90vw] max-w-[960px] h-[720px] relative rounded-3xl overflow-hidden shadow-[0_0_120px_rgba(255,255,255,0.1)]"
+        className="w-[90vw] max-w-[960px] h-[720px] relative z-20 rounded-3xl overflow-hidden shadow-[0_0_120px_rgba(255,255,255,0.1)]"
       >
         <video
           autoPlay
