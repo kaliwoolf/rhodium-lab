@@ -1,6 +1,6 @@
 'use client'
 import { Canvas } from '@react-three/fiber'
-import GlassLensShader from './GlassLensShader'
+import GlassLensShader from '../components/GlassLensShader'
 import { useLoader } from '@react-three/fiber'
 import { TextureLoader } from 'three'
 
