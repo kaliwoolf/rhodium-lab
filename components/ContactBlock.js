@@ -13,8 +13,7 @@ const GlassLensCanvas = dynamic(() => import('../components/GlassLensCanvas'), {
 
 export default function ContactBlock() {
   const mouse = useRef(new THREE.Vector2(0.5, 0.5))
-  const texture = useLoader(TextureLoader, '/video/ice-blurred.jpg') // ← загружаем тут
-
+ 
   return (
     <section
       id="contact"
@@ -26,7 +25,7 @@ export default function ContactBlock() {
     >
       {/* 🔮 Фоновая линза */}
       <div className="absolute inset-0 z-0">
-        <GlassLensCanvas mouse={mouse} texture={texture} />
+        <GlassLensCanvas mouse={mouse} />
       </div>
 
       {/* 🧊 Панель с Tilt и видеофоном */}
