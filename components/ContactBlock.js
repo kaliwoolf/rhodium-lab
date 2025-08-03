@@ -1,9 +1,35 @@
 import Image from 'next/image'
 import Tilt from 'react-parallax-tilt'
+import { useState, useEffect } from 'react'
 
 export default function ContactBlock() {
+  const [pos, setPos] = useState({ x: 0, y: 0 })
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      const rect = e.currentTarget?.getBoundingClientRect?.()
+      if (!rect) return
+      setPos({ x: e.clientX - rect.left, y: e.clientY - rect.top })
+    }
+
+    const section = document.getElementById('contact')
+    if (section) section.addEventListener('mousemove', handleMouseMove)
+
+    return () => {
+      if (section) section.removeEventListener('mousemove', handleMouseMove)
+    }
+  }, [])  
+
   return (
     <section className="relative text-white min-h-screen flex items-center justify-center px-4 py-24 overflow-hidden">
+
+      {/* 🔮 Световой эффект от мышки — вне Tilt */}
+      <div
+        className="pointer-events-none absolute w-64 h-64 rounded-full bg-fuchsia-500/10 blur-2xl z-[-1] transition-transform duration-100"
+        style={{
+          transform: `translate(${pos.x - 128}px, ${pos.y - 128}px)`
+        }}
+      />
         {/* Видео-подложка-панель */}
       <Tilt glareEnable={true} glareMaxOpacity={0.2} scale={1.02} transitionSpeed={2500}> 
         <div className="absolute left-1/2 top-1/2 w-[90vw] max-w-5xl h-[400px] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-3xl z-[-1] shadow-[0_0_120px_rgba(255,255,255,0.08)]">
