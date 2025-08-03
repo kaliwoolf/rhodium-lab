@@ -1,6 +1,12 @@
 import { useRef } from 'react'
 
-export default function ScrambleExternalLink({ text, href, className = '', delay = 30, duration = 1000 }) {
+export default function ScrambleExternalLink({
+  text,
+  href,
+  className = '',
+  delay = 30,
+  duration = 1000
+}) {
   const spanRef = useRef(null)
 
   const scramble = () => {
@@ -26,7 +32,7 @@ export default function ScrambleExternalLink({ text, href, className = '', delay
       if (frame >= totalFrames) {
         clearInterval(interval)
         el.textContent = original
-        window.open(href, '_blank', 'noopener,noreferrer')
+        window.location.href = href // ← теперь работает и на мобилках
       }
     }, delay)
   }
