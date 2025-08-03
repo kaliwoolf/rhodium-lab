@@ -135,6 +135,13 @@
 }
 
 @media (max-width: 640px) {
+  
+ .card {
+    width: 90vw;
+    height: auto;
+    aspect-ratio: 3 / 4;
+  }
+  
   .title {
     font-size: 1.4rem;
     margin-bottom: 0.8rem;
