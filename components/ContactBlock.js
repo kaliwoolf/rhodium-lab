@@ -1,15 +1,22 @@
+// ContactBlock.js
+
 import Image from 'next/image'
 import Tilt from 'react-parallax-tilt'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { Canvas } from '@react-three/fiber'
+import RippleShaderPlane from './RippleShaderPlane' // импорт компонента с шейдером
 
 export default function ContactBlock() {
-  const [pos, setPos] = useState({ x: 0, y: 0 })
+  const [pos, setPos] = useState({ x: 0.5, y: 0.5 })
+  const mouseRef = useRef({ x: 0.5, y: 0.5 })
 
   useEffect(() => {
     const handleMouseMove = (e) => {
-      const rect = e.currentTarget?.getBoundingClientRect?.()
+      const rect = document.getElementById('contact')?.getBoundingClientRect()
       if (!rect) return
-      setPos({ x: e.clientX - rect.left, y: e.clientY - rect.top })
+      const x = (e.clientX - rect.left) / rect.width
+      const y = (e.clientY - rect.top) / rect.height
+      mouseRef.current = { x, y }
     }
 
     const section = document.getElementById('contact')
@@ -22,15 +29,14 @@ export default function ContactBlock() {
       id="contact"
       className="relative text-white min-h-screen flex items-center justify-center px-4 py-24 overflow-hidden"
     >
-      {/* 🔮 Усиленное световое пятно */}
-      <div
-        className="pointer-events-none absolute w-80 h-80 rounded-full bg-fuchsia-400/20 blur-[90px] z-[-1] transition-transform duration-100"
-        style={{
-          transform: `translate(${pos.x - 160}px, ${pos.y - 160}px)`
-        }}
-      />
+      {/* 🔮 Canvas с ripple shader */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <Canvas orthographic camera={{ zoom: 1, position: [0, 0, 100] }}>
+          <RippleShaderPlane mouse={mouseRef} />
+        </Canvas>
+      </div>
 
-      {/* 🧊 Подложка в Tilt с 4:3 */}
+      {/* 🧊 Tilt с сохранением скруглений */}
       <Tilt
         glareEnable
         glareMaxOpacity={0.15}
@@ -38,15 +44,15 @@ export default function ContactBlock() {
         transitionSpeed={2500}
         tiltMaxAngleX={6}
         tiltMaxAngleY={6}
-        className="w-[90vw] max-w-[960px] h-[720px] relative rounded-3xl overflow-hidden shadow-[0_0_120px_rgba(255,255,255,0.1)]"
+        className="w-[90vw] max-w-[960px] h-[720px] relative rounded-3xl overflow-hidden shadow-[0_0_120px_rgba(255,255,255,0.1)] bg-black/5"
       >
-        {/* 🎞 Видеофон */}
+        {/* 🎞 Видеофон с blur */}
         <video
           autoPlay
           loop
           muted
           playsInline
-          className="absolute inset-0 w-full h-full object-cover opacity-80"
+          className="absolute inset-0 w-full h-full object-cover opacity-70 blur-[2px]"
           src="/video/ice.mp4"
         />
 
@@ -71,7 +77,7 @@ export default function ContactBlock() {
               loop
               muted
               playsInline
-              className="absolute inset-0 w-full h-full object-cover opacity-80"
+              className="absolute inset-0 w-full h-full object-cover opacity-80 blur-[1px]"
               src="/video/ice.mp4"
             />
             <div className="relative z-10 flex flex-col items-center justify-center h-full p-4">
