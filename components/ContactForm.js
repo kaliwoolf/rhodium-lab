@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import ReCAPTCHA from 'react-google-recaptcha'
 import styles from '../styles/ContactBlock.module.css'
 
@@ -28,6 +28,14 @@ export default function ContactForm() {
       setStatus('error')
     }
   }
+
+    useEffect(() => {
+      const badge = document.querySelector('.grecaptcha-badge')
+      if (badge) {
+        badge.style.opacity = '0.01'
+        badge.style.pointerEvents = 'none'
+      }
+    }, [])
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">

@@ -1,7 +1,6 @@
 export default async function handler(req, res) {
   const { email, message, captcha } = req.body
 
-  // Проверка капчи
   const recaptchaRes = await fetch(`https://www.google.com/recaptcha/api/siteverify`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -12,6 +11,7 @@ export default async function handler(req, res) {
   if (!recaptchaJson.success) /* || recaptchaJson.score < 0.5) */ {
     return res.status(403).json({ error: 'Failed CAPTCHA verification' })
   }
+
 
   // Отправка в Telegram
   const telegramToken = process.env.TELEGRAM_BOT_TOKEN
