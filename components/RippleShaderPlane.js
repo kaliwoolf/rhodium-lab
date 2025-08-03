@@ -13,12 +13,22 @@ const fragmentShader = `
     vec2 dir = uv - uMouse;
     float dist = length(dir);
 
-    float ripple = 0.03 * sin(40.0 * dist - uTime * 5.0);
-    uv += normalize(dir) * ripple * smoothstep(0.2, 0.0, dist);
+    // Меньше амплитуда, выше частота — тонкий ripple
+    float ripple = 0.015 * sin(60.0 * dist - uTime * 6.0);
 
+    // Более резкое затухание
+    float strength = smoothstep(0.08, 0.0, dist);
+
+    // Применяем искажение
+    uv += normalize(dir) * ripple * strength;
+
+    // Цвет фона (фиолетово-чернильный)
     vec3 color = vec3(0.05, 0.015, 0.1);
+
+    // Центр — ярче, по краям затемнение
     float vignette = smoothstep(0.9, 0.2, dist);
-    gl_FragColor = vec4(color + ripple * 0.5, vignette);
+
+    gl_FragColor = vec4(color + ripple * 0.3, vignette);
   }
 `
 

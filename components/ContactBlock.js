@@ -1,11 +1,10 @@
-import { Canvas } from '@react-three/fiber'
-import RippleShaderPlane from '../components/RippleShaderPlane'
-import Tilt from 'react-parallax-tilt'
-import Image from 'next/image'
 import { useRef } from 'react'
+import { Canvas } from '@react-three/fiber'
+import * as THREE from 'three'
+import RippleShaderPlane from './RippleShaderPlane'
 
 export default function ContactBlock() {
-  const mouse = useRef({ x: 0.5, y: 0.5 })
+  const mouse = useRef(new THREE.Vector2(0.5, 0.5))
 
   return (
     <section
@@ -13,15 +12,19 @@ export default function ContactBlock() {
       className="relative text-white min-h-screen flex items-center justify-center px-4 py-24 overflow-hidden"
       onMouseMove={(e) => {
         const rect = e.currentTarget.getBoundingClientRect()
-        mouse.current = {
-          x: (e.clientX - rect.left) / rect.width,
-          y: (e.clientY - rect.top) / rect.height,
-        }
+        mouse.current.set(
+          (e.clientX - rect.left) / rect.width,
+          (e.clientY - rect.top) / rect.height
+        )
       }}
     >
-      {/* Ripple canvas фон */}
+      {/* Ripple Canvas фон */}
       <div className="absolute inset-0 z-0">
-        <Canvas orthographic camera={{ zoom: 1, position: [0, 0, 100] }}>
+        <Canvas
+          orthographic
+          gl={{ preserveDrawingBuffer: true }}
+          camera={{ zoom: 1, position: [0, 0, 100] }}
+        >
           <RippleShaderPlane mouse={mouse} />
         </Canvas>
       </div>
