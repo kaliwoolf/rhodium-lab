@@ -6,7 +6,7 @@ import { motion } from 'framer-motion'
 import { useRef } from 'react'
 import { useInView } from 'react-intersection-observer'
 import VideoPanelOverlay from '../components/VideoPanelOverlay'
-
+import ScrambleLinkMenu from '../components/ScrambleLinkMenu'
 
 export default function Home() {
   const { ref: projectsRef, inView: isProjectsInView } = useInView({
@@ -23,6 +23,8 @@ export default function Home() {
       <main className="relative z-10">
         <HeroSection />
 
+        <ScrambleLinkMenu />
+        
         <section id="projects" className="h-screen flex items-center justify-center text-white">
         </section>
 
