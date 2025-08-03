@@ -101,5 +101,26 @@
   .rightButton {
     display: none;
   }
+  
+  .slider {
+    flex-direction: column;
+    scroll-snap-type: y mandatory;
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: auto;
+  }
+
+  .card {
+    min-width: 100% !important;
+    width: 100% !important;
+    height: auto !important;
+    scroll-snap-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .sliderOuterWrapper {
+    flex-direction: column;
+    align-items: center;
+  }
 }
 
