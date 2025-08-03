@@ -24,6 +24,6 @@
     "flubber": "^0.4.2",
     "react-intersection-observer": "^9.4.3",
     "classnames": "^2.3.2",
-    "react-parallax-tilt": "^1.8.104"
+    "react-parallax-tilt": "^1.7.73"
   }
 }
