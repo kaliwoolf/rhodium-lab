@@ -51,3 +51,8 @@
   margin-bottom: 1.5rem;
   letter-spacing: 0.5px;
 }
+
+.grecaptcha-badge {
+  opacity: 0.01 !important;
+  pointer-events: none !important;
+}
