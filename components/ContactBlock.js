@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import QR from '@/public/qr-code.png' // заранее сгенерируй QR и положи в /public
+import QR from '/public/qr-code.png' // заранее сгенерируй QR и положи в /public
 
 export default function ContactBlock() {
   return (
