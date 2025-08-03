@@ -6,9 +6,7 @@ export default function ScrambleLinkMenu() {
       <ScrambleLink
         text="Кабинет"
         onClick={() => {
-          setTimeout(() => {
-            window.open('https://mysteriumlab.pro/teach/control', '_blank')
-          }, 1000) // задержка чуть больше времени scramble
+          window.open('https://mysteriumlab.pro/teach/control', '_blank')
         }}
       />
     </div>
