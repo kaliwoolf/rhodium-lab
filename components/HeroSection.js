@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
+import ScrambleLink from '../components/ScrambleLink'
 
 export default function HeroSection() {
   const { scrollY } = useScroll()
@@ -66,12 +67,11 @@ export default function HeroSection() {
             pinned ? '' : 'mt-12'
           }`}
         >
-          <button
+          <ScrambleLink
+            text="ПРОЕКТЫ"
             onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
             className="hover:scale-105 transition-transform"
-          >
-            ПРОЕКТЫ
-          </button>
+          />
 
           <div className="relative h-[44px] flex items-center justify-center w-[54px]">
             <motion.svg
@@ -102,12 +102,11 @@ export default function HeroSection() {
           </div>
 
 
-          <button
+          <ScrambleLink
+            text="СВЯЗАТЬСЯ"
             onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
             className="hover:scale-105 transition-transform"
-          >
-            СВЯЗАТЬСЯ
-          </button>
+          />
         </motion.div>
       </div>
     </main>
