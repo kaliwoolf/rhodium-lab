@@ -7,21 +7,14 @@ const baseCourses = [
   {
     title: 'КОД СТЫДА',
     description: 'Онлайн-курс из 12 занятий по системной проработке механизмов стыда',
-    link: '/courses/kod-styda',
+    link: 'https://mysteriumlab.pro/ks',
     video: '/video/ks.mp4',
     texture: '/textures/glass-noise.png'
   },
   {
-    title: 'ИНКВИЗИЦИЯ БОГАТСТВА',
-    description: 'Курс о власти, деньгах и родовых ограничениях через архетипы',
-    link: '/courses/wealth-inquisition',
-    video: '/video/p2.mp4',
-    texture: '/textures/glass-gold.jpg'
-  },
-  {
     title: 'ПРИДВОРНЫЕ КАРТЫ',
-    description: 'I Модуль по психотипам',
-    link: '/courses/profiling-thoth',
+    description: ' Механика и логика. I Модуль по психотипам',
+    link: 'https://mysteriumlab.pro/mechanica',
     video: '/video/profiling.mp4',
     texture: '/textures/glass-neon.jpg'
   },
