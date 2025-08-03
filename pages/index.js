@@ -1,13 +1,12 @@
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
 import HeroSection from '../components/HeroSection'
-import styles from '../styles/ContactBlock.module.css'
 import { motion } from 'framer-motion'
 import { useRef } from 'react'
 import { useInView } from 'react-intersection-observer'
 import VideoPanelOverlay from '../components/VideoPanelOverlay'
 import ScrambleLinkMenu from '../components/ScrambleLinkMenu'
-import ContactForm from '../components/ContactForm'
+import ContactBlock from '../components/ContactBlock'
 
 export default function Home() {
   const { ref: projectsRef, inView: isProjectsInView } = useInView({
@@ -30,12 +29,10 @@ export default function Home() {
 
         <VideoPanelOverlay />
 
-        <section id="contact" className="relative h-screen flex items-center justify-center px-4">
-          <div className={`${styles.glassContact} w-full max-w-xl p-8 rounded-2xl`}>
-            <h2 className={styles.contactHeading}>Связаться</h2>
-            <ContactForm />
-          </div>
+        <section id="contact">
+          <ContactBlock />
         </section>
+
 
       </main>
     </>
