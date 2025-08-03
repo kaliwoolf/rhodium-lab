@@ -1,5 +1,5 @@
 import { Canvas } from '@react-three/fiber'
-import RippleShaderPlane from './RippleShaderPlane'
+import RippleShaderPlane from '../components/RippleShaderPlane'
 import Tilt from 'react-parallax-tilt'
 import Image from 'next/image'
 import { useRef } from 'react'
