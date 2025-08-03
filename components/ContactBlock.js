@@ -6,7 +6,7 @@ export default function ContactBlock() {
     <section className="relative text-white min-h-screen flex items-center justify-center px-4 py-24 overflow-hidden">
         {/* Видео-подложка-панель */}
       <Tilt glareEnable={true} glareMaxOpacity={0.2} scale={1.02} transitionSpeed={2500}> 
-        <div className="absolute left-1/2 top-1/2 w-full max-w-3xl h-[400px] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-3xl z-[-1] shadow-[0_0_120px_rgba(255,255,255,0.08)]">
+        <div className="absolute left-1/2 top-1/2 w-[90vw] max-w-5xl h-[400px] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-3xl z-[-1] shadow-[0_0_120px_rgba(255,255,255,0.08)]">
           <video
             autoPlay
             loop
@@ -31,7 +31,7 @@ export default function ContactBlock() {
           >
             HI@RHODIUM.VISION
           </a>
-          
+
           <div className="relative w-[160px] sm:w-[180px] h-[200px] sm:h-[220px] rounded-xl overflow-hidden border border-white/20 shadow-xl">
             <video
               autoPlay
