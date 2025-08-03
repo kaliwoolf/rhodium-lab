@@ -1,3 +1,5 @@
+import { useRef } from 'react'
+
 export default function ScrambleLink({ text, onClick, href, className = '', delay = 30, duration = 1000 }) {
   const spanRef = useRef(null)
 
