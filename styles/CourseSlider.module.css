@@ -24,6 +24,11 @@
   display: none; /* ✅ скрываем вертикальный скролл */
 }
 
+.slider::before,
+.slider::after {
+  content: '';
+  flex: 0 0 clamp(40px, 8vw, 100px);
+}
 
 .card {
   scroll-snap-align: center;
