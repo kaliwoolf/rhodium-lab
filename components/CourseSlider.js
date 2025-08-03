@@ -7,7 +7,7 @@ const baseCourses = [
   {
     title: 'КОД СТЫДА',
     description: 'Онлайн-курс из 12 занятий по системной проработке механизмов стыда',
-    link: 'https://mysteriumlab.pro/ks',
+    link: 'https://mysteriumlab.pro/code',
     video: '/video/ks.mp4',
     texture: '/textures/glass-noise.png'
   },
