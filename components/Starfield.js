@@ -6,11 +6,10 @@ import * as THREE from 'three'
 
 export default function Starfield({ mouse, scrollRef, explosionFactor }) {
   const pointsRef = useRef()
-  const count = 5000
+  const count = 4000
   const offsets = useRef([])
   const originalColorsRef = useRef([])
   const targetColorsRef = useRef([])
-  const basePositionsRef = useRef([])
 
   const { positions, colors } = useMemo(() => {
     const pos = []
@@ -59,9 +58,7 @@ export default function Starfield({ mouse, scrollRef, explosionFactor }) {
       targetColorsRef.current.push(tr, tg, tb)
     }
 
-    basePositionsRef.current = [...pos]
     offsets.current = offs
-
     return {
       positions: new Float32Array(pos),
       colors: new Float32Array(col)
@@ -88,11 +85,9 @@ export default function Starfield({ mouse, scrollRef, explosionFactor }) {
 
       const dx = 0.05 * Math.sin(t * 0.25 * factor + o[i])
       const dy = 0.05 * Math.cos(t * 0.25 * factor + o[i])
-      
-      pos[i3]     = base[i3] + dx * 0.005 + mouse.current.x * 0.002
-      pos[i3 + 1] = base[i3 + 1] + dy * 0.005 + mouse.current.y * 0.002
-      pos[i3 + 2] = base[i3 + 2]
-      
+      pos[i3] += dx * 0.005 + mouse.current.x * 0.002
+      pos[i3 + 1] += dy * 0.005 + mouse.current.y * 0.002
+
       const baseR = originalColorsRef.current[i3]
       const baseG = originalColorsRef.current[i3 + 1]
       const baseB = originalColorsRef.current[i3 + 2]
