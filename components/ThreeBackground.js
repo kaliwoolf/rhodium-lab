@@ -4,7 +4,7 @@ import { EffectComposer } from '@react-three/postprocessing'
 import { Points, PointMaterial, Environment, Float } from '@react-three/drei'
 import * as THREE from 'three'
 import dynamic from 'next/dynamic'
-import MouseTrails from './MouseTrails'
+import MouseTrails from '../components/MouseTrails'
 
 const Starfield = dynamic(() => import('./Starfield'), { ssr: false })
 const GlassSaturn = dynamic(() => import('./GlassSaturn'), { ssr: false })
