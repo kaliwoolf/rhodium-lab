@@ -64,27 +64,28 @@ export default function ContactBlock() {
           tiltMaxAngleY={6}
           className="w-full h-full"
         >
-          <Canvas
-            gl={{ alpha: true }}
-            camera={{ position: [0, 0, 2.5], fov: 50 }}
-            className="absolute inset-0 z-0"
-          >
-            <Suspense fallback={null}>
-              {videoTexture && (
-                <>
-                  <VideoPlane texture={videoTexture} mouse={mouse} />
-                  <EffectComposer disableNormalPass>
-                    <ChromaticAberration
-                      offset={[0.0015, 0.0012]}
-                      radialModulation
-                      modulationOffset={0.15}
-                      blendFunction={BlendFunction.NORMAL}
-                    />
-                  </EffectComposer>
-                </>
-              )}
-            </Suspense>
-          </Canvas>
+          <div className="relative w-full h-full">
+            <Canvas
+              gl={{ alpha: true }}
+              camera={{ position: [0, 0, 2.5], fov: 50 }}
+              className="absolute inset-0 z-0"
+            >
+              <Suspense fallback={null}>
+                {videoTexture && (
+                  <>
+                    <VideoPlane texture={videoTexture} mouse={mouse} />
+                    <EffectComposer disableNormalPass>
+                      <ChromaticAberration
+                        offset={[0.0015, 0.0012]}
+                        radialModulation
+                        modulationOffset={0.15}
+                        blendFunction={BlendFunction.NORMAL}
+                      />
+                    </EffectComposer>
+                  </>
+                )}
+              </Suspense>
+            </Canvas>
 
 
             <div className="absolute inset-0 z-10 w-full h-full flex flex-col items-center justify-center gap-10 px-4 pointer-events-none">
