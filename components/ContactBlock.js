@@ -160,6 +160,7 @@ function VideoPlane({ texture, mouse }) {
         float vignette = smoothstep(0.4, 0.9, distance(uv, vec2(0.5)));
         color.rgb *= 1.0 - vignette;
 
+        color.a = 0.5;  
         gl_FragColor = color;
       }
     `
@@ -173,7 +174,7 @@ function VideoPlane({ texture, mouse }) {
   return (
     <mesh>
       <planeGeometry args={[3.2, 2.4]} />
-      <shaderMaterial args={[shaderArgs]} transparent />
+      <shaderMaterial args={[shaderArgs]} transparent depthWrite={false}/>
     </mesh>
   )
 }
