@@ -1,27 +1,59 @@
 'use client'
 
-import { Canvas, useThree } from '@react-three/fiber'
-import GlassLensShader from '../components/GlassLensShader'
+import { useFrame, useThree } from '@react-three/fiber'
+import { useRef } from 'react'
 
-export default function GlassLensCanvas({ mouse, texture }) {
-  if (!texture) return null
+const vertex = `
+  varying vec2 vUv;
+  void main() {
+    vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`
+
+const fragment = `
+  uniform sampler2D uTexture;
+  uniform vec2 mouse;
+  varying vec2 vUv;
+
+  void main() {
+    vec2 uv = vUv;
+    vec2 dist = uv - mouse;
+    float len = length(dist);
+    uv += dist * 0.1 * exp(-len * 20.0);
+    vec3 color = texture(uTexture, uv).rgb;
+    gl_FragColor = vec4(color, 1.0);
+  }
+`
+
+export default function GlassLensShader({ mouse, texture }) {
+  const materialRef = useRef()
+  const { viewport } = useThree()
+  const { width, height } = viewport
+
+  useFrame(() => {
+    if (materialRef.current) {
+      materialRef.current.uniforms.mouse.value.copy(mouse.current)
+    }
+    if (texture) {
+      texture.needsUpdate = true
+    }
+  })
 
   return (
-    <div
-      style={{
-        position: 'absolute',
-        inset: 0,
-        zIndex: 30, // можно поменять в зависимости от композиции
-        pointerEvents: 'none',
-      }}
-    >
-      <Canvas
-        orthographic
-        camera={{ zoom: 1, position: [0, 0, 100], near: 0.1, far: 200 }}
-        gl={{ preserveDrawingBuffer: false }}
-      >
-        <GlassLensShader texture={texture} mouse={mouse} />
-      </Canvas>
-    </div>
+    <mesh position={[0, 0, 0]}>
+      <planeGeometry args={[width, height]} />
+      <shaderMaterial
+        ref={materialRef}
+        uniforms={{
+          uTexture: { value: texture },
+          mouse: { value: mouse.current },
+        }}
+        vertexShader={vertex}
+        fragmentShader={fragment}
+        transparent
+        toneMapped={false}
+      />
+    </mesh>
   )
 }
