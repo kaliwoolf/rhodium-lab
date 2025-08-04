@@ -57,21 +57,30 @@ export default function ScrambleHoverLink({
       onMouseEnter={startScramble}
       onMouseLeave={stopScramble}
       onClick={handleClick}
-      className={`inline-block cursor-pointer select-none ${className}`}
+      className={`inline-block cursor-pointer select-none text-xl text-center ${className}`}
+      style={{
+        minWidth: `${text.length + 2}ch`, // запас в 2 символа
+        maxWidth: `${text.length + 2}ch`,
+        display: 'inline-block',
+      }}
     >
       {isClient ? (
         <span
           ref={spanRef}
-          className="inline-block whitespace-pre text-xl"
-          style={{ minWidth: `${text.length}ch`,
-          fontFeatureSettings: "'liga' 0, 'calt' 0",
-          letterSpacing: '0.05em',
-           }}
+          className="inline-block whitespace-pre"
+          style={{
+            fontFeatureSettings: "'liga' 0, 'calt' 0",
+            letterSpacing: '0.05em',
+            width: '100%', // занимает всю ширину родителя
+          }}
         >
           {text}
         </span>
       ) : (
-        <span className="inline-block whitespace-pre">
+        <span
+          className="inline-block whitespace-pre"
+          style={{ width: '100%' }}
+        >
           {text}
         </span>
       )}
