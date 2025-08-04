@@ -4,20 +4,20 @@ import GlassCourseCard from '../components/GlassCourseCard'
 import styles from '../styles/CourseSlider.module.css'
 
 const baseCourses = [
-  {
-    title: 'КОД СТЫДА',
-    description: 'Онлайн-курс из 12 занятий по системной проработке механизмов стыда',
-    link: 'https://mysteriumlab.pro/code',
-    video: '/video/ks.mp4',
-    texture: '/textures/glass-noise.png'
-  },
-  {
+   {
     title: 'ПРИДВОРНЫЕ КАРТЫ',
     description: ' Механика и логика. I Модуль по психотипам',
     link: 'https://mysteriumlab.pro/mechanica',
     video: '/video/ml1.mp4',
     texture: '/textures/glass-neon.jpg'
   },
+  {
+    title: 'КОД СТЫДА',
+    description: 'Онлайн-курс из 12 занятий по системной проработке механизмов стыда',
+    link: 'https://mysteriumlab.pro/code',
+    video: '/video/ks.mp4',
+    texture: '/textures/glass-noise.png'
+  }, 
   {
     title: 'ТАРО БОТ',
     description: 'Бот Телеграм для определения психотипа',
