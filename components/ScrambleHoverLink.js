@@ -62,7 +62,7 @@ export default function ScrambleHoverLink({
       {isClient ? (
         <span
           ref={spanRef}
-          className="inline-block whitespace-pre font-mono"
+          className="inline-block whitespace-pre font-mono text-xl"
           style={{ minWidth: `${text.length}ch` }}
         >
           {text}
