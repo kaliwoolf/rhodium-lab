@@ -28,10 +28,7 @@ const fragmentShader = `
     // Усилим насыщенность внутри линзы
     baseColor.rgb *= 1.2;
 
-    // Только круглая область
-    if (dist > radius) discard;
-
-    gl_FragColor = vec4(baseColor.rgb + glowColor, 1.0);
+    gl_FragColor = vec4(glowColor, 1.0);
   }
 `
 
