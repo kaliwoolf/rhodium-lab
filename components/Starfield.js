@@ -5,7 +5,7 @@ import { useRef, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { Points, PointMaterial } from '@react-three/drei'
 
-export default function Starfield({ mouse, scrollRef, explosionFactor = 0 }) {
+export default function Starfield({ mouse, scrollRef, explosionFactor }) {
   const pointsRef = useRef()
   const initialPositionsRef = useRef([])
 
