@@ -26,19 +26,6 @@ export default function ContactBlock() {
       const texture = new VideoTexture(video)
       texture.minFilter = THREE.LinearFilter
       texture.magFilter = THREE.LinearFilter
-      texture.generateMipmaps = false
-
-      // ⏱ Обновляем вручную на 25 fps
-      let lastUpdate = 0
-      texture.onUpdate = () => {}
-      useFrame(({ clock }) => {
-        const t = clock.getElapsedTime()
-        if (t - lastUpdate > 1 / 25) {
-          texture.needsUpdate = true
-          lastUpdate = t
-        }
-      })
-
       setVideoTexture(texture)
 
 
