@@ -34,7 +34,7 @@ export default function ScrambleHoverLink({
     if (!spanRef.current) return
     intervalRef.current = setInterval(() => {
       spanRef.current.textContent = scrambleText(originalText.current)
-    }, 150)
+    }, 100)
   }
 
   const stopScramble = () => {
