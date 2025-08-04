@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import ScrambleLink from '../components/ScrambleLink'
+import ScrambleHoverLink from '../components/ScrambleHoverLink'
+
 
 export default function HeroSection() {
   const { scrollY } = useScroll()
@@ -67,7 +69,7 @@ export default function HeroSection() {
             pinned ? '' : 'mt-12'
           }`}
         >
-          <ScrambleLink
+          <ScrambleHoverLink
             text="ПРОЕКТЫ"
             onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
             className="hover:scale-105 transition-transform"
