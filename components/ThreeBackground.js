@@ -63,6 +63,23 @@ export default function ThreeBackground() {
 
   return (
     <>
+      <video
+        src="/videos/un.mp4"
+        autoPlay
+        loop
+        muted
+        playsInline
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          objectFit: 'cover',
+          zIndex: -3,
+        }}
+      />
+
       <Canvas
         camera={{ position: [0, 0, 9], fov: 35 }}
         gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping }}
