@@ -23,13 +23,25 @@ export default function ContactBlock() {
     video.autoplay = true;
     video.play();
 
-    const texture = new THREE.VideoTexture(video);
-    texture.minFilter = THREE.LinearFilter;
-    texture.magFilter = THREE.LinearFilter;
-    texture.format = THREE.RGBFormat;
+      video.addEventListener('canplaythrough', () => {
+    console.log('[✅] Видео готово к воспроизведению')
+    })
 
-    setVideoTexture(texture);
-  }, []);
+    video.addEventListener('error', (err) => {
+      console.error('[🚨] Ошибка при загрузке видео', err)
+    })
+
+    video.play().then(() => {
+      console.log('[▶️] Видео воспроизводится')
+      const texture = new THREE.VideoTexture(video)
+      texture.minFilter = THREE.LinearFilter
+      texture.magFilter = THREE.LinearFilter
+      texture.format = THREE.RGBFormat
+      setVideoTexture(texture)
+    }).catch((err) => {
+      console.error('[🛑] Ошибка воспроизведения видео:', err)
+    })
+}, [])
  
   return (
     <section
