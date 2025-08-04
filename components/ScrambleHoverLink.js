@@ -5,45 +5,44 @@ export default function ScrambleHoverLink({
   href,
   onClick,
   className = '',
-  duration = 1000,
-  delay = 20,
-  chars = '!<>-_\\/[]{}—=+*^?#________',
+  duration = 800,
+  chars = '!<>-_\/[]{}—=+*^?#________',
 }) {
   const spanRef = useRef(null)
   const frameRef = useRef()
-  const timeoutRef = useRef()
-  const original = useRef(text)
+  const queueRef = useRef([])
+  const frame = useRef(0)
 
   const scramble = () => {
     const el = spanRef.current
     if (!el) return
 
-    const length = original.current.length
     const output = []
     const queue = []
 
-    const total = 80
-    const stagger = 2
-
-    for (let i = 0; i < length; i++) {
-      const from = original.current[i]
-      const to = original.current[i]
-      const start = i * stagger + Math.floor(Math.random() * 5)
-      const end = start + 20 + Math.floor(Math.random() * 20)
-      queue.push({ from, to, start, end })
+    for (let i = 0; i < text.length; i++) {
+      const start = Math.floor(i * 2 + Math.random() * 5)
+      const end = start + 10 + Math.floor(Math.random() * 10)
+      queue.push({
+        from: text[i],
+        to: text[i],
+        start,
+        end,
+        char: '',
+      })
     }
 
-
-    let frame = 0
+    queueRef.current = queue
+    frame.current = 0
 
     const update = () => {
       let complete = 0
       for (let i = 0; i < queue.length; i++) {
         const { from, to, start, end } = queue[i]
-        if (frame >= end) {
+        if (frame.current >= end) {
           complete++
           output[i] = to
-        } else if (frame >= start) {
+        } else if (frame.current >= start) {
           const randomChar = chars[Math.floor(Math.random() * chars.length)]
           output[i] = `<span style="opacity:0.5">${randomChar}</span>`
         } else {
@@ -51,19 +50,14 @@ export default function ScrambleHoverLink({
         }
       }
 
-      el.innerHTML = output.join('')
+      if (el) el.innerHTML = output.join('')
 
-      if (complete === queue.length) {
-        cancelAnimationFrame(frameRef.current)
-        return
-      }
-
-      frame++
+      if (complete === queue.length) return
+      frame.current++
       frameRef.current = requestAnimationFrame(update)
     }
 
     cancelAnimationFrame(frameRef.current)
-    clearTimeout(timeoutRef.current)
     update()
   }
 
@@ -75,10 +69,7 @@ export default function ScrambleHoverLink({
   }
 
   useEffect(() => {
-    return () => {
-      cancelAnimationFrame(frameRef.current)
-      clearTimeout(timeoutRef.current)
-    }
+    return () => cancelAnimationFrame(frameRef.current)
   }, [])
 
   return (
@@ -87,9 +78,8 @@ export default function ScrambleHoverLink({
       onMouseEnter={scramble}
       onClick={handleClick}
       className={`group cursor-pointer inline-block select-none transition-all duration-300 ${className}`}
-      ref={spanRef}
     >
-      {text}
+      <span ref={spanRef}>{text}</span>
     </a>
   )
 }
