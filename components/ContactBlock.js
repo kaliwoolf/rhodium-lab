@@ -20,6 +20,7 @@ export default function ContactBlock() {
     video.muted = true
     video.playsInline = true
     video.autoplay = true
+    video.playbackRate = 0.95
 
     const handleCanPlay = () => {
       const texture = new VideoTexture(video)
