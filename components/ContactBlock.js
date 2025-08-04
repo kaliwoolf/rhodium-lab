@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useEffect, useRef, Suspense } from 'react'
+import { useState, useEffect, useRef, Suspense, useMemo } from 'react'
 import Image from 'next/image'
 import Tilt from 'react-parallax-tilt'
 import * as THREE from 'three'
-import { Canvas } from '@react-three/fiber'
+import { Canvas, useFrame } from '@react-three/fiber'
 import { VideoTexture } from 'three'
 
 export default function ContactBlock() {
@@ -69,7 +69,7 @@ export default function ContactBlock() {
               className="absolute inset-0 z-0"
             >
               <Suspense fallback={null}>
-                {videoTexture && <VideoPlane texture={videoTexture} />}
+                {videoTexture && <VideoPlane texture={videoTexture} mouse={mouse} />}
               </Suspense>
             </Canvas>
 
@@ -109,12 +109,47 @@ export default function ContactBlock() {
   )
 }
 
-// 🔹 Компонент плоскости с видео-текстурой
-function VideoPlane({ texture }) {
+// 🎥 Ripple Plane
+function VideoPlane({ texture, mouse }) {
+  const shaderArgs = useMemo(() => ({
+    uniforms: {
+      uTexture: { value: texture },
+      uTime: { value: 0 },
+      uMouse: { value: new THREE.Vector2(0.5, 0.5) },
+    },
+    vertexShader: `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform sampler2D uTexture;
+      uniform vec2 uMouse;
+      uniform float uTime;
+      varying vec2 vUv;
+
+      void main() {
+        vec2 uv = vUv;
+
+        float dist = distance(uv, uMouse);
+        uv += 0.02 * sin(10.0 * dist - uTime * 3.0) * normalize(uv - uMouse);
+
+        gl_FragColor = texture2D(uTexture, uv);
+      }
+    `
+  }), [texture])
+
+  useFrame(({ clock }) => {
+    shaderArgs.uniforms.uTime.value = clock.getElapsedTime()
+    shaderArgs.uniforms.uMouse.value.lerp(mouse.current, 0.15)
+  })
+
   return (
     <mesh>
       <planeGeometry args={[3.2, 2.4]} />
-      <meshBasicMaterial map={texture} toneMapped={false} />
+      <shaderMaterial args={[shaderArgs]} />
     </mesh>
   )
 }
