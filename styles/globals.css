@@ -7,3 +7,7 @@ html, body {
   padding: 0;
   background-color: transparent;
 }
+
+.contact-canvas {
+  @apply w-[90vw] max-w-[960px] h-[720px] md:h-[720px] sm:h-[520px] xs:h-[400px];
+}

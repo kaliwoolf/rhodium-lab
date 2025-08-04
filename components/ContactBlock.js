@@ -50,14 +50,6 @@ export default function ContactBlock() {
     mouse.current.set(x / rect.width, 1 - y / rect.height)
   }
 
-  // Блокируем скролл при свайпе
-  useEffect(() => {
-    const preventScroll = (e) => e.preventDefault()
-    const el = document.getElementById('contact')
-    el?.addEventListener('touchmove', preventScroll, { passive: false })
-    return () => el?.removeEventListener('touchmove', preventScroll)
-  }, [])
-
   return (
     <section
       id="contact"
@@ -65,7 +57,7 @@ export default function ContactBlock() {
       onMouseMove={handlePointerMove}
       onTouchMove={handlePointerMove}
     >
-      <div className="w-[90vw] max-w-[960px] h-[720px] relative z-20 rounded-3xl overflow-hidden backdrop-blur-sm bg-white/5 shadow-[0_0_80px_rgba(255,255,255,0.05)] ring-1 ring-white/10">
+      <div className="contact-canvas relative z-20 rounded-3xl overflow-hidden backdrop-blur-sm bg-white/5 shadow-[0_0_80px_rgba(255,255,255,0.05)] ring-1 ring-white/10">
         <Tilt
           glareEnable
           glareMaxOpacity={0.15}
@@ -79,7 +71,7 @@ export default function ContactBlock() {
             <Canvas
               gl={{ alpha: true }}
               camera={{ position: [0, 0, 2.5], fov: 50 }}
-              className="absolute inset-0 z-0"
+              className="absolute inset-0 z-0 pointer-events-none"
             >
               <Suspense fallback={null}>
                 {videoTexture && <VideoPlane texture={videoTexture} mouse={mouse} />}
