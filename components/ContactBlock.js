@@ -81,7 +81,7 @@ export default function ContactBlock() {
             <div className="absolute inset-0 z-10 w-full h-full flex flex-col items-center justify-center gap-10 px-4 pointer-events-none">
               <div className="uppercase tracking-widest text-sm text-white/60 flex items-center gap-2">
                 <span className="text-white/40">✦</span>
-                СВЯЗАТЬСЯ
+                НАПИШИТЕ
                 <span className="text-white/40">✦</span>
               </div>
 
