@@ -1,52 +1,40 @@
+'use client'
+
 import { useRef } from 'react'
-import { useFrame, extend } from '@react-three/fiber'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 
 const fragmentShader = `
-  uniform sampler2D uTexture;
-  uniform vec2 uMouse;
-  uniform vec2 uResolution;
-  uniform float uTime;
-  varying vec2 vUv;
+uniform vec2 uMouse;
+uniform vec2 uResolution;
+varying vec2 vUv;
 
-  void main() {
-    vec2 mouseUV = uMouse;
-    vec2 uv = vUv;
+void main() {
+  vec2 mouseUV = uMouse / uResolution;
+  float dist = distance(vUv, mouseUV);
+  float radius = 0.2;
+  float glow = smoothstep(radius, 0.0, dist);
 
-    float dist = distance(uv, mouseUV);
-    float radius = 0.15;
-    float strength = 0.12;
-
-    // Преломление под курсором
-    vec2 offset = normalize(uv - mouseUV) * strength * smoothstep(radius, 0.0, dist);
-    vec4 baseColor = texture2D(uTexture, uv + (dist < radius ? offset : vec2(0.0)));
-
-    // Светящийся обод
-    float edge = smoothstep(radius - 0.01, radius, dist);
-    vec3 glowColor = vec3(2.0, 0.4, 1.4) * edge; // яркая фуксия
-
-    // Усилим насыщенность внутри линзы
-    baseColor.rgb *= 1.2;
-
-    gl_FragColor = vec4(glowColor, 1.0);
-  }
+  vec3 color = mix(vec3(1.0, 0.0, 1.0), vec3(0.0), glow);
+  gl_FragColor = vec4(color, 1.0);
+}
 `
 
 const vertexShader = `
-  varying vec2 vUv;
-  void main() {
-    vUv = uv;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-  }
+varying vec2 vUv;
+void main() {
+  vUv = uv;
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}
 `
 
-export default function GlassLensShader({ texture, mouse }) {
+function Lens({ mouse }) {
   const materialRef = useRef()
+  const { size } = useThree()
 
-  useFrame(({ size, clock }) => {
+  useFrame(() => {
     if (!materialRef.current) return
-    materialRef.current.uniforms.uTime.value = clock.getElapsedTime()
-    materialRef.current.uniforms.uMouse.value.copy(mouse.current)
+    materialRef.current.uniforms.uMouse.value = mouse.current
     materialRef.current.uniforms.uResolution.value.set(size.width, size.height)
   })
 
@@ -57,14 +45,29 @@ export default function GlassLensShader({ texture, mouse }) {
         ref={materialRef}
         fragmentShader={fragmentShader}
         vertexShader={vertexShader}
-        transparent
         uniforms={{
-          uTime: { value: 0 },
-          uMouse: { value: new THREE.Vector2(0.5, 0.5) },
+          uMouse: { value: new THREE.Vector2(0, 0) },
           uResolution: { value: new THREE.Vector2(1, 1) },
-          uTexture: { value: texture },
         }}
       />
     </mesh>
+  )
+}
+
+export default function DebugLens() {
+  const mouse = useRef(new THREE.Vector2(0, 0))
+
+  return (
+    <div
+      style={{ width: '100vw', height: '100vh' }}
+      onMouseMove={(e) => {
+        const rect = e.currentTarget.getBoundingClientRect()
+        mouse.current.set(e.clientX - rect.left, rect.height - (e.clientY - rect.top))
+      }}
+    >
+      <Canvas orthographic camera={{ zoom: 1, position: [0, 0, 100] }}>
+        <Lens mouse={mouse} />
+      </Canvas>
+    </div>
   )
 }
