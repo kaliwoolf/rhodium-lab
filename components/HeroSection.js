@@ -30,6 +30,9 @@ export default function HeroSection() {
   return (
     <main className="relative min-h-screen flex flex-col items-center justify-center text-white font-sans z-10">
       <motion.h1
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1.2, delay: 0.2 }}
         style={{ y: titleY, opacity: titleOpacity }}
         className="text-[clamp(2.5rem,8vw,7rem)] font-bold tracking-[0.15em] text-center leading-tight backdrop-blur-sm"
       >
@@ -37,6 +40,9 @@ export default function HeroSection() {
       </motion.h1>
 
       <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1.2, delay: 0.6 }}      
         style={{ y: sloganY, opacity: sloganOpacity }}
         className="mt-4 text-sm md:text-base text-white opacity-60 tracking-wide backdrop-blur text-center px-4"
       >
@@ -59,6 +65,9 @@ export default function HeroSection() {
         }}
       >
         <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.2, delay: 1.2 }}
           style={{
             y: pinned ? 0 : buttonY,
             scale: buttonScale,
