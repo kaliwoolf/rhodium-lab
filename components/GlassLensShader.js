@@ -18,7 +18,7 @@ const fragment = `
     vec2 uv = vUv;
     vec2 dist = uv - mouse;
     float len = length(dist);
-    uv += dist * 0.1 * exp(-len * 20.0); // эффект искажения
+    uv += dist * 0.1 * exp(-len * 20.0);
     vec3 color = texture(uTexture, uv).rgb;
     gl_FragColor = vec4(color, 1.0);
   }
@@ -26,6 +26,8 @@ const fragment = `
 
 export default function GlassLensShader({ mouse, texture }) {
   const materialRef = useRef()
+  const { viewport } = useThree()
+  const { width, height } = viewport
 
   useFrame(() => {
     if (materialRef.current) {
@@ -38,8 +40,7 @@ export default function GlassLensShader({ mouse, texture }) {
 
   return (
     <mesh position={[0, 0, 0]}>
-      {/* Размер зададим через пропсы снаружи или по вьюпорту */}
-      <planeGeometry args={[6, 6]} />
+      <planeGeometry args={[width, height]} />
       <shaderMaterial
         ref={materialRef}
         uniforms={{
