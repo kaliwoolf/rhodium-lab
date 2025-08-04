@@ -11,7 +11,7 @@ export default function ScrambleHoverLink({
   const spanRef = useRef(null)
   const intervalRef = useRef(null)
   const originalText = useRef(text)
-  const chars = '*?><[]&@#)(.%$-_:/;?!'.split('')
+  const chars = 'АБВГДЕЁЖЗИКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ0234568789'.split('')
   const [isClient, setIsClient] = useState(false)
 
   // чтобы не ругался при SSR
@@ -62,13 +62,16 @@ export default function ScrambleHoverLink({
       {isClient ? (
         <span
           ref={spanRef}
-          className="inline-block whitespace-pre font-mono text-xl"
-          style={{ minWidth: `${text.length}ch` }}
+          className="inline-block whitespace-pre text-xl"
+          style={{ minWidth: `${text.length}ch`,
+          fontFeatureSettings: "'liga' 0, 'calt' 0",
+          letterSpacing: '0.05em',
+           }}
         >
           {text}
         </span>
       ) : (
-        <span className="inline-block whitespace-pre font-mono">
+        <span className="inline-block whitespace-pre">
           {text}
         </span>
       )}
