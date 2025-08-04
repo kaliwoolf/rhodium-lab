@@ -33,6 +33,10 @@ export default function GlassLensShader({ mouse, texture }) {
     const x = pointer.x * 0.5 + 0.5;
     const y = -pointer.y * 0.5 + 0.5;
     mouse.current.set(x, y);
+
+    if (texture?.image) {
+      console.log('Video time:', texture.image.currentTime);
+    }
   });
 
   return (
