@@ -1,11 +1,10 @@
 'use client'
 
-import { useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import Tilt from 'react-parallax-tilt'
 import * as THREE from 'three'
-import { useState, useEffect } from '@react-three/fiber'
 
 // 🌀 без SSR, чтобы избежать document is not defined
 const GlassLensCanvas = dynamic(() => import('../components/GlassLensCanvas'), { ssr: false })
