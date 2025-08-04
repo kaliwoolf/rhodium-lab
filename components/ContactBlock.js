@@ -10,9 +10,6 @@ import * as THREE from 'three'
 const GlassLensCanvas = dynamic(() => import('../components/GlassLensCanvas'), { ssr: false })
 
 export default function ContactBlock() {
-  const mouse = useRef(new THREE.Vector2(0.5, 0.5))
-  const [videoTexture, setVideoTexture] = useState(null);
-
   useEffect(() => {
     const video = document.createElement('video');
     video.src = '/video/ice.mp4';
@@ -21,27 +18,30 @@ export default function ContactBlock() {
     video.muted = true;
     video.playsInline = true;
     video.autoplay = true;
-    video.play();
 
-      video.addEventListener('canplaythrough', () => {
-    console.log('[✅] Видео готово к воспроизведению')
-    })
+    const handleCanPlay = () => {
+      console.log('[✅] Видео готово к воспроизведению');
+      const texture = new THREE.VideoTexture(video);
+      texture.minFilter = THREE.LinearFilter;
+      texture.magFilter = THREE.LinearFilter;
+      texture.format = THREE.RGBAFormat;
+      setVideoTexture(texture);
 
-    video.addEventListener('error', (err) => {
-      console.error('[🚨] Ошибка при загрузке видео', err)
-    })
+      video.play().then(() => {
+        console.log('[▶️] Видео воспроизводится');
+      }).catch((err) => {
+        console.error('[🛑] Ошибка воспроизведения:', err);
+      });
+    };
 
-    video.play().then(() => {
-      console.log('[▶️] Видео воспроизводится')
-      const texture = new THREE.VideoTexture(video)
-      texture.minFilter = THREE.LinearFilter
-      texture.magFilter = THREE.LinearFilter
-      texture.format = THREE.RGBFormat
-      setVideoTexture(texture)
-    }).catch((err) => {
-      console.error('[🛑] Ошибка воспроизведения видео:', err)
-    })
-}, [])
+    video.addEventListener('canplay', handleCanPlay);
+    video.load();
+
+    return () => {
+      video.removeEventListener('canplay', handleCanPlay);
+    };
+  }, []);
+
  
   return (
     <section
