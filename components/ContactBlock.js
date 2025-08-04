@@ -6,8 +6,7 @@ import Tilt from 'react-parallax-tilt'
 import * as THREE from 'three'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { VideoTexture } from 'three'
-import { EffectComposer, ChromaticAberration, Bloom } from '@react-three/postprocessing'
-import { BlendFunction } from 'postprocessing'
+
 
 export default function ContactBlock() {
   const mouse = useRef(new THREE.Vector2(0.5, 0.5))
@@ -71,22 +70,9 @@ export default function ContactBlock() {
               className="absolute inset-0 z-0"
             >
               <Suspense fallback={null}>
-                {videoTexture && (
-                  <>
-                    <VideoPlane texture={videoTexture} mouse={mouse} />
-                    <EffectComposer disableNormalPass>
-                      <ChromaticAberration
-                        offset={[0.0015, 0.0012]}
-                        radialModulation
-                        modulationOffset={0.15}
-                        blendFunction={BlendFunction.NORMAL}
-                      />
-                    </EffectComposer>
-                  </>
-                )}
+                {videoTexture && <VideoPlane texture={videoTexture} mouse={mouse} />}
               </Suspense>
             </Canvas>
-
 
             <div className="absolute inset-0 z-10 w-full h-full flex flex-col items-center justify-center gap-10 px-4 pointer-events-none">
               <div className="uppercase tracking-widest text-sm text-white/60 flex items-center gap-2">
