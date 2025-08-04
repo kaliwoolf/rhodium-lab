@@ -5,64 +5,38 @@ export default function ScrambleHoverLink({
   href,
   onClick,
   className = '',
-  chars = '!<>-_\\/[]{}—=+*^?#________',
-  speed = 8,
 }) {
-  const elRef = useRef()
-  const frameRef = useRef()
-  const queueRef = useRef([])
+  const elRef = useRef(null)
+  const intervalRef = useRef(null)
+  const originalText = useRef(text)
 
-  const scramble = () => {
+  const chars = '*?><[]&@#)(.%$-_:/;?!'.split('')
+
+  const scrambleText = (str) =>
+    str
+      .split('')
+      .map((char) =>
+        Math.random() > 0.66
+          ? chars[Math.floor(Math.random() * chars.length)]
+          : char
+      )
+      .join('')
+
+  const startScramble = () => {
+    intervalRef.current = setInterval(() => {
+      const el = elRef.current
+      if (el) el.innerText = scrambleText(originalText.current)
+    }, 100)
+  }
+
+  const stopScramble = () => {
+    clearInterval(intervalRef.current)
     const el = elRef.current
-    const original = text
-    const queue = []
-
-    let frame = 0
-
-    for (let i = 0; i < original.length; i++) {
-      const from = original[i]
-      const to = original[i]
-      const start = Math.floor(Math.random() * 40)
-      const end = start + Math.floor(Math.random() * 40)
-      queue.push({ from, to, start, end, char: '' })
-    }
-
-    queueRef.current = queue
-
-    const update = () => {
-      let output = ''
-      let complete = 0
-
-      for (let i = 0; i < queue.length; i++) {
-        const { from, to, start, end } = queue[i]
-
-        if (frame >= end) {
-          output += to
-          complete++
-        } else if (frame >= start) {
-          const randomChar = chars[Math.floor(Math.random() * chars.length)]
-          output += `<span style="opacity:0.5">${randomChar}</span>`
-        } else {
-          output += from
-        }
-      }
-
-      el.innerHTML = output
-
-      if (complete < queue.length) {
-        frame++
-        frameRef.current = requestAnimationFrame(update)
-      } else {
-        cancelAnimationFrame(frameRef.current)
-      }
-    }
-
-    cancelAnimationFrame(frameRef.current)
-    frameRef.current = requestAnimationFrame(update)
+    if (el) el.innerText = originalText.current
   }
 
   useEffect(() => {
-    return () => cancelAnimationFrame(frameRef.current)
+    return () => clearInterval(intervalRef.current)
   }, [])
 
   const handleClick = (e) => {
@@ -76,10 +50,12 @@ export default function ScrambleHoverLink({
     <a
       href={href || '#'}
       ref={elRef}
+      onMouseEnter={startScramble}
+      onMouseLeave={stopScramble}
       onClick={handleClick}
-      onMouseEnter={scramble}
-      className={`cursor-pointer inline-block select-none ${className}`}
-      dangerouslySetInnerHTML={{ __html: text }}
-    />
+      className={`inline-block cursor-pointer select-none ${className}`}
+    >
+      {text}
+    </a>
   )
 }
