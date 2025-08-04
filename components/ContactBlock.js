@@ -113,7 +113,7 @@ export default function ContactBlock() {
 function VideoPlane({ texture }) {
   return (
     <mesh>
-      <planeGeometry args={[2.4, 1.8]} />
+      <planeGeometry args={[3.126, 2.345]} />
       <meshBasicMaterial map={texture} toneMapped={false} />
     </mesh>
   )
