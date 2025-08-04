@@ -7,6 +7,7 @@ import { useInView } from 'react-intersection-observer'
 import VideoPanelOverlay from '../components/VideoPanelOverlay'
 import ScrambleLinkMenu from '../components/ScrambleLinkMenu'
 import ContactBlock from '../components/ContactBlock'
+import DebugVideoCanvas from '../components/DebugVideoCanvas'
 
 export default function Home() {
   const { ref: projectsRef, inView: isProjectsInView } = useInView({
@@ -30,7 +31,7 @@ export default function Home() {
         <VideoPanelOverlay />
 
         <section id="contact" className="h-screen flex items-center justify-center">
-          <ContactBlock />
+          <DebugVideoCanvas />
         </section>
 
 
