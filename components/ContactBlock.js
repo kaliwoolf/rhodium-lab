@@ -53,7 +53,7 @@ export default function ContactBlock() {
         )
       }}
     >
-      <div className="w-[90vw] max-w-[960px] h-[720px] relative z-20 rounded-3xl overflow-hidden shadow-[inset_0_0_60px_rgba(255,255,255,0.05)]">
+      <div className="w-[90vw] max-w-[960px] h-[720px] relative z-20 rounded-3xl overflow-hidden backdrop-blur-sm bg-white/5 shadow-[0_0_80px_rgba(255,255,255,0.05)] ring-1 ring-white/10">
         <Tilt
           glareEnable
           glareMaxOpacity={0.15}
@@ -151,7 +151,16 @@ function VideoPlane({ texture, mouse }) {
           uv += (uv - uMouse) * strength * lensPower;
         }
 
-        gl_FragColor = texture2D(uTexture, uv);
+        // ----------------------
+        // Основной цвет
+        vec4 color = texture2D(uTexture, uv);
+
+        // ----------------------
+        // VIGNETTE: мягкое затухание по краям
+        float vignette = smoothstep(0.6, 0.95, distance(uv, vec2(0.5)));
+        color.a *= 1.0 - vignette;
+
+        gl_FragColor = color;
       }
     `
   }), [texture])
