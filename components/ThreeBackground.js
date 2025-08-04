@@ -5,6 +5,7 @@ import { Points, PointMaterial, Environment, Float } from '@react-three/drei'
 import * as THREE from 'three'
 import dynamic from 'next/dynamic'
 import MouseTrails from '../components/MouseTrails'
+import EnergyPulse from '../components/EnergyPulse'
 
 const Starfield = dynamic(() => import('./Starfield'), { ssr: false })
 const GlassSaturn = dynamic(() => import('./GlassSaturn'), { ssr: false })
@@ -86,6 +87,7 @@ export default function ThreeBackground() {
           <SupernovaFlash explosionFactor={explosionFactor} />
 
           <MouseTrails /> {/* 🔥 Вот здесь добавляем! */}
+          <EnergyPulse /> {/* 🔥 Энергия! */}
 
           <EffectComposer>
             <DynamicBloom explosionFactor={explosionFactor} />
