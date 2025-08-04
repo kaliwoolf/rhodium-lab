@@ -41,8 +41,8 @@ export default function GlassLensShader({ mouse, texture }) {
 
   return (
     <mesh ref={meshRef} position={[0, 0, 0]}>
-      <planeGeometry args={[2, 2]} />
-      <meshBasicMaterial map={texture} />
+      <planeGeometry args={[6, 6]} />
+      <meshBasicMaterial map={texture} toneMapped={false} />
     </mesh>
   );
 }
