@@ -5,8 +5,8 @@ export default function ScrambleHoverLink({
   href,         // если ссылка внешняя
   onClick,      // если обработчик клика
   className = '',
-  delay = 60,
-  duration = 1800,
+  delay = 40,
+  duration = 1000,
 }) {
   const spanRef = useRef(null)
 
