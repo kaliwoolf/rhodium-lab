@@ -10,20 +10,26 @@ const fragmentShader = `
   varying vec2 vUv;
 
   void main() {
-    vec2 mouseUV = uMouse / uResolution;
+    vec2 mouseUV = uMouse;
     vec2 uv = vUv;
 
     float dist = distance(uv, mouseUV);
-    float strength = 0.2;
     float radius = 0.15;
+    float strength = 0.12;
 
-    if (dist > radius) discard; // ❗️ Убираем прямоугольник — остаётся только круг
-
+    // Преломление под курсором
     vec2 offset = normalize(uv - mouseUV) * strength * smoothstep(radius, 0.0, dist);
-    vec4 baseColor = texture2D(uTexture, uv + offset);
+    vec4 baseColor = texture2D(uTexture, uv + (dist < radius ? offset : vec2(0.0)));
 
-    float glow = smoothstep(radius - 0.01, radius, dist);
-    vec3 glowColor = vec3(1.4, 0.2, 1.0) * glow;
+    // Светящийся обод
+    float edge = smoothstep(radius - 0.01, radius, dist);
+    vec3 glowColor = vec3(2.0, 0.4, 1.4) * edge; // яркая фуксия
+
+    // Усилим насыщенность внутри линзы
+    baseColor.rgb *= 1.2;
+
+    // Только круглая область
+    if (dist > radius) discard;
 
     gl_FragColor = vec4(baseColor.rgb + glowColor, 1.0);
   }

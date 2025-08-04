@@ -20,7 +20,10 @@ export default function ContactBlock() {
       className="relative text-white min-h-screen flex items-center justify-center px-4 py-24 overflow-hidden"
       onMouseMove={(e) => {
         const rect = e.currentTarget.getBoundingClientRect()
-        mouse.current.set(e.clientX - rect.left, rect.height - (e.clientY - rect.top))
+        mouse.current.set(
+          (e.clientX - rect.left) / rect.width,
+          1 - (e.clientY - rect.top) / rect.height
+        )
       }}
     >
       
