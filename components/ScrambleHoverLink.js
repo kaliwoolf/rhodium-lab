@@ -1,4 +1,6 @@
-import { useEffect, useRef } from 'react'
+'use client'
+
+import { useEffect, useRef, useState } from 'react'
 
 export default function ScrambleHoverLink({
   text,
@@ -6,11 +8,17 @@ export default function ScrambleHoverLink({
   onClick,
   className = '',
 }) {
-  const elRef = useRef(null)
+  const spanRef = useRef(null)
   const intervalRef = useRef(null)
   const originalText = useRef(text)
-
   const chars = '*?><[]&@#)(.%$-_:/;?!'.split('')
+  const [isClient, setIsClient] = useState(false)
+
+  // чтобы не ругался при SSR
+  useEffect(() => {
+    setIsClient(true)
+    return () => clearInterval(intervalRef.current)
+  }, [])
 
   const scrambleText = (str) =>
     str
@@ -23,21 +31,18 @@ export default function ScrambleHoverLink({
       .join('')
 
   const startScramble = () => {
+    if (!spanRef.current) return
     intervalRef.current = setInterval(() => {
-      const el = elRef.current
-      if (el) el.innerText = scrambleText(originalText.current)
+      spanRef.current.textContent = scrambleText(originalText.current)
     }, 150)
   }
 
   const stopScramble = () => {
     clearInterval(intervalRef.current)
-    const el = elRef.current
-    if (el) el.innerText = originalText.current
+    if (spanRef.current) {
+      spanRef.current.textContent = originalText.current
+    }
   }
-
-  useEffect(() => {
-    return () => clearInterval(intervalRef.current)
-  }, [])
 
   const handleClick = (e) => {
     if (onClick) {
@@ -49,19 +54,24 @@ export default function ScrambleHoverLink({
   return (
     <a
       href={href || '#'}
-      ref={elRef}
       onMouseEnter={startScramble}
       onMouseLeave={stopScramble}
       onClick={handleClick}
       className={`inline-block cursor-pointer select-none ${className}`}
     >
-       <span
-        ref={spanRef}
-        className="inline-block whitespace-pre font-mono"
-        style={{ minWidth: `${text.length}ch` }} // 👈 фиксирует ширину
-      >
-        {text}
-      </span>
+      {isClient ? (
+        <span
+          ref={spanRef}
+          className="inline-block whitespace-pre font-mono"
+          style={{ minWidth: `${text.length}ch` }}
+        >
+          {text}
+        </span>
+      ) : (
+        <span className="inline-block whitespace-pre font-mono">
+          {text}
+        </span>
+      )}
     </a>
   )
 }
