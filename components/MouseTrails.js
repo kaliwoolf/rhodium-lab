@@ -8,11 +8,35 @@ export default function MouseTrails() {
   const { gl, scene, camera } = useThree()
   const trails = useRef([])
 
-  const material = new THREE.MeshBasicMaterial({
-    color: new THREE.Color('#ffffff'),
+  const material = new THREE.ShaderMaterial({
     transparent: true,
-    opacity: 0.2,
     depthWrite: false,
+    uniforms: {
+      uTime: { value: 0 },
+      uColor: { value: new THREE.Color('#ffffff') },
+    },
+    vertexShader: `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform float uTime;
+      uniform vec3 uColor;
+      varying vec2 vUv;
+
+      void main() {
+        float alpha = 1.0 - length(vUv - 0.5) * 2.0;
+        vec3 rainbow = vec3(
+          0.5 + 0.5 * sin(uTime + vUv.x * 10.0),
+          0.5 + 0.5 * sin(uTime + vUv.x * 10.0 + 2.0),
+          0.5 + 0.5 * sin(uTime + vUv.x * 10.0 + 4.0)
+        );
+        gl_FragColor = vec4(rainbow, alpha * 0.3);
+      }
+    `
   })
 
   const geometry = new THREE.CircleGeometry(0.05, 32) // ← увеличено
@@ -43,6 +67,7 @@ export default function MouseTrails() {
   useFrame(() => {
     trails.current.forEach((trail, i) => {
       trail.material.opacity *= 0.93
+      material.uniforms.uTime.value += 0.05;
       trail.scale.multiplyScalar(0.97)
       if (trail.material.opacity < 0.01) {
         scene.remove(trail)
