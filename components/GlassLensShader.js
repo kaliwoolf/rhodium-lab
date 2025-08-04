@@ -20,7 +20,7 @@ const fragment = `
     vec2 dist = uv - mouse;
     float len = length(dist);
     uv += dist * 0.1 * exp(-len * 20.0); // искажение
-    vec3 color = texture2D(texture, uv).rgb;
+    vec3 color = texture(texture, uv).rgb;
     gl_FragColor = vec4(color, 1.0);
   }
 `;
