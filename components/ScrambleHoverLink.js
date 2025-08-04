@@ -22,13 +22,17 @@ export default function ScrambleHoverLink({
     const output = []
     const queue = []
 
+    const total = 80
+    const stagger = 2
+
     for (let i = 0; i < length; i++) {
       const from = original.current[i]
       const to = original.current[i]
-      const start = Math.floor(Math.random() * 40)
-      const end = start + Math.floor(Math.random() * 40)
-      queue.push({ from, to, start, end, char: '' })
+      const start = i * stagger + Math.floor(Math.random() * 5)
+      const end = start + 20 + Math.floor(Math.random() * 20)
+      queue.push({ from, to, start, end })
     }
+
 
     let frame = 0
 
