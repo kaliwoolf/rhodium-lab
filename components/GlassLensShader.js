@@ -36,18 +36,9 @@ export default function GlassLensShader({ mouse, texture }) {
   });
 
   return (
-    <mesh ref={meshRef}>
+    <mesh ref={meshRef} position={[0, 0, 0]}>
       <planeGeometry args={[2, 2]} />
-      <shaderMaterial
-        ref={materialRef}
-        uniforms={{
-          uTexture: { value: texture },
-          mouse: { value: mouse.current },
-        }}
-        vertexShader={vertex}
-        fragmentShader={fragment}
-        transparent
-      />
+      <meshBasicMaterial map={texture} />
     </mesh>
   );
 }
