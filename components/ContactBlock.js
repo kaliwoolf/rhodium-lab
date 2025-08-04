@@ -157,8 +157,8 @@ function VideoPlane({ texture, mouse }) {
 
         // ----------------------
         // VIGNETTE: мягкое затухание по краям
-        float vignette = smoothstep(0.6, 0.95, distance(uv, vec2(0.5)));
-        color.a *= 1.0 - vignette;
+        float vignette = smoothstep(0.4, 0.9, distance(uv, vec2(0.5)));
+        color.rgb *= 1.0 - vignette;
 
         gl_FragColor = color;
       }
@@ -173,7 +173,7 @@ function VideoPlane({ texture, mouse }) {
   return (
     <mesh>
       <planeGeometry args={[3.2, 2.4]} />
-      <shaderMaterial args={[shaderArgs]} />
+      <shaderMaterial args={[shaderArgs]} transparent />
     </mesh>
   )
 }
