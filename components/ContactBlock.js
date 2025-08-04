@@ -1,17 +1,15 @@
 'use client'
 
 import { useState, useEffect, useRef, Suspense } from 'react'
-import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import Tilt from 'react-parallax-tilt'
 import * as THREE from 'three'
-import { Canvas, useFrame, useThree } from '@react-three/fiber'
+import { Canvas } from '@react-three/fiber'
 import { VideoTexture } from 'three'
-import { Html } from '@react-three/drei'
 
 export default function ContactBlock() {
   const mouse = useRef(new THREE.Vector2(0.5, 0.5))
-  const [videoTexture, setVideoTexture] = useState<THREE.VideoTexture | null>(null)
+  const [videoTexture, setVideoTexture] = useState(null)
 
   useEffect(() => {
     const video = document.createElement('video')
@@ -54,7 +52,6 @@ export default function ContactBlock() {
         )
       }}
     >
-      {/* 🧊 Панель с Tilt и видеофоном через Canvas */}
       <div className="w-[90vw] max-w-[960px] h-[720px] relative z-20 rounded-3xl overflow-hidden shadow-[0_0_120px_rgba(255,255,255,0.1)]">
         <Tilt
           glareEnable
@@ -76,7 +73,6 @@ export default function ContactBlock() {
               </Suspense>
             </Canvas>
 
-            {/* Контент поверх видео */}
             <div className="absolute inset-0 z-10 w-full h-full flex flex-col items-center justify-center gap-10 px-4 pointer-events-none">
               <div className="uppercase tracking-widest text-sm text-white/60 flex items-center gap-2">
                 <span className="text-white/40">✦</span>
@@ -113,8 +109,8 @@ export default function ContactBlock() {
   )
 }
 
-// 🎥 Компонент плоскости с видео-текстурой
-function VideoPlane({ texture }: { texture: THREE.VideoTexture }) {
+// 🔹 Компонент плоскости с видео-текстурой
+function VideoPlane({ texture }) {
   return (
     <mesh>
       <planeGeometry args={[2, 1.5]} />
