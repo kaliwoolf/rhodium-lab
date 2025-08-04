@@ -15,7 +15,7 @@ const baseCourses = [
     title: 'ПРИДВОРНЫЕ КАРТЫ',
     description: ' Механика и логика. I Модуль по психотипам',
     link: 'https://mysteriumlab.pro/mechanica',
-    video: '/video/profiling.mp4',
+    video: '/video/ml1.mp4',
     texture: '/textures/glass-neon.jpg'
   },
   {
