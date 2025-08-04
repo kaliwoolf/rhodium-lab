@@ -64,7 +64,7 @@ export default function ThreeBackground() {
   return (
     <>
       <video
-        src="/videos/un.mp4"
+        src="/video/un.mp4"
         autoPlay
         loop
         muted
