@@ -26,7 +26,7 @@ export default function Home() {
 
         <motion.section 
           id="projects"
-          className="h-screen flex items-center justify-center text-white">
+          className="h-screen flex items-center justify-center text-white"
           initial={{ opacity: 0, y: 60 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, ease: 'easeOut' }}
