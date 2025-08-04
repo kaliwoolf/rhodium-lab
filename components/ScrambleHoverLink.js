@@ -55,7 +55,13 @@ export default function ScrambleHoverLink({
       onClick={handleClick}
       className={`inline-block cursor-pointer select-none ${className}`}
     >
-      {text}
+       <span
+        ref={spanRef}
+        className="inline-block whitespace-pre font-mono"
+        style={{ minWidth: `${text.length}ch` }} // 👈 фиксирует ширину
+      >
+        {text}
+      </span>
     </a>
   )
 }
