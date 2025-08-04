@@ -11,7 +11,7 @@ const vertex = `
 `;
 
 const fragment = `
-  uniform sampler2D texture;
+  uniform sampler2D uTexture;
   uniform vec2 mouse;
   varying vec2 vUv;
 
@@ -19,8 +19,8 @@ const fragment = `
     vec2 uv = vUv;
     vec2 dist = uv - mouse;
     float len = length(dist);
-    uv += dist * 0.1 * exp(-len * 20.0); // искажение
-    vec3 color = texture(texture, uv).rgb;
+    uv += dist * 0.1 * exp(-len * 20.0); // эффект искажения
+    vec3 color = texture(uTexture, uv).rgb;
     gl_FragColor = vec4(color, 1.0);
   }
 `;
@@ -41,7 +41,7 @@ export default function GlassLensShader({ mouse, texture }) {
       <shaderMaterial
         ref={materialRef}
         uniforms={{
-          texture: { value: texture },
+          uTexture: { value: texture },
           mouse: { value: mouse.current },
         }}
         vertexShader={vertex}
