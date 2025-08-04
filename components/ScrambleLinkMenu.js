@@ -8,32 +8,29 @@ export default function ScrambleLinkMenu() {
   }
 
   return (
-  <div className="absolute top-8 right-12 z-50">
-    <a
-      href="https://mysteriumlab.pro/teach/control"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="
-        px-6 py-2 
-        rounded-full 
-        text-white 
-        text-lg 
-        font-semibold 
-        tracking-wider 
-        bg-white/5 
-        backdrop-blur-md 
-        border border-white/20 
-        ring-1 ring-white/10 
-        shadow-[0_0_20px_rgba(255,255,255,0.05)] 
-        hover:shadow-[0_0_30px_rgba(255,0,255,0.3)] 
-        hover:ring-fuchsia-400 
-        transition-all 
-        duration-300 
-        ease-out
-      "
-    >
-      Кабинет
-    </a>
-  </div>
-)
+    <div className="absolute top-8 right-12 z-50 flex gap-10 text-white text-lg font-semibold tracking-wide">
+      <div
+        className="
+          px-6 py-2 
+          rounded-full 
+          bg-white/5 
+          backdrop-blur-md 
+          border border-white/20 
+          ring-1 ring-white/10 
+          shadow-[0_0_20px_rgba(255,255,255,0.05)] 
+          hover:shadow-[0_0_30px_rgba(255,0,255,0.3)] 
+          hover:ring-fuchsia-400 
+          transition-all 
+          duration-300 
+          ease-out
+        "
+      >
+        <ScrambleExternalLink
+          text="Кабинет"
+          href="https://mysteriumlab.pro/teach/control"
+          className="text-white text-lg font-semibold tracking-wider"
+        />
+      </div>
+    </div>
+  )
 }
