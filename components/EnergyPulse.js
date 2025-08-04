@@ -1,9 +1,9 @@
 'use client'
 
 import * as THREE from 'three'
-import { extend, useFrame } from '@react-three/fiber'
+import { extend, useFrame, useThree } from '@react-three/fiber'
 import { shaderMaterial } from '@react-three/drei'
-import { useRef } from 'react'
+import { useRef, useEffect } from 'react'
 
 const EnergyMaterial = shaderMaterial(
   { time: 0, opacity: 0.15 },
@@ -25,7 +25,7 @@ const EnergyMaterial = shaderMaterial(
       float dist = distance(vUv, vec2(0.5));
       float pulse = sin(time * 2.0) * 0.2 + 0.3;
       float glow = smoothstep(pulse, pulse - 0.05, dist);
-      gl_FragColor = vec4(1.0, 0.2, 0.5, glow * opacity); // Цвет и сила
+      gl_FragColor = vec4(1.0, 0.2, 0.5, glow * opacity);
     }
   `
 )
@@ -34,15 +34,24 @@ extend({ EnergyMaterial })
 
 export default function EnergyPulse() {
   const ref = useRef()
+  const meshRef = useRef()
+  const { camera } = useThree()
 
   useFrame(({ clock }) => {
     if (ref.current) {
-      ref.current.uniforms.time.value = clock.elapsedTime
+      ref.current.uniforms.time.value = clock.getElapsedTime()
     }
   })
 
+  useEffect(() => {
+    if (meshRef.current) {
+      meshRef.current.layers.set(2) // 👈 вот тут задаём слой 2
+    }
+    camera.layers.enable(2) // чтобы камера этот слой тоже видела
+  }, [camera])
+
   return (
-    <mesh scale={[8, 8, 1]}>
+    <mesh ref={meshRef} scale={[8, 8, 1]}>
       <planeGeometry args={[1, 1, 32, 32]} />
       <energyMaterial ref={ref} transparent />
     </mesh>

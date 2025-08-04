@@ -85,13 +85,29 @@ export default function ThreeBackground() {
             explosionFactor={explosionFactor}
           />
           <SupernovaFlash explosionFactor={explosionFactor} />
-
           <MouseTrails /> {/* 🔥 Вот здесь добавляем! */}
-          <EnergyPulse /> {/* 🔥 Энергия! */}
-
           <EffectComposer>
             <DynamicBloom explosionFactor={explosionFactor} />
           </EffectComposer>           
+        </Suspense>
+      </Canvas>
+
+      <Canvas
+        camera={{ position: [0, 0, 8], fov: 35 }}
+        gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping }}
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          zIndex: -2,
+          pointerEvents: 'none'
+        }}
+        onCreated={({ camera }) => camera.layers.set(2)} // 👈 Только слой 2
+      >
+        <Suspense fallback={null}>
+          <EnergyPulse />
         </Suspense>
       </Canvas>
 
