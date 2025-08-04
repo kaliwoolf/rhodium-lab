@@ -20,7 +20,7 @@ export default function ContactBlock() {
     video.muted = true
     video.playsInline = true
     video.autoplay = true
-    video.playbackRate = 0.95
+    video.playbackRate = 0.9
 
     const handleCanPlay = () => {
       const texture = new VideoTexture(video)
@@ -168,8 +168,23 @@ function VideoPlane({ texture, mouse }) {
   }), [texture])
 
   useFrame(({ clock }) => {
-    shaderArgs.uniforms.uTime.value = clock.getElapsedTime()
+    const t = clock.getElapsedTime()
+
+    // Анимации шейдера
+    shaderArgs.uniforms.uTime.value = t
     shaderArgs.uniforms.uMouse.value.lerp(mouse.current, 0.15)
+
+    // Ограничение частоты обновления текстуры
+    if (texture) {
+      if (!texture.userData.lastUpdate) {
+        texture.userData.lastUpdate = 0
+      }
+
+      if (t - texture.userData.lastUpdate > 1 / 25) {
+        texture.needsUpdate = true
+        texture.userData.lastUpdate = t
+      }
+    }
   })
 
   return (
