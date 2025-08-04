@@ -20,14 +20,27 @@ export default function ContactBlock() {
     video.muted = true
     video.playsInline = true
     video.autoplay = true
-    video.playbackRate = 0.9
+    video.playbackRate = 0.95
 
     const handleCanPlay = () => {
       const texture = new VideoTexture(video)
       texture.minFilter = THREE.LinearFilter
       texture.magFilter = THREE.LinearFilter
-      texture.format = THREE.RGBAFormat
+      texture.generateMipmaps = false
+
+      // ⏱ Обновляем вручную на 25 fps
+      let lastUpdate = 0
+      texture.onUpdate = () => {}
+      useFrame(({ clock }) => {
+        const t = clock.getElapsedTime()
+        if (t - lastUpdate > 1 / 25) {
+          texture.needsUpdate = true
+          lastUpdate = t
+        }
+      })
+
       setVideoTexture(texture)
+
 
       video.play().catch((err) => {
         console.error('[🛑] Ошибка воспроизведения видео:', err)
@@ -42,17 +55,28 @@ export default function ContactBlock() {
     }
   }, [])
 
+  // Универсальный обработчик для мыши и тача
+  const handlePointerMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    const x = (e.clientX || e.touches?.[0]?.clientX || 0) - rect.left
+    const y = (e.clientY || e.touches?.[0]?.clientY || 0) - rect.top
+    mouse.current.set(x / rect.width, 1 - y / rect.height)
+  }
+
+  // Блокируем скролл при свайпе
+  useEffect(() => {
+    const preventScroll = (e) => e.preventDefault()
+    const el = document.getElementById('contact')
+    el?.addEventListener('touchmove', preventScroll, { passive: false })
+    return () => el?.removeEventListener('touchmove', preventScroll)
+  }, [])
+
   return (
     <section
       id="contact"
       className="relative text-white min-h-screen flex items-center justify-center px-4 py-24 overflow-hidden"
-      onMouseMove={(e) => {
-        const rect = e.currentTarget.getBoundingClientRect()
-        mouse.current.set(
-          (e.clientX - rect.left) / rect.width,
-          1 - (e.clientY - rect.top) / rect.height
-        )
-      }}
+      onMouseMove={handlePointerMove}
+      onTouchMove={handlePointerMove}
     >
       <div className="w-[90vw] max-w-[960px] h-[720px] relative z-20 rounded-3xl overflow-hidden backdrop-blur-sm bg-white/5 shadow-[0_0_80px_rgba(255,255,255,0.05)] ring-1 ring-white/10">
         <Tilt
@@ -168,23 +192,8 @@ function VideoPlane({ texture, mouse }) {
   }), [texture])
 
   useFrame(({ clock }) => {
-    const t = clock.getElapsedTime()
-
-    // Анимации шейдера
-    shaderArgs.uniforms.uTime.value = t
+    shaderArgs.uniforms.uTime.value = clock.getElapsedTime()
     shaderArgs.uniforms.uMouse.value.lerp(mouse.current, 0.15)
-
-    // Ограничение частоты обновления текстуры
-    if (texture) {
-      if (!texture.userData.lastUpdate) {
-        texture.userData.lastUpdate = 0
-      }
-
-      if (t - texture.userData.lastUpdate > 1 / 25) {
-        texture.needsUpdate = true
-        texture.userData.lastUpdate = t
-      }
-    }
   })
 
   return (
