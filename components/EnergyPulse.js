@@ -24,7 +24,7 @@ const EnergyMaterial = shaderMaterial(
     void main() {
       float dist = distance(vUv, vec2(0.5));
       float pulse = sin(time * 2.0) * 0.2 + 0.3;
-      float glow = smoothstep(pulse, pulse - 0.05, dist);
+      float glow = smoothstep(pulse, pulse - 0.02, dist);
       gl_FragColor = vec4(1.0, 0.2, 0.5, glow * opacity);
     }
   `
@@ -51,7 +51,7 @@ export default function EnergyPulse() {
   }, [camera])
 
   return (
-    <mesh ref={meshRef} scale={[8, 8, 1]}>
+    <mesh ref={meshRef} scale={[3, 3, 1]} position={[0, 0, -1]}>
       <planeGeometry args={[1, 1, 32, 32]} />
       <energyMaterial ref={ref} transparent />
     </mesh>
