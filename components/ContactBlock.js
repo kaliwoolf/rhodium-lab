@@ -24,19 +24,8 @@ export default function ContactBlock() {
       }}
     >
       
-      {/* 🔹 Размытая и тусклая версия видео — фон под линзой */}
-      <video
-        className="absolute inset-0 w-full h-full object-cover blur-xl brightness-50 opacity-60 z-0 pointer-events-none"
-        src="/video/ice.mp4"
-        autoPlay
-        muted
-        loop
-        playsInline
-      />
-
-
       {/* 🔮 Фоновая линза */}
-      <div className="absolute inset-0 z-10 pointer-events-none mix-blend-screen">
+      <div className="absolute inset-0 z-10 pointer-events-none">
         <GlassLensCanvas mouse={mouse} />
       </div>
 
