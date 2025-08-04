@@ -24,11 +24,18 @@ export default function Home() {
         <HeroSection />
         <ScrambleLinkMenu />
 
-        <section id="projects" className="h-screen flex items-center justify-center text-white">
-        </section>
-
-        <VideoPanelOverlay />
-
+        <motion.section 
+          id="projects"
+          className="h-screen flex items-center justify-center text-white">
+          initial={{ opacity: 0, y: 60 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.2, ease: 'easeOut' }}
+          viewport={{ once: true }}
+        >
+          <VideoPanelOverlay />  
+        
+        </motion.section>
+        
         <motion.section 
           id="contact"
           className="h-screen flex items-center justify-center"
