@@ -104,7 +104,7 @@ export default function HeroSection() {
           </div>
 
 
-          <ScrambleLink
+          <ScrambleHoverLink
             text="СВЯЗАТЬСЯ"
             onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
             className="hover:scale-105 transition-transform"
