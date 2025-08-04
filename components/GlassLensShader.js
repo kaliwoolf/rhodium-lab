@@ -3,7 +3,6 @@ import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
 const fragmentShader = `
-  uniform sampler2D uTexture;
   uniform vec2 uMouse;
   uniform vec2 uResolution;
   uniform float uTime;
@@ -14,20 +13,24 @@ const fragmentShader = `
     vec2 uv = vUv;
 
     float dist = distance(uv, mouseUV);
-    float strength = 0.2;
-    float radius = 0.15;
+    float strength = 0.3;
+    float radius = 0.2;
 
-    if (dist > radius) discard; // ❗️ Убираем прямоугольник — остаётся только круг
+    // 🔍 Градиентная заливка по UV
+    vec3 base = vec3(uv.x, uv.y, 0.5);
 
+    // 🔮 Искажение внутри радиуса
     vec2 offset = normalize(uv - mouseUV) * strength * smoothstep(radius, 0.0, dist);
-    vec4 baseColor = texture2D(uTexture, uv + offset);
+    vec3 lens = vec3(1.0, 0.0, 1.0) * smoothstep(radius - 0.01, radius, dist);
 
-    float glow = smoothstep(radius - 0.01, radius, dist);
-    vec3 glowColor = vec3(1.4, 0.2, 1.0) * glow;
+    // 💡 Центр мыши — белое пятно
+    float centerGlow = smoothstep(0.01, 0.0, dist);
+    vec3 glow = vec3(centerGlow);
 
-    gl_FragColor = vec4(baseColor.rgb + glowColor, 1.0);
+    gl_FragColor = vec4(base + lens + glow, 1.0);
   }
 `
+
 
 const vertexShader = `
   varying vec2 vUv;
