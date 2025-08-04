@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { useFrame, extend } from '@react-three/fiber'
+import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
 const fragmentShader = `
