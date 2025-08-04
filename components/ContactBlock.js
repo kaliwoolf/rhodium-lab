@@ -5,14 +5,32 @@ import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import Tilt from 'react-parallax-tilt'
 import * as THREE from 'three'
-import { TextureLoader } from 'three'
-import { useLoader } from '@react-three/fiber'
+import { useState, useEffect } from '@react-three/fiber'
 
 // 🌀 без SSR, чтобы избежать document is not defined
 const GlassLensCanvas = dynamic(() => import('../components/GlassLensCanvas'), { ssr: false })
 
 export default function ContactBlock() {
   const mouse = useRef(new THREE.Vector2(0.5, 0.5))
+  const [videoTexture, setVideoTexture] = useState(null);
+
+  useEffect(() => {
+    const video = document.createElement('video');
+    video.src = '/video/ice.mp4';
+    video.crossOrigin = 'anonymous';
+    video.loop = true;
+    video.muted = true;
+    video.playsInline = true;
+    video.autoplay = true;
+    video.play();
+
+    const texture = new THREE.VideoTexture(video);
+    texture.minFilter = THREE.LinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+    texture.format = THREE.RGBFormat;
+
+    setVideoTexture(texture);
+  }, []);
  
   return (
     <section
@@ -29,7 +47,13 @@ export default function ContactBlock() {
       
       {/* 🔮 Фоновая линза */}
       <div className="absolute inset-0 z-10 pointer-events-none">
-        <GlassLensCanvas mouse={mouse} />
+        {videoTexture && (
+          <GlassLensCanvas
+            mouse={mouse}
+            texture={videoTexture}
+            className="absolute inset-0 w-full h-full z-0"
+          />
+        )}
       </div>
 
       {/* 🧊 Панель с Tilt и видеофоном */}
@@ -42,15 +66,7 @@ export default function ContactBlock() {
         tiltMaxAngleY={6}
         className="w-[90vw] max-w-[960px] h-[720px] relative z-20 rounded-3xl overflow-hidden shadow-[0_0_120px_rgba(255,255,255,0.1)]"
       >
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover opacity-80"
-          src="/video/ice.mp4"
-        />
-
+  
         {/* Контент поверх видео */}
         <div className="relative z-10 w-full h-full flex flex-col items-center justify-center gap-10 px-4">
           <div className="uppercase tracking-widest text-sm text-white/60 flex items-center gap-2">
