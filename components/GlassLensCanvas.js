@@ -8,7 +8,7 @@ export default function GlassLensCanvas({ mouse, texture }) {
   if (!texture) return null
 
   return (
-  <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+  <div style={{ position: 'absolute', inset: 0, zIndex: 30, pointerEvents: 'none' }}>
     <Canvas
       orthographic
       camera={{ zoom: 1, position: [0, 0, 100], near: 0.1, far: 200 }}
@@ -17,5 +17,6 @@ export default function GlassLensCanvas({ mouse, texture }) {
     </Canvas>
   </div>
 )
+
 }
 
