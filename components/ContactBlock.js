@@ -1,18 +1,17 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, Suspense } from 'react'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import Tilt from 'react-parallax-tilt'
 import * as THREE from 'three'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { VideoTexture } from 'three'
-
-// без SSR
-const GlassLensCanvas = dynamic(() => import('../components/GlassLensCanvas'), { ssr: false })
+import { Html } from '@react-three/drei'
 
 export default function ContactBlock() {
   const mouse = useRef(new THREE.Vector2(0.5, 0.5))
-  const [videoTexture, setVideoTexture] = useState(null)
+  const [videoTexture, setVideoTexture] = useState<THREE.VideoTexture | null>(null)
 
   useEffect(() => {
     const video = document.createElement('video')
@@ -55,16 +54,8 @@ export default function ContactBlock() {
         )
       }}
     >
-      {/* 🧊 Панель с Tilt и видеофоном */}
+      {/* 🧊 Панель с Tilt и видеофоном через Canvas */}
       <div className="w-[90vw] max-w-[960px] h-[720px] relative z-20 rounded-3xl overflow-hidden shadow-[0_0_120px_rgba(255,255,255,0.1)]">
-        {/* 🔮 Фоновая линза прямо внутри Tilt-контейнера */}
-        {videoTexture && (
-          <GlassLensCanvas
-            mouse={mouse}
-            texture={videoTexture}
-          />
-        )}
-
         <Tilt
           glareEnable
           glareMaxOpacity={0.15}
@@ -74,37 +65,60 @@ export default function ContactBlock() {
           tiltMaxAngleY={6}
           className="w-full h-full"
         >
-          <div className="relative z-10 w-full h-full flex flex-col items-center justify-center gap-10 px-4">
-            <div className="uppercase tracking-widest text-sm text-white/60 flex items-center gap-2">
-              <span className="text-white/40">✦</span>
-              СВЯЗАТЬСЯ
-              <span className="text-white/40">✦</span>
-            </div>
-
-            <a
-              href="mailto:hi@rhodium.vision"
-              className="text-2xl md:text-4xl font-mono font-light tracking-[0.15em] md:tracking-[0.3em] text-center text-fuchsia-300 drop-shadow-[0_0_6px_rgba(255,0,255,0.3)] hover:drop-shadow-[0_0_10px_rgba(255,0,255,0.5)] transition"
+          <div className="relative w-full h-full">
+            <Canvas
+              gl={{ alpha: true }}
+              camera={{ position: [0, 0, 2.5], fov: 50 }}
+              className="absolute inset-0 z-0"
             >
-              HI@RHODIUM.VISION
-            </a>
+              <Suspense fallback={null}>
+                {videoTexture && <VideoPlane texture={videoTexture} />}
+              </Suspense>
+            </Canvas>
 
-            <div className="relative w-[160px] sm:w-[180px] h-[200px] sm:h-[220px] rounded-xl overflow-hidden border border-white/20 shadow-xl">
-              <video
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="absolute inset-0 w-full h-full object-cover opacity-80"
-                src="/video/ice.mp4"
-              />
-              <div className="relative z-10 flex flex-col items-center justify-center h-full p-4">
-                <Image src="/qr-code.png" width={120} height={120} alt="QR" />
-                <p className="text-xs text-white/60 text-center mt-3 tracking-widest">[ crafted in rhodium ]</p>
+            {/* Контент поверх видео */}
+            <div className="absolute inset-0 z-10 w-full h-full flex flex-col items-center justify-center gap-10 px-4 pointer-events-none">
+              <div className="uppercase tracking-widest text-sm text-white/60 flex items-center gap-2">
+                <span className="text-white/40">✦</span>
+                СВЯЗАТЬСЯ
+                <span className="text-white/40">✦</span>
+              </div>
+
+              <a
+                href="mailto:hi@rhodium.vision"
+                className="pointer-events-auto text-2xl md:text-4xl font-mono font-light tracking-[0.15em] md:tracking-[0.3em] text-center text-fuchsia-300 drop-shadow-[0_0_6px_rgba(255,0,255,0.3)] hover:drop-shadow-[0_0_10px_rgba(255,0,255,0.5)] transition"
+              >
+                HI@RHODIUM.VISION
+              </a>
+
+              <div className="relative w-[160px] sm:w-[180px] h-[200px] sm:h-[220px] rounded-xl overflow-hidden border border-white/20 shadow-xl pointer-events-auto">
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="absolute inset-0 w-full h-full object-cover opacity-80"
+                  src="/video/ice.mp4"
+                />
+                <div className="relative z-10 flex flex-col items-center justify-center h-full p-4">
+                  <Image src="/qr-code.png" width={120} height={120} alt="QR" />
+                  <p className="text-xs text-white/60 text-center mt-3 tracking-widest">[ crafted in rhodium ]</p>
+                </div>
               </div>
             </div>
           </div>
         </Tilt>
       </div>
     </section>
+  )
+}
+
+// 🎥 Компонент плоскости с видео-текстурой
+function VideoPlane({ texture }: { texture: THREE.VideoTexture }) {
+  return (
+    <mesh>
+      <planeGeometry args={[2, 1.5]} />
+      <meshBasicMaterial map={texture} toneMapped={false} />
+    </mesh>
   )
 }
