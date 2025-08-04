@@ -33,9 +33,6 @@ export default function GlassLensShader({ mouse, texture }) {
     const x = pointer.x * 0.5 + 0.5;
     const y = -pointer.y * 0.5 + 0.5;
     mouse.current.set(x, y);
-    if (materialRef.current) {
-      materialRef.current.uniforms.mouse.value.set(x, y);
-    }
   });
 
   return (
