@@ -3,6 +3,8 @@ import { Canvas, useFrame } from "@react-three/fiber"
 import { Environment, OrbitControls, shaderMaterial } from "@react-three/drei"
 import { extend } from "@react-three/fiber"
 import * as THREE from "three"
+import { useGLTF } from '@react-three/drei'
+
 
 // === ShaderMaterial объявляем прямо тут ===
 const VideoRefractionMaterial = shaderMaterial(
@@ -63,6 +65,7 @@ function GlassPanel({ videoUrl }) {
   const [videoTexture, setVideoTexture] = useState(null)
   const [hovered, setHovered] = useState(false)
   const [mouse, setMouse] = useState({ x: 0, y: 0 })
+  const { nodes } = useGLTF('/models/panel.glb') 
 
   const handlePointerMove = (e) => {
     setHovered(true)
@@ -108,34 +111,25 @@ function GlassPanel({ videoUrl }) {
       mesh.current.rotation.y += (((hovered ? mouse.x : 0) * 0.44) - mesh.current.rotation.y) * 0.13
     }
   })
-
+  
   return (
     <>
-      {/* Видео-слой (фон, если нужен за пределами панели) */}
-      {/* Можно убрать, если нужно только внутри панели */}
-      {/* {videoTexture && (
-        <mesh position={[0, 0, -0.18]} scale={[1.45, 0.85, 1]}>
-          <planeGeometry args={[1.4, 0.8]} />
-          <meshBasicMaterial map={videoTexture} toneMapped={false} />
-        </mesh>
-      )} */}
-      {/* Стеклянная панель с искажением */}
-      <mesh 
+      <primitive
         ref={mesh}
+        object={nodes.Cube} // или nodes.Panel, если так назвал в Blender
         rotation={[0.23, -0.32, 0]}
         onPointerMove={handlePointerMove}
         onPointerOut={handlePointerOut}
       >
-        <boxGeometry args={[1.3, 0.85, 0.04]} />
         {videoTexture && (
           <videoRefractionMaterial
             ref={shaderRef}
             uVideo={videoTexture}
-            uIntensity={0.12} // крути силу эффекта
-            uThickness={1.4} // ← крути это значение!
+            uIntensity={0.12}
+            uThickness={1.4}
           />
         )}
-      </mesh>
+      </primitive>
     </>
   )
 }
