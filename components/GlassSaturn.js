@@ -219,17 +219,7 @@ export default function GlassSaturn({ mouse, scrollRef, scale = 2.4 }) {
             />
           </mesh>
 
-          {/* 🌑 Внутренняя чёрная маска — в конце, позади колец */}
-          <mesh scale={[0.985, 0.985, 0.985]} renderOrder={-1}>
-              <sphereGeometry args={[0.52, 128, 128]} />
-              <meshBasicMaterial
-                color="black"
-                side={BackSide}
-                depthWrite={true}
-                depthTest={true}
-                toneMapped={false}
-              />
-          </mesh>
+
   </group>  
 )
 
