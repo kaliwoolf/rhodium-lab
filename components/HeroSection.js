@@ -122,9 +122,7 @@ export default function HeroSection() {
             pointerEvents: 'auto',
             willChange: 'transform', 
           }}
-          className={`flex items-center gap-4 px-4 py-2 rounded-full border border-crimson text-sm md:text-base tracking-wide shadow-neon backdrop-blur-sm bg-white/5 hover:bg-white/10 transition-all ${
-            pinned ? '' : 'mt-12'
-          }`}
+            className={`flex items-center gap-4 px-4 py-2 rounded-full border border-crimson text-sm md:text-base tracking-wide shadow-neon backdrop-blur-sm bg-white/5 hover:bg-white/10 ${pinned ? '' : 'mt-12'}`}
         >
           <AdaptiveScrambleLink
             text="ПРОЕКТЫ"
