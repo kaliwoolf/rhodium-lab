@@ -100,11 +100,11 @@ function GlassPanel({ videoUrl }) {
     if (shaderRef.current) shaderRef.current.uniforms.time.value = state.clock.getElapsedTime()
   })
 
-   useFrame(() => {
+  useFrame(() => {
     if (mesh.current) {
-      // плавное затухание к базовому положению
-      mesh.current.rotation.x += ((mouse.y * 0.32) - mesh.current.rotation.x) * 0.13
-      mesh.current.rotation.y += ((mouse.x * 0.45) - mesh.current.rotation.y) * 0.13
+      // Если навели мышь — крутится, ушли — плавно возвращается
+      mesh.current.rotation.x += (((hovered ? mouse.y : 0) * 0.32) - mesh.current.rotation.x) * 0.13
+      mesh.current.rotation.y += (((hovered ? mouse.x : 0) * 0.44) - mesh.current.rotation.y) * 0.13
     }
   })
 
@@ -116,7 +116,6 @@ function GlassPanel({ videoUrl }) {
       y: -(e.clientY / window.innerHeight - 0.5) * 2
     })
   }
-  const handlePointerOut = () => setMouse({ x: 0, y: 0 })
 
   return (
     <>
