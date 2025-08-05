@@ -125,7 +125,7 @@ function GlassPanel({ videoUrl }) {
           args={[1.3, 0.85, 0.04]} // width, height, depth
           radius={0.08}             // радиус скругления углов
           smoothness={6}            // количество сегментов скругления
-        >
+        />
         {videoTexture && (
           <videoRefractionMaterial
             ref={shaderRef}
