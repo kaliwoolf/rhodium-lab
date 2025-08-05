@@ -11,7 +11,7 @@ export default function ScrambleExternalLink({
 
   const scramble = () => {
     const el = spanRef.current
-    const chars = 'АБВГДЕЁЗИКЛНОПРСТУХЦЧЬЮЯ2345679'
+    const chars = 'абиКнет2345679'
     const original = text
     let output = ''
     let frame = 0
