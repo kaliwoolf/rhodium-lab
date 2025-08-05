@@ -38,6 +38,21 @@ export default function ThreeBackground({ ...props }) {
   }, [showCanvas])
 
   useEffect(() => {
+    if (isMobile) return; // Только для десктопа!
+
+    let raf;
+    const updateSaturnOpacity = () => {
+      const scroll = window.scrollY / window.innerHeight;
+      // fade — чем больше scroll, тем меньше opacity (до 0.1)
+      const fade = Math.max(1 - scroll * 1.0, 0);
+      setSaturnOpacity(0.1 + 0.9 * fade);
+      raf = requestAnimationFrame(updateSaturnOpacity);
+    };
+    updateSaturnOpacity();
+    return () => raf && cancelAnimationFrame(raf);
+  }, [isMobile]);
+
+  useEffect(() => {
     if (!isMobile) return;
 
     const handler = () => {
@@ -190,7 +205,7 @@ export default function ThreeBackground({ ...props }) {
               width: '100vw', height: '100vh',
               zIndex: -1,
               pointerEvents: 'none',
-              opacity: saturnVisible ? saturnOpacity : 0,
+              opacity: isMobile ? saturnMobileOpacity : saturnOpacity,
               transition: 'opacity 1.1s cubic-bezier(0.77,0,0.18,1)',
               willChange: 'opacity',
             }}
