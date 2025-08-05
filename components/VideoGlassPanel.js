@@ -67,7 +67,7 @@ function GlassPanel({ videoUrl }) {
   const handlePointerMove = (e) => {
     setHovered(true)
     setMouse({
-      x: (e.uv.x - 0.5) * 2, // именно e.uv, не e.clientX
+      x: (e.uv.x - 0.5) * 2,
       y: -(e.uv.y - 0.5) * 2
     })
   }
@@ -75,6 +75,7 @@ function GlassPanel({ videoUrl }) {
     setHovered(false)
     setMouse({ x: 0, y: 0 })
   }
+
 
   useEffect(() => {
     const video = document.createElement("video")
