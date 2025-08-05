@@ -8,9 +8,11 @@ import * as THREE from "three"
 const VideoRefractionMaterial = shaderMaterial(
   {
     uVideo: null,
-    uIntensity: 0.14,
+    uIntensity: 0.13,
+    uThickness: 1.2, // добавили толщину!
     time: 0
   },
+  // vertex
   `
     varying vec2 vUv;
     void main() {
@@ -18,18 +20,28 @@ const VideoRefractionMaterial = shaderMaterial(
       gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
     }
   `,
+  // fragment
   `
     uniform sampler2D uVideo;
     uniform float uIntensity;
+    uniform float uThickness;
     uniform float time;
     varying vec2 vUv;
     void main() {
-      float angle = sin(vUv.y * 3.14 + time * 0.13) * 0.07;
-      vec2 newUv = vUv + vec2(angle * uIntensity, 0.);
-      gl_FragColor = texture2D(uVideo, newUv);
+      float bump = sin(vUv.y * 18. + time * 0.7) * 0.04
+                 + cos(vUv.x * 15. - time * 0.5) * 0.035;
+      vec2 refractUv = vUv + vec2(bump, bump) * uIntensity * uThickness;
+
+      vec4 videoColor = texture2D(uVideo, refractUv);
+
+      float vignette = smoothstep(0.0, 0.38, length(vUv - 0.5));
+      videoColor.rgb *= 1.0 - vignette * 0.26;
+
+      gl_FragColor = videoColor;
     }
   `
 )
+
 extend({ VideoRefractionMaterial })
 
 function GlassPanel({ videoUrl }) {
@@ -79,6 +91,7 @@ function GlassPanel({ videoUrl }) {
             ref={shaderRef}
             uVideo={videoTexture}
             uIntensity={0.12} // крути силу эффекта
+            uThickness={1.4} // ← крути это значение!
           />
         )}
       </mesh>
