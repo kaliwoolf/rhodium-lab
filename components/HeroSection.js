@@ -7,16 +7,30 @@ export default function HeroSection() {
   const [pinned, setPinned] = useState(false)
   const [activeSection, setActiveSection] = useState('hero'); // hero, projects, contact
 
-  // Заголовок и слоган
-  const titleY = useTransform(scrollY, [0, 200], [0, -100])
-  const titleOpacity = useTransform(scrollY, [0, 200], [1, 0])
-  const sloganY = useTransform(scrollY, [0, 200], [0, -100])
-  const sloganOpacity = useTransform(scrollY, [0, 200], [1, 0])
+  const [smoothScroll, setSmoothScroll] = useState(0)
 
-  // Кнопка
-  const buttonY = useTransform(scrollY, [0, 300], [0, -80])
-  const buttonScale = useTransform(scrollY, [0, 300], [1, 0.85])
-  const buttonOpacity = useTransform(scrollY, [0, 300], [1, 0.9])
+  useEffect(() => {
+    let raf
+    const update = () => {
+      setSmoothScroll(prev => prev + (scrollY.get() - prev) * 0.18)
+      raf = requestAnimationFrame(update)
+    }
+    update()
+    return () => cancelAnimationFrame(raf)
+  }, [scrollY])
+
+  // Простые функции для плавного преобразования
+  const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+
+  const titleY = clamp(-smoothScroll / 2, -100, 0)
+  const titleOpacity = clamp(1 - smoothScroll / 200, 0, 1)
+  const sloganY = clamp(-smoothScroll / 2, -100, 0)
+  const sloganOpacity = clamp(1 - smoothScroll / 200, 0, 1)
+
+  const buttonY = clamp(-smoothScroll * 0.27, -80, 0)
+  const buttonScale = clamp(1 - (smoothScroll / 300) * 0.15, 0.85, 1)
+  const buttonOpacity = clamp(1 - smoothScroll / 300 * 0.1, 0.9, 1)
+
 
   // Слежение за прилипанием
   useEffect(() => {
@@ -58,7 +72,11 @@ export default function HeroSection() {
         initial={{ opacity: 0, scale: 0.6 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.2, delay: 0.2 }}
-        style={{ y: titleY, opacity: titleOpacity, willChange: 'transform' }}
+        style={{
+          transform: `translateY(${titleY}px)`,
+          opacity: titleOpacity,
+          willChange: 'transform'
+        }}
         className="text-[clamp(2.5rem,8vw,7rem)] font-bold tracking-[0.15em] text-center leading-tight backdrop-blur-sm"
       >
         RHODIUM
@@ -68,7 +86,11 @@ export default function HeroSection() {
         initial={{ opacity: 0, scale: 0.8}}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.2, delay: 0.6 }}      
-        style={{ y: sloganY, opacity: sloganOpacity, willChange: 'transform' }}
+        style={{
+          transform: `translateY(${sloganY}px)`,
+          opacity: sloganOpacity,
+          willChange: 'transform'
+        }}
         className="mt-4 text-sm md:text-base text-white opacity-60 tracking-wide backdrop-blur text-center px-4"
       >
         Изымаем хаос. <br className="md:hidden" />
@@ -95,9 +117,11 @@ export default function HeroSection() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.2, delay: 1.2 }}
           style={{
-            y: pinned ? 0 : buttonY,
-            scale: buttonScale,
-            opacity: buttonOpacity,
+            transform: pinned
+              ? 'none'
+              : `translateY(${buttonY}px) scale(${buttonScale})`,
+            scale: pinned ? 1 : undefined, 
+            opacity: pinned ? 1 : buttonOpacity,
             pointerEvents: 'auto',
             willChange: 'transform', 
           }}
