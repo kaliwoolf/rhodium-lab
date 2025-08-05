@@ -124,6 +124,23 @@ export default function ThreeBackground({ ...props }) {
     }
   }, [isMobile])
 
+  // --- Мобильный fade Saturn (только для isMobile) ---
+  useEffect(() => {
+    if (!isMobile) return;
+    const onScroll = () => {
+      // Показывать Сатурн только на первом экране (верхние 20% экрана)
+      const scroll = window.scrollY / window.innerHeight;
+      if (scroll < 0.2) {
+        setSaturnVisible(true);
+      } else {
+        setSaturnVisible(false);
+      }
+    };
+    window.addEventListener('scroll', onScroll);
+    onScroll(); // Применить при загрузке
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [isMobile]);
+
   return (
     <>
       {showCanvas && (
@@ -186,7 +203,9 @@ export default function ThreeBackground({ ...props }) {
                 pointerEvents: 'none',
                  ...(isMobile ? {} : {
                   opacity: saturnOpacity,
-                  transition: 'opacity 0.5s cubic-bezier(0.6,0.2,0.2,1)',
+                  transition: isMobile
+                    ? 'opacity 0.4s cubic-bezier(0.77,0,0.18,1)'
+                    : 'opacity 1.1s cubic-bezier(0.77,0,0.18,1), transform 0.7s cubic-bezier(0.77,0,0.18,1)',
                   willChange: 'opacity',
                 }),  
               }}
