@@ -23,14 +23,7 @@ export default function ThreeBackground({ ...props }) {
   const [isMobile, setIsMobile] = useState(false)
   const [showCanvas, setShowCanvas] = useState(false)
 
-  const desktopMin = 1.2, desktopMax = 2.4
-  const mobileMin = 0.8, mobileMax = 1.3
-  const scale = isMobile
-    ? mobileMin + (mobileMax - mobileMin) * fade
-    : desktopMin + (desktopMax - desktopMin) * fade
-  setSaturnScale(scale)
-
-  
+    
   useEffect(() => {
     if (typeof window !== 'undefined') {
       setIsMobile(window.innerWidth < 640)
@@ -53,18 +46,21 @@ export default function ThreeBackground({ ...props }) {
   // Следим за скроллом для плавности (вынеси прямо под useEffect-скролла)
   useEffect(() => {
     const updateSaturn = () => {
-      // Получаем плавный scroll (можно брать из smoothScroll.current)
       const scroll = smoothScroll.current || 0
-      // Фейд и scale с хорошим easing
       const fade = Math.max(1 - scroll * 1.0, 0)
-      // Можно добавить easing для плавности
-      setSaturnOpacity(0.1 + 0.9 * fade) // fade от 1 до 0.1
-      setSaturnScale(0.98 + 0.25 * fade) // scale от 1.23 до 0.98
+      setSaturnOpacity(0.1 + 0.9 * fade)
+      // Вот тут делаем расчёт scale:
+      const desktopMin = 1.2, desktopMax = 2.4
+      const mobileMin = 0.8, mobileMax = 1.3
+      const scale = isMobile
+        ? mobileMin + (mobileMax - mobileMin) * fade
+        : desktopMin + (desktopMax - desktopMin) * fade
+      setSaturnScale(scale)
       requestAnimationFrame(updateSaturn)
     }
     updateSaturn()
     return () => {}
-  }, [])
+  }, [isMobile])
 
   // Mouse tracking
   useEffect(() => {
