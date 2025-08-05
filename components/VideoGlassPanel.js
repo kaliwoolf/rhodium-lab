@@ -111,18 +111,9 @@ function GlassPanel({ videoUrl }) {
 
   return (
     <>
-      {/* Видео-слой (фон, если нужен за пределами панели) */}
-      {/* Можно убрать, если нужно только внутри панели */}
-      {/* {videoTexture && (
-        <mesh position={[0, 0, -0.18]} scale={[1.45, 0.85, 1]}>
-          <planeGeometry args={[1.4, 0.8]} />
-          <meshBasicMaterial map={videoTexture} toneMapped={false} />
-        </mesh>
-      )} */}
-      {/* Стеклянная панель с искажением */}
       <RoundedBox
         ref={mesh}
-        rotation={[0.23, -0.32, 0]}>
+        rotation={[0.23, -0.32, 0]}
         args={[1.3, 0.85, 0.04]} // width, height, depth
         radius={0.08}             // радиус скругления углов
         smoothness={6}            // количество сегментов скругления
