@@ -112,6 +112,12 @@ function GlassPanel({ videoUrl }) {
 
   return (
     <>
+        {/* Edge подсветка — перед/после панелью */}
+      <mesh position={[0, 0, 0]}>
+        <boxGeometry args={[1.31, 0.86, 0.051]} />
+        <meshBasicMaterial color="#e9f7ff" transparent opacity={0.14} />
+      </mesh>
+
       <RoundedBox
         ref={mesh}
         rotation={[0.23, -0.32, 0]}
@@ -129,10 +135,6 @@ function GlassPanel({ videoUrl }) {
             uThickness={1.4} // ← крути это значение!
           />
         )}
-       <mesh>
-          <boxGeometry args={[1.3 + 0.01, 0.85 + 0.01, 0.04 + 0.01]} />
-          <meshBasicMaterial color="#e9f7ff" transparent opacity={0.19} />
-        </mesh>  
       </RoundedBox>
     </>
   )
