@@ -141,7 +141,7 @@ export default function ThreeBackground({ ...props }) {
               zIndex: -2,
               pointerEvents: 'none',
               background: '#000000',
-              mixBlendMode: isMobile ? 'normal' : 'screen'
+              mixBlendMode: 'screen'
             }}
             onCreated={({ camera }) => camera.layers.set(0)}
           >
