@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
-import ScrambleLink from '../components/ScrambleLink'
-import ScrambleHoverLink from '../components/ScrambleHoverLink'
-
+import ApaptiveScrambleLink from '../components/AdaptiveScrambleLink'
 
 export default function HeroSection() {
   const { scrollY } = useScroll()
