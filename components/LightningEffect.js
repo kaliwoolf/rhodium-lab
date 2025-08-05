@@ -1,7 +1,25 @@
 import React, { useRef, useEffect } from "react";
 
-export default function LightningEffect() {
+export default function LightningEffect({ width = 320, height = 46 }) {
   const ref = useRef();
+
+  // Функция фрактальной генерации
+  function generateLightning(start, end, displace, detail) {
+    if (displace < detail) return [start, end];
+    const midX = (start.x + end.x) / 2;
+    const midY = (start.y + end.y) / 2;
+    // Рандомное смещение вверх/вниз
+    const offset = (Math.random() - 0.5) * displace;
+    const mid = {
+      x: midX,
+      y: midY + offset
+    };
+    // Рекурсия
+    return [
+      ...generateLightning(start, mid, displace / 2, detail).slice(0, -1),
+      ...generateLightning(mid, end, displace / 2, detail)
+    ];
+  }
 
   useEffect(() => {
     let frame;
@@ -9,94 +27,58 @@ export default function LightningEffect() {
     let time = 0;
 
     function drawLightning() {
-      const w = ref.current.width;
-      const h = ref.current.height;
-      ctx.clearRect(0, 0, w, h);
+      ctx.clearRect(0, 0, width, height);
+      const baseY = height / 2;
 
-      // === Параметры ===
-      const points = 32;
-      const baseY = h / 2;
-      const amp = 12 + Math.sin(time / 6) * 5;
-      const glitch = 8 + Math.sin(time / 13) * 4;
+      // Двигаем финальную точку — чтобы линия “трепыхалась”
+      const endY = baseY + Math.sin(time / 8) * 10 + (Math.random() - 0.5) * 10;
+      const start = { x: 10, y: baseY };
+      const end = { x: width - 10, y: endY };
 
-      // === Генерим точки ===
-      let pts = [];
-      for (let i = 0; i < points; i++) {
-        const x = (w / (points - 1)) * i;
-        // Базовый синус + noise + глитч
-        const y =
-          baseY +
-          Math.sin(i * 0.35 + time / 8) * amp +
-          (Math.random() - 0.5) * glitch +
-          Math.sin(i * 2.2 + time * 1.5) * (Math.random() * 5);
-        pts.push({ x, y });
-      }
+      // Генерируем фрактальную молнию (чем меньше detail — тем рваней)
+      const pts = generateLightning(start, end, 44, 3);
 
-      // === Молния — основной слой ===
+      // Glow-обводка
       ctx.save();
-      ctx.shadowColor = "#ff44ff";
-      ctx.shadowBlur = 18;
       ctx.beginPath();
       ctx.moveTo(pts[0].x, pts[0].y);
-      for (let i = 1; i < pts.length; i++) {
-        ctx.lineTo(pts[i].x, pts[i].y);
-      }
+      pts.forEach(p => ctx.lineTo(p.x, p.y));
+      ctx.strokeStyle = "#e7a1ff";
+      ctx.shadowColor = "#d666ff";
+      ctx.shadowBlur = 22;
+      ctx.lineWidth = 9.5;
+      ctx.globalAlpha = 0.32;
+      ctx.stroke();
+      ctx.restore();
+
+      // Основная линия
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(pts[0].x, pts[0].y);
+      pts.forEach(p => ctx.lineTo(p.x, p.y));
       ctx.strokeStyle = "#fff";
-      ctx.lineWidth = 3.4;
-      ctx.globalAlpha = 1;
+      ctx.shadowColor = "#fff0";
+      ctx.lineWidth = 2.7 + Math.sin(time / 15);
+      ctx.globalAlpha = 0.92;
       ctx.stroke();
       ctx.restore();
 
-      // === Цветной слой (глитч-обводка) ===
-      ctx.save();
-      ctx.shadowColor = "#a23eff";
-      ctx.shadowBlur = 18;
-      ctx.beginPath();
-      ctx.moveTo(pts[0].x, pts[0].y);
-      for (let i = 1; i < pts.length; i++) {
-        ctx.lineTo(pts[i].x, pts[i].y);
-      }
-      ctx.strokeStyle = "#f0f";
-      ctx.lineWidth = 7.5;
-      ctx.globalAlpha = 0.44;
-      ctx.stroke();
-      ctx.restore();
-
-      // === Эффект искр ===
+      // Случайные вспышки на пути
       for (let k = 0; k < 3; k++) {
-        const sparkIndex = Math.floor(Math.random() * points);
+        const pi = Math.floor(Math.random() * pts.length);
         ctx.save();
-        ctx.globalAlpha = 0.7 + Math.random() * 0.2;
         ctx.beginPath();
         ctx.arc(
-          pts[sparkIndex].x + Math.random() * 5 - 2.5,
-          pts[sparkIndex].y + Math.random() * 5 - 2.5,
-          2.8 + Math.random() * 2.7,
+          pts[pi].x + (Math.random() - 0.5) * 2,
+          pts[pi].y + (Math.random() - 0.5) * 2,
+          2 + Math.random() * 2,
           0,
           2 * Math.PI
         );
-        ctx.fillStyle = ["#fff", "#a23eff", "#f0f", "#ff44ff"][Math.floor(Math.random() * 4)];
+        ctx.fillStyle = ["#fff", "#e7a1ff", "#e6d0ff"][Math.floor(Math.random() * 3)];
         ctx.shadowColor = ctx.fillStyle;
-        ctx.shadowBlur = 18;
-        ctx.fill();
-        ctx.restore();
-      }
-
-      // === Вспышка (редко) ===
-      if (Math.random() > 0.95) {
-        ctx.save();
-        ctx.globalAlpha = 0.22 + Math.random() * 0.22;
-        ctx.beginPath();
-        ctx.arc(
-          w / 2 + Math.random() * 60 - 30,
-          baseY + Math.random() * 12 - 6,
-          35 + Math.random() * 14,
-          0,
-          2 * Math.PI
-        );
-        ctx.fillStyle = "#fff";
-        ctx.shadowColor = "#ff00ee";
-        ctx.shadowBlur = 30;
+        ctx.shadowBlur = 10 + Math.random() * 20;
+        ctx.globalAlpha = 0.22 + Math.random() * 0.3;
         ctx.fill();
         ctx.restore();
       }
@@ -106,19 +88,19 @@ export default function LightningEffect() {
     }
     drawLightning();
     return () => cancelAnimationFrame(frame);
-  }, []);
+  }, [width, height]);
 
   return (
     <canvas
       ref={ref}
-      width={320}
-      height={46}
+      width={width}
+      height={height}
       style={{
         width: "100%",
         height: "100%",
         display: "block",
         pointerEvents: "none",
-        filter: "drop-shadow(0 0 10px #e4a4ff) blur(0.5px)",
+        filter: "drop-shadow(0 0 8px #e7a1ff)",
         mixBlendMode: "lighter"
       }}
     />
