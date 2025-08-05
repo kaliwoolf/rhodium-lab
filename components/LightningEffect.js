@@ -1,100 +1,126 @@
 import React, { useRef, useEffect } from "react";
 
-// ======= ВСЯ ЛОГИКА ===========
-function randomWavePoints(width, height, points = 20, amp = 8, phase = 0, noise = 0.7) {
-  const pts = [];
-  for (let i = 0; i <= points; i++) {
-    const x = (i / points) * width;
-    const base = Math.sin((i / points) * Math.PI * 2 + phase) * amp;
-    const y = height / 2 + base + (Math.random() - 0.5) * amp * noise;
-    pts.push([x, y]);
-  }
-  return pts;
-}
-
-function ptsToString(pts) {
-  return pts.map(([x, y]) => `${x},${y}`).join(" ");
-}
-
-export default function LightningEffect({
-  width = 240,
-  height = 36,
-  color = "#ff22dd",
-  color2 = "#ffffff",
-  style = {},
-}) {
-  const ref1 = useRef();
-  const ref2 = useRef();
-  const ref3 = useRef();
+export default function LightningEffect() {
+  const ref = useRef();
 
   useEffect(() => {
-    let frame = 0;
-    let anim;
-    function animate() {
-      frame += 1;
-      const t = frame / 18;
-      const pts1 = randomWavePoints(width, height, 20, 10, t, 0.35);
-      const pts2 = randomWavePoints(width, height, 20, 14, t + 1, 0.18);
-      const pts3 = randomWavePoints(width, height, 20, 16, t + 2, 0.8);
+    let frame;
+    const ctx = ref.current.getContext("2d");
+    let time = 0;
 
-      if (ref1.current) ref1.current.setAttribute("points", ptsToString(pts1));
-      if (ref2.current) ref2.current.setAttribute("points", ptsToString(pts2));
-      if (ref3.current) ref3.current.setAttribute("points", ptsToString(pts3));
-      anim = requestAnimationFrame(animate);
+    function drawLightning() {
+      const w = ref.current.width;
+      const h = ref.current.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // === Параметры ===
+      const points = 32;
+      const baseY = h / 2;
+      const amp = 12 + Math.sin(time / 6) * 5;
+      const glitch = 8 + Math.sin(time / 13) * 4;
+
+      // === Генерим точки ===
+      let pts = [];
+      for (let i = 0; i < points; i++) {
+        const x = (w / (points - 1)) * i;
+        // Базовый синус + noise + глитч
+        const y =
+          baseY +
+          Math.sin(i * 0.35 + time / 8) * amp +
+          (Math.random() - 0.5) * glitch +
+          Math.sin(i * 2.2 + time * 1.5) * (Math.random() * 5);
+        pts.push({ x, y });
+      }
+
+      // === Молния — основной слой ===
+      ctx.save();
+      ctx.shadowColor = "#ff44ff";
+      ctx.shadowBlur = 18;
+      ctx.beginPath();
+      ctx.moveTo(pts[0].x, pts[0].y);
+      for (let i = 1; i < pts.length; i++) {
+        ctx.lineTo(pts[i].x, pts[i].y);
+      }
+      ctx.strokeStyle = "#fff";
+      ctx.lineWidth = 3.4;
+      ctx.globalAlpha = 1;
+      ctx.stroke();
+      ctx.restore();
+
+      // === Цветной слой (глитч-обводка) ===
+      ctx.save();
+      ctx.shadowColor = "#a23eff";
+      ctx.shadowBlur = 18;
+      ctx.beginPath();
+      ctx.moveTo(pts[0].x, pts[0].y);
+      for (let i = 1; i < pts.length; i++) {
+        ctx.lineTo(pts[i].x, pts[i].y);
+      }
+      ctx.strokeStyle = "#f0f";
+      ctx.lineWidth = 7.5;
+      ctx.globalAlpha = 0.44;
+      ctx.stroke();
+      ctx.restore();
+
+      // === Эффект искр ===
+      for (let k = 0; k < 3; k++) {
+        const sparkIndex = Math.floor(Math.random() * points);
+        ctx.save();
+        ctx.globalAlpha = 0.7 + Math.random() * 0.2;
+        ctx.beginPath();
+        ctx.arc(
+          pts[sparkIndex].x + Math.random() * 5 - 2.5,
+          pts[sparkIndex].y + Math.random() * 5 - 2.5,
+          2.8 + Math.random() * 2.7,
+          0,
+          2 * Math.PI
+        );
+        ctx.fillStyle = ["#fff", "#a23eff", "#f0f", "#ff44ff"][Math.floor(Math.random() * 4)];
+        ctx.shadowColor = ctx.fillStyle;
+        ctx.shadowBlur = 18;
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // === Вспышка (редко) ===
+      if (Math.random() > 0.95) {
+        ctx.save();
+        ctx.globalAlpha = 0.22 + Math.random() * 0.22;
+        ctx.beginPath();
+        ctx.arc(
+          w / 2 + Math.random() * 60 - 30,
+          baseY + Math.random() * 12 - 6,
+          35 + Math.random() * 14,
+          0,
+          2 * Math.PI
+        );
+        ctx.fillStyle = "#fff";
+        ctx.shadowColor = "#ff00ee";
+        ctx.shadowBlur = 30;
+        ctx.fill();
+        ctx.restore();
+      }
+
+      time += 1;
+      frame = requestAnimationFrame(drawLightning);
     }
-    animate();
-    return () => cancelAnimationFrame(anim);
-  }, [width, height]);
+    drawLightning();
+    return () => cancelAnimationFrame(frame);
+  }, []);
 
   return (
-    <svg
-      viewBox={`0 0 ${width} ${height}`}
-      width="100%"
-      height="100%"
+    <canvas
+      ref={ref}
+      width={320}
+      height={46}
       style={{
-        position: "absolute",
-        left: 0,
-        top: 0,
         width: "100%",
         height: "100%",
+        display: "block",
         pointerEvents: "none",
-        mixBlendMode: "screen",
-        ...style,
+        filter: "drop-shadow(0 0 10px #e4a4ff) blur(0.5px)",
+        mixBlendMode: "lighter"
       }}
-    >
-      <defs>
-        <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
-          <feGaussianBlur stdDeviation="8" result="blur" />
-          <feMerge>
-            <feMergeNode in="blur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-      </defs>
-      <polyline
-        ref={ref3}
-        fill="none"
-        stroke={color}
-        strokeWidth="14"
-        filter="url(#glow)"
-        opacity="0.25"
-      />
-      <polyline
-        ref={ref1}
-        fill="none"
-        stroke={color}
-        strokeWidth="6"
-        filter="url(#glow)"
-        opacity="0.82"
-      />
-      <polyline
-        ref={ref2}
-        fill="none"
-        stroke={color2}
-        strokeWidth="2"
-        filter="url(#glow)"
-        opacity="0.72"
-      />
-    </svg>
+    />
   );
 }
