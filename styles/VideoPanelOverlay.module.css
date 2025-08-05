@@ -58,7 +58,7 @@
 
 @media (max-width: 640px) {
   .panel {
-   z-index: 40!important;
+   z-index: 9!important;
   }
   .inner {
     height:600px;
