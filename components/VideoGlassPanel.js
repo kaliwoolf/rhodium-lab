@@ -157,9 +157,6 @@ export default function VideoGlassPanel({ videoUrl = "/video/00002.mp4" }) {
           maxPolarAngle={Math.PI / 2.12}
           minPolarAngle={Math.PI / 2.6}
         />
-        <EffectComposer>
-          <Bloom luminanceThreshold={0.13} luminanceSmoothing={0.44} intensity={0.56} />
-        </EffectComposer>  
       </Canvas>
     </div>
   )
