@@ -120,12 +120,15 @@ function GlassPanel({ videoUrl }) {
         </mesh>
       )} */}
       {/* Стеклянная панель с искажением */}
-      <mesh ref={mesh} rotation={[0.23, -0.32, 0]}>
-        <RoundedBox
-          args={[1.3, 0.85, 0.04]} // width, height, depth
-          radius={0.08}             // радиус скругления углов
-          smoothness={6}            // количество сегментов скругления
-        />
+      <RoundedBox
+        ref={mesh}
+        rotation={[0.23, -0.32, 0]}>
+        args={[1.3, 0.85, 0.04]} // width, height, depth
+        radius={0.08}             // радиус скругления углов
+        smoothness={6}            // количество сегментов скругления
+        onPointerMove={handlePointerMove}
+        onPointerOut={handlePointerOut}
+      >
         {videoTexture && (
           <videoRefractionMaterial
             ref={shaderRef}
@@ -134,7 +137,7 @@ function GlassPanel({ videoUrl }) {
             uThickness={1.4} // ← крути это значение!
           />
         )}
-      </mesh>
+      </RoundedBox>
     </>
   )
 }
