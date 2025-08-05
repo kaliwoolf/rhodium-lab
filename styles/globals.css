@@ -9,13 +9,5 @@ html, body {
 }
 
 .contact-canvas {
-  @apply w-[90vw]
-  w-full max-w-[960px]
-  min-h-[320px] max-h-[720px]
-  h-[50vh]
-  xs:h-[360px]
-  xxs:h-[380px]
-  sxs:h-[400px]
-  sm:h-[520px]
-  md:h-[720px];
+  @apply w-[90vw] max-w-[960px] h-[720px] md:h-[720px] sm:h-[520px] xs:h-[400px];
 }

@@ -78,7 +78,7 @@ export default function HeroSection() {
             pinned ? '' : 'mt-12'
           }`}
         >
-          <ScrambleHoverLink
+          <AdaptiveScrambleLink
             text="ПРОЕКТЫ"
             onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
             className="hover:scale-105 transition-transform"
@@ -113,7 +113,7 @@ export default function HeroSection() {
           </div>
 
 
-          <ScrambleHoverLink
+          <AdaptiveScrambleLinks
             text="СВЯЗАТЬСЯ"
             onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
             className="hover:scale-105 transition-transform"
