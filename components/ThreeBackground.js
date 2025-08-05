@@ -48,12 +48,14 @@ export default function ThreeBackground({ ...props }) {
       const scroll = smoothScroll.current || 0
       const fade = Math.max(1 - scroll * 1.0, 0)
       setSaturnOpacity(0.1 + 0.9 * fade)
+
       // Вот тут делаем расчёт scale:
       const desktopMin = 1.2, desktopMax = 2.4
-      const mobileMin = 0.8, mobileMax = 1.3
+      const mobileMin = 0.7, mobileMax = 1.1
       const scale = isMobile
         ? mobileMin + (mobileMax - mobileMin) * fade
         : desktopMin + (desktopMax - desktopMin) * fade
+      
       setSaturnScale(scale)
       requestAnimationFrame(updateSaturn)
     }
