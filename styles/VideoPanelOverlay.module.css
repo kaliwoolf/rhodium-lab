@@ -57,13 +57,8 @@
 }
 
 @media (max-width: 640px) {
-  .panel {
-    height: auto;
-    aspect-ratio: 3 / 4;
-    z-index: 10;
-  }
 
   .inner {
-    height:640px;
+    height:600px;
   }
 }
