@@ -163,9 +163,9 @@ export default function ThreeBackground({ ...props }) {
               camera={{ position: [0, 0, 8], fov: 35 }}
               gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping }}
               style={{
-                position: 'fixed',
+                /* position: 'fixed', 
                 top: 0,
-                left: 0,
+                left: 0, */
                 width: '100vw',
                 height: '100vh',
                 zIndex: -1,
