@@ -11,7 +11,7 @@ export default function ScrambleHoverLink({
   const spanRef = useRef(null)
   const intervalRef = useRef(null)
   const originalText = useRef(text)
-  const chars = 'АБВГДЕЁЗИКЛМНОПРСТУФХЦЧЪЬЭЮЯ0234568789'.split('')
+  const chars = 'АБВГДЕЁЗИКЛНОПРСТУХЦЧЬЮЯ2345679'.split('')
   const [isClient, setIsClient] = useState(false)
 
   // чтобы не ругался при SSR

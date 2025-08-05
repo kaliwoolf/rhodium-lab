@@ -5,7 +5,7 @@ export default function ScrambleLink({ text, onClick, className = '', delay = 30
 
   const scramble = () => {
     const el = spanRef.current
-    const chars = '!<>-_\\/[]{}—=+*^?#________'
+    const chars = 'АБВГДЕЁЗИКЛНОПРСТУХЦЧЬЮЯ2345679'
     const original = text
     let output = ''
     let frame = 0
