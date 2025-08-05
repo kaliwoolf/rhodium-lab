@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import AdaptiveScrambleLink from '../components/AdaptiveScrambleLink'
+import LightningEffect from '../components/LightningEffect'
+
 
 export default function HeroSection() {
   const { scrollY } = useScroll()
@@ -112,61 +114,67 @@ export default function HeroSection() {
           willChange: 'transform' 
         }}
       >
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1.2, delay: 1.2 }}
-          style={{
-            transform: `translateY(${pinned ? 0 : buttonY}px) scale(${buttonScale})`,
-            opacity: pinned ? 1 : buttonOpacity,
-            pointerEvents: 'auto',
-            willChange: 'transform', 
-          }}
-            className={`flex items-center gap-4 px-4 py-2 rounded-full border border-crimson text-sm md:text-base tracking-wide shadow-neon backdrop-blur-sm bg-white/5 hover:bg-white/10 ${pinned ? '' : 'mt-12'}`}
-        >
-          <AdaptiveScrambleLink
-            text="ПРОЕКТЫ"
-            onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
-            className={`hover:scale-105 transition-transform ${activeSection === 'projects' ? 'opacity-60 pointer-events-none cursor-default' : ''}`}
-            disabled={activeSection === 'projects'}
-          />
+        <div className="relative group w-full flex justify-center pointer-events-auto">  
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1.2, delay: 1.2 }}
+            style={{
+              transform: `translateY(${pinned ? 0 : buttonY}px) scale(${buttonScale})`,
+              opacity: pinned ? 1 : buttonOpacity,
+              pointerEvents: 'auto',
+              willChange: 'transform', 
+            }}
+              className={`flex items-center gap-4 px-4 py-2 rounded-full border border-crimson text-sm md:text-base tracking-wide shadow-neon backdrop-blur-sm bg-white/5 hover:bg-white/10 ${pinned ? '' : 'mt-12'}`}
+          >
+            <AdaptiveScrambleLink
+              text="ПРОЕКТЫ"
+              onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
+              className={`hover:scale-105 transition-transform ${activeSection === 'projects' ? 'opacity-60 pointer-events-none cursor-default' : ''}`}
+              disabled={activeSection === 'projects'}
+            />
 
-          <div className="relative h-[44px] flex items-center justify-center w-[54px]">
-            <motion.svg
-              initial={false} 
-              viewBox="0 0 54 10"
-              width="54"
-              height="10"
-              className="absolute top-[40%] left-[calc(50%-27px)]"
-              animate={{
-                x: [0, 0.4, -0.3, 0.2, -0.2, 0],
-                y: [0, -0.2, 0.3, -0.1, 0],
-                strokeOpacity: [1, 0.85, 1, 0.95, 1],
-              }}
-              transition={{
-                duration: 1.8,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
-            >
-              <motion.path
-                d="M 0,4.5 L 54,4.5"
-                stroke="#ff003c"
-                strokeWidth="1"
-                fill="none"
-                style={{ filter: 'drop-shadow(0 0 4px #ff003c)' }}
-              />
-            </motion.svg>
+            <div className="relative h-[44px] flex items-center justify-center w-[54px]">
+              <motion.svg
+                initial={false} 
+                viewBox="0 0 54 10"
+                width="54"
+                height="10"
+                className="absolute top-[40%] left-[calc(50%-27px)]"
+                animate={{
+                  x: [0, 0.4, -0.3, 0.2, -0.2, 0],
+                  y: [0, -0.2, 0.3, -0.1, 0],
+                  strokeOpacity: [1, 0.85, 1, 0.95, 1],
+                }}
+                transition={{
+                  duration: 1.8,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }}
+              >
+                <motion.path
+                  d="M 0,4.5 L 54,4.5"
+                  stroke="#ff003c"
+                  strokeWidth="1"
+                  fill="none"
+                  style={{ filter: 'drop-shadow(0 0 4px #ff003c)' }}
+                />
+              </motion.svg>
+            </div>
+
+
+            <AdaptiveScrambleLink
+              text="СВЯЗАТЬСЯ"
+              onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+              className={`hover:scale-105 transition-transform ${activeSection === 'contact' ? 'opacity-60 pointer-events-none cursor-default' : ''}`}
+              disabled={activeSection === 'contact'}
+            />
+          </motion.div>
+          {/* LightningEffect фон — виден только при group-hover! */}
+          <div className="absolute inset-0 z-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <LightningEffect />
           </div>
-
-
-          <AdaptiveScrambleLink
-            text="СВЯЗАТЬСЯ"
-            onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-            className={`hover:scale-105 transition-transform ${activeSection === 'contact' ? 'opacity-60 pointer-events-none cursor-default' : ''}`}
-            disabled={activeSection === 'contact'}
-          />
-        </motion.div>
+        </div>      
       </div>
     </main>
   )
