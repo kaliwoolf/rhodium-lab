@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import { BackSide } from 'three'
 import { useFrame } from '@react-three/fiber'
 
-export default function GlassSaturnMobile({ mouse, scrollRef }) {
+export default function GlassSaturnMobile({ mouse, scrollRef, scale = 1.3 }) {
   const wrapperRef = useRef()
   // (по желанию: scale или покачивание по mouse)
   useFrame(() => {
