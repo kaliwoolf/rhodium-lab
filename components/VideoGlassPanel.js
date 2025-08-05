@@ -2,7 +2,7 @@ import { useRef, useEffect, useState } from "react"
 import { Canvas, useFrame } from "@react-three/fiber"
 import { Environment, OrbitControls, shaderMaterial } from "@react-three/drei"
 import { extend } from "@react-three/fiber"
-import { SubdivisionModifier } from 'three/examples/jsm/modifiers/SubdivisionModifier'
+import { SubdivisionModifier } from 'three-stdlib/modifiers/SubdivisionModifier'
 import * as THREE from "three"
 
 // --- ShaderMaterial (твой рефракционный с хроматикой и металлизацией) ---
