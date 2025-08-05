@@ -5,6 +5,7 @@ import AdaptiveScrambleLink from '../components/AdaptiveScrambleLink'
 export default function HeroSection() {
   const { scrollY } = useScroll()
   const [pinned, setPinned] = useState(false)
+  const [activeSection, setActiveSection] = useState('hero'); // hero, projects, contact
 
   // Заголовок и слоган
   const titleY = useTransform(scrollY, [0, 200], [0, -100])
@@ -24,6 +25,32 @@ export default function HeroSection() {
     })
     return () => unsubscribe()
   }, [scrollY])
+
+  useEffect(() => {
+    const sectionIds = ['projects', 'contact'];
+    const observers = [];
+
+    sectionIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const observer = new window.IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setActiveSection(id);
+          } else if (activeSection === id) {
+            setActiveSection('hero');
+          }
+        },
+        {
+          threshold: 0.5, // 50% блока в зоне видимости
+        }
+      );
+      observer.observe(el);
+      observers.push(observer);
+    });
+
+    return () => observers.forEach(obs => obs.disconnect());
+  }, [activeSection]);
 
   return (
     <main className="relative min-h-screen flex flex-col items-center justify-center text-white font-sans z-10">
@@ -79,7 +106,8 @@ export default function HeroSection() {
           <AdaptiveScrambleLink
             text="ПРОЕКТЫ"
             onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
-            className="hover:scale-105 transition-transform"
+            className={`hover:scale-105 transition-transform ${activeSection === 'projects' ? 'opacity-60 pointer-events-none cursor-default' : ''}`}
+            disabled={activeSection === 'projects'}
           />
 
           <div className="relative h-[44px] flex items-center justify-center w-[54px]">
@@ -114,7 +142,8 @@ export default function HeroSection() {
           <AdaptiveScrambleLink
             text="СВЯЗАТЬСЯ"
             onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-            className="hover:scale-105 transition-transform"
+            className={`hover:scale-105 transition-transform ${activeSection === 'contact' ? 'opacity-60 pointer-events-none cursor-default' : ''}`}
+            disabled={activeSection === 'contact'}
           />
         </motion.div>
       </div>
