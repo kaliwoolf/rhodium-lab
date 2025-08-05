@@ -68,7 +68,7 @@ export default function VideoPanelOverlay() {
       >  
         <div className={styles.videoWrapper}>
           <video
-            src="/video/00002.mp4"
+            src="/video/00004.mp4"
             autoPlay
             muted
             loop
