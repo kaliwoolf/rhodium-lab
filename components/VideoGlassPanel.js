@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from "react"
 import { Canvas, useFrame } from "@react-three/fiber"
-import { Environment, OrbitControls, shaderMaterial } from "@react-three/drei"
+import { RoundedBox, Environment, OrbitControls, shaderMaterial } from "@react-three/drei"
 import { extend } from "@react-three/fiber"
 import * as THREE from "three"
 
@@ -121,7 +121,11 @@ function GlassPanel({ videoUrl }) {
       )} */}
       {/* Стеклянная панель с искажением */}
       <mesh ref={mesh} rotation={[0.23, -0.32, 0]}>
-        <boxGeometry args={[1.3, 0.85, 0.04]} />
+        <RoundedBox
+          args={[1.3, 0.85, 0.04]} // width, height, depth
+          radius={0.08}             // радиус скругления углов
+          smoothness={6}            // количество сегментов скругления
+        >
         {videoTexture && (
           <videoRefractionMaterial
             ref={shaderRef}
