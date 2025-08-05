@@ -31,11 +31,45 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transform: rotateX(13deg) rotateY(-8deg) scale(1.02);
   box-shadow: 0 16px 64px rgba(0,0,0,0.18), 0 2px 16px rgba(0,0,0,0.20);
   transition: transform 0.35s cubic-bezier(.38,.88,.34,1.05);
   will-change: transform;
 }
+
+.inner::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 12px; bottom: 12px;
+    width: 18px;
+    background: linear-gradient(
+      to right,
+      rgba(170,220,255,0.19),
+      rgba(20,60,100,0.28) 68%,
+      transparent
+    );
+    border-radius: 18px 0 0 18px;
+    opacity: 0.82;
+    pointer-events: none;
+    transition: opacity .22s;
+    z-index: 2;
+  }
+
+.inner::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: -9px;
+    height: 24px;
+    border-radius: 0 0 32px 32px;
+    background: linear-gradient(
+      to top,
+      rgba(0,0,0,0.22),
+      transparent
+    );
+    filter: blur(4px);
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.74;
+  }
 
 .videoWrapper {
   position: absolute;
