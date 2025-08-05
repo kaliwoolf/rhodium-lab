@@ -13,12 +13,20 @@ const DynamicBloom = dynamic(() => import('./DynamicBloom'), { ssr: false })
 const SupernovaFlash = dynamic(() => import('./SupernovaFlash'), { ssr: false })
 
 
-export default function ThreeBackground() {
+export default function ThreeBackground({ ...props }) {
   const mouse = useRef({ x: 0, y: 0 })
   const rawScroll = useRef(0)
   const smoothScroll = useRef(0)
   const [explosionFactor, setExplosionFactor] = useState(0)
 
+  const [isMobile, setIsMobile] = useState(false)
+  const [showCanvas, setShowCanvas] = useState(false)
+  
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsMobile(window.innerWidth < 640)
+    }
+  }, [])
 
   // Scroll event → rawScroll
   useEffect(() => {
@@ -60,61 +68,88 @@ export default function ThreeBackground() {
     return () => cancelAnimationFrame(raf)
   }, [])
 
+  // Запуск Canvas: сразу на десктопе, лениво на мобилках
+  useEffect(() => {
+    if (!isMobile) {
+      setShowCanvas(true)
+      return
+    }
+    setShowCanvas(false)
+    const handler = () => setShowCanvas(true)
+    window.addEventListener('scroll', handler, { once: true })
+    window.addEventListener('touchstart', handler, { once: true })
+    const timer = setTimeout(() => setShowCanvas(true), 1000)
+    return () => {
+      window.removeEventListener('scroll', handler)
+      window.removeEventListener('touchstart', handler)
+      clearTimeout(timer)
+    }
+  }, [isMobile])
 
   return (
     <>
-      <Canvas
-        camera={{ position: [0, 0, 9], fov: 35 }}
-        gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping }}
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          zIndex: -2,
-          pointerEvents: 'none',
-          background: '#000000',
-          mixBlendMode: 'screen'
-        }}
-        onCreated={({ camera }) => camera.layers.set(0)}
-      >
-        <Suspense fallback={null}>
-          <Starfield
-            mouse={mouse}
-            scrollRef={smoothScroll}
-            explosionFactor={explosionFactor}
-          />
-          <SupernovaFlash explosionFactor={explosionFactor} />
-          <MouseTrails /> {/* 🔥 Вот здесь добавляем! */}
-          <EffectComposer>
-            <DynamicBloom explosionFactor={explosionFactor} />
-          </EffectComposer>           
-        </Suspense>
-      </Canvas>
+      {showCanvas && (
+        <>
+          <Canvas
+            camera={{ position: [0, 0, 9], fov: 35 }}
+            gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping }}
+            dpr={isMobile ? 0.7 : 1.2}
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100vw',
+              height: '100vh',
+              zIndex: -2,
+              pointerEvents: 'none',
+              background: '#000000',
+              mixBlendMode: isMobile ? 'normal' : 'screen'
+            }}
+            onCreated={({ camera }) => camera.layers.set(0)}
+          >
+            <Suspense fallback={null}>
+              <Starfield
+                mouse={mouse}
+                scrollRef={smoothScroll}
+                explosionFactor={explosionFactor}
+                count={isMobile ? 400 : 3000}
+              />
+              {!isMobile && (
+                <>
+                  <SupernovaFlash explosionFactor={explosionFactor} />
+                  <MouseTrails />
+                  <EffectComposer>
+                    <DynamicBloom explosionFactor={explosionFactor} />
+                  </EffectComposer>
+                </>
+              )}
+            </Suspense>
+          </Canvas>
 
-      <Canvas
-        camera={{ position: [0, 0, 8], fov: 35 }}
-        gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping }}
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          zIndex: -1,
-          pointerEvents: 'none'
-        }}
-        onCreated={({ camera }) => camera.layers.enable(1)}
-      >
-        <Suspense fallback={null}>
-          <GlassSaturn mouse={mouse} scrollRef={smoothScroll} />
-          <Environment
-            files="/env/starfield_2k.hdr"
-            background={false}
-          />          
-        </Suspense>
-      </Canvas>
+          <Canvas
+            camera={{ position: [0, 0, 8], fov: 35 }}
+            gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping }}
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100vw',
+              height: '100vh',
+              zIndex: -1,
+              pointerEvents: 'none'
+            }}
+            onCreated={({ camera }) => camera.layers.enable(1)}
+          >
+            <Suspense fallback={null}>
+              <GlassSaturn mouse={mouse} scrollRef={smoothScroll} />
+              <Environment
+                files="/env/starfield_2k.hdr"
+                background={false}
+              />          
+            </Suspense>
+          </Canvas>
+        </>
+      )}
     </>
   )
 }
