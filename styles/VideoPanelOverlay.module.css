@@ -57,7 +57,9 @@
 }
 
 @media (max-width: 640px) {
-
+  .panel {
+   z-index: 40!important;
+  }
   .inner {
     height:600px;
   }
