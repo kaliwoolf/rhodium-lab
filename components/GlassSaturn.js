@@ -4,20 +4,12 @@ import { DoubleSide, BackSide, AdditiveBlending } from 'three'
 import * as THREE from 'three'
 
 
-export default function GlassSaturn({ mouse, scrollRef }) {
+export default function GlassSaturn({ mouse, scrollRef, scale = 2.4 }) {
   const ref = useRef()
   const ringRef = useRef()
   const wrapperRef = useRef()
-  const [scale, setScale] = useState(null)
   const maskRef = useRef()
 
-
-
-  useEffect(() => {
-    const isMobile = window.innerWidth < 768
-    const newScale = isMobile ? [1.3, 1.3, 1.3] : [2.4, 2.4, 2.4]
-    setScale(newScale)
-  }, [])
 
   useEffect(() => {
     if (ref.current) ref.current.layers.set(1)
@@ -51,7 +43,7 @@ export default function GlassSaturn({ mouse, scrollRef }) {
   })
 
   return scale && (
-      <group ref={wrapperRef} scale={scale} rotation={[0.46, 0, 0.46]}>
+      <group ref={wrapperRef} scale={[scale, scale, scale]} rotation={[0.46, 0, 0.46]}>
         {/* 🌈 Цветовая контровая подсветка */}
         <spotLight
           position={[-3, 2, 2]}

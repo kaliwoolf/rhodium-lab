@@ -14,7 +14,7 @@ export default function GlassSaturnMobile({ mouse, scrollRef }) {
   })
 
   return (
-    <group ref={wrapperRef} scale={[1.3, 1.3, 1.3]} rotation={[0.46, 0, 0.46]}>
+    <group ref={wrapperRef} scale={[scale, scale, scale]} rotation={[0.46, 0, 0.46]}>
       {/* Упрощённая стеклянная сфера */}
       <mesh>
         <sphereGeometry args={[0.52, 64, 64]} />

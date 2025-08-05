@@ -14,6 +14,7 @@ const SupernovaFlash = dynamic(() => import('./SupernovaFlash'), { ssr: false })
 
 
 export default function ThreeBackground({ ...props }) {
+  
   const mouse = useRef({ x: 0, y: 0 })
   const rawScroll = useRef(0)
   const smoothScroll = useRef(0)
@@ -21,6 +22,14 @@ export default function ThreeBackground({ ...props }) {
 
   const [isMobile, setIsMobile] = useState(false)
   const [showCanvas, setShowCanvas] = useState(false)
+
+  const desktopMin = 1.2, desktopMax = 2.4
+  const mobileMin = 0.8, mobileMax = 1.3
+  const scale = isMobile
+    ? mobileMin + (mobileMax - mobileMin) * fade
+    : desktopMin + (desktopMax - desktopMin) * fade
+  setSaturnScale(scale)
+
   
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -175,8 +184,8 @@ export default function ThreeBackground({ ...props }) {
             >
               <Suspense fallback={null}>
                 {isMobile
-                  ? <GlassSaturnMobile mouse={mouse} scrollRef={smoothScroll} />
-                  : <GlassSaturn mouse={mouse} scrollRef={smoothScroll} />
+                  ? <GlassSaturnMobile mouse={mouse} scrollRef={smoothScroll} scale={saturnScale} />
+                  : <GlassSaturn mouse={mouse} scrollRef={smoothScroll} scale={saturnScale} />
                 }
                 <Environment
                   files="/env/starfield_2k.hdr" background={false} />          
