@@ -113,8 +113,8 @@ export default function HeroSection() {
         }}
       >
         <motion.div
-          initial={{ opacity: 0, scale: 0.8}}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ duration: 1.2, delay: 1.2 }}
           style={{
             transform: `translateY(${pinned ? 0 : buttonY}px) scale(${buttonScale})`,
