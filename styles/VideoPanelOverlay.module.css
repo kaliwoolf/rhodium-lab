@@ -33,7 +33,7 @@
   justify-content: center;
   transform: rotateX(13deg) rotateY(-8deg) scale(1.02);
   box-shadow: 0 16px 64px rgba(0,0,0,0.18), 0 2px 16px rgba(0,0,0,0.20);
-  transition: transform 0.7s cubic-bezier(.22,.68,.56,1.01);
+  transition: transform 0.35s cubic-bezier(.38,.88,.34,1.05);
   will-change: transform;
 }
 
