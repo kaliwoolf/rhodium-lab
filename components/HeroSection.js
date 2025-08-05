@@ -117,10 +117,7 @@ export default function HeroSection() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.2, delay: 1.2 }}
           style={{
-            transform: pinned
-              ? 'none'
-              : `translateY(${buttonY}px) scale(${buttonScale})`,
-            scale: pinned ? 1 : undefined, 
+            transform: `translateY(${pinned ? 0 : buttonY}px) scale(${buttonScale})`,
             opacity: pinned ? 1 : buttonOpacity,
             pointerEvents: 'auto',
             willChange: 'transform', 
