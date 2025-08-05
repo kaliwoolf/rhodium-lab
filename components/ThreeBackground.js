@@ -203,9 +203,7 @@ export default function ThreeBackground({ ...props }) {
                 pointerEvents: 'none',
                  ...(isMobile ? {} : {
                   opacity: saturnOpacity,
-                  transition: isMobile
-                    ? 'opacity 0.4s cubic-bezier(0.77,0,0.18,1)'
-                    : 'opacity 1.1s cubic-bezier(0.77,0,0.18,1), transform 0.7s cubic-bezier(0.77,0,0.18,1)',
+                  transition: 'opacity 0.5s cubic-bezier(0.6,0.2,0.2,1)',
                   willChange: 'opacity',
                 }),  
               }}
