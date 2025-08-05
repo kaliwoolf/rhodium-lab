@@ -58,7 +58,7 @@ export default function HeroSection() {
         initial={{ opacity: 0, scale: 0.6 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.2, delay: 0.2 }}
-        style={{ y: titleY, opacity: titleOpacity }}
+        style={{ y: titleY, opacity: titleOpacity, willChange: 'transform' }}
         className="text-[clamp(2.5rem,8vw,7rem)] font-bold tracking-[0.15em] text-center leading-tight backdrop-blur-sm"
       >
         RHODIUM
@@ -68,7 +68,7 @@ export default function HeroSection() {
         initial={{ opacity: 0, scale: 0.8}}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.2, delay: 0.6 }}      
-        style={{ y: sloganY, opacity: sloganOpacity }}
+        style={{ y: sloganY, opacity: sloganOpacity, willChange: 'transform' }}
         className="mt-4 text-sm md:text-base text-white opacity-60 tracking-wide backdrop-blur text-center px-4"
       >
         Изымаем хаос. <br className="md:hidden" />
@@ -87,6 +87,7 @@ export default function HeroSection() {
           display: 'flex',
           justifyContent: 'center',
           pointerEvents: 'none',
+          willChange: 'transform' 
         }}
       >
         <motion.div
@@ -98,6 +99,7 @@ export default function HeroSection() {
             scale: buttonScale,
             opacity: buttonOpacity,
             pointerEvents: 'auto',
+            willChange: 'transform', 
           }}
           className={`flex items-center gap-4 px-4 py-2 rounded-full border border-crimson text-sm md:text-base tracking-wide shadow-neon backdrop-blur-sm bg-white/5 hover:bg-white/10 transition-all ${
             pinned ? '' : 'mt-12'
