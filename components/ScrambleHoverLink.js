@@ -32,6 +32,7 @@ export default function ScrambleHoverLink({
 
   const startScramble = () => {
     if (!spanRef.current) return
+    clearInterval(intervalRef.current)  
     intervalRef.current = setInterval(() => {
       spanRef.current.textContent = scrambleText(originalText.current)
     }, 100)
@@ -57,6 +58,9 @@ export default function ScrambleHoverLink({
       onMouseEnter={startScramble}
       onMouseLeave={stopScramble}
       onClick={handleClick}
+      onTouchStart={startScramble}
+      onTouchEnd={stopScramble}
+      onTouchCancel={stopScramble}
       className={`inline-block cursor-pointer select-none text-xl text-center ${className}`}
       style={{
         minWidth: `${text.length + 2}ch`, // запас в 2 символа
