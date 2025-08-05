@@ -82,7 +82,7 @@ export default function HeroSection() {
           top: pinned ? '24px' : 'auto',
           left: pinned ? '50%' : 'auto',
           transform: pinned ? 'translateX(-50%)' : 'none',
-          zIndex: 150,
+          zIndex: 1000,
           width: '100%',
           display: 'flex',
           justifyContent: 'center',
