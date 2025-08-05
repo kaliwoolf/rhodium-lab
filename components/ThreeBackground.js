@@ -22,6 +22,18 @@ export default function ThreeBackground({ ...props }) {
   const [isMobile, setIsMobile] = useState(false)
   const [showCanvas, setShowCanvas] = useState(false)
 
+  const [saturnVisible, setSaturnVisible] = useState(false)
+
+  useEffect(() => {
+    if (showCanvas) {
+      // Чуть позже (например, через 80–120мс), чтобы Canvas успел отрисоваться
+      const timer = setTimeout(() => setSaturnVisible(true), 120)
+      return () => clearTimeout(timer)
+    } else {
+      setSaturnVisible(false)
+    }
+  }, [showCanvas])
+
     
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -159,8 +171,8 @@ export default function ThreeBackground({ ...props }) {
               width: '100vw', height: '100vh',
               zIndex: -1,
               pointerEvents: 'none',
-              opacity: saturnOpacity,
-              transition: 'opacity 0.5s cubic-bezier(0.6,0.2,0.2,1)',
+              opacity: saturnVisible ? saturnOpacity : 0,
+              transition: 'opacity 1.1s cubic-bezier(0.77,0,0.18,1)',
               willChange: 'opacity',
             }}
           >
@@ -168,9 +180,6 @@ export default function ThreeBackground({ ...props }) {
               camera={{ position: [0, 0, 8], fov: 35 }}
               gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping }}
               style={{
-                /* position: 'fixed', 
-                top: 0,
-                left: 0, */
                 width: '100vw',
                 height: '100vh',
                 zIndex: -1,

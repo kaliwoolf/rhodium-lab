@@ -43,8 +43,8 @@ export default function LightningEffect({ width = 320, height = 46 }) {
       ctx.beginPath();
       ctx.moveTo(pts[0].x, pts[0].y);
       pts.forEach(p => ctx.lineTo(p.x, p.y));
-      ctx.strokeStyle = "#e7a1ff";
-      ctx.shadowColor = "#b666ff";
+      ctx.strokeStyle = "#99d8ff";
+      ctx.shadowColor = "#d666ff";
       ctx.shadowBlur = 16;
       ctx.lineWidth = 5.5;
       ctx.globalAlpha = 0.28;
@@ -56,10 +56,12 @@ export default function LightningEffect({ width = 320, height = 46 }) {
       ctx.beginPath();
       ctx.moveTo(pts[0].x, pts[0].y);
       pts.forEach(p => ctx.lineTo(p.x, p.y));
-      const colors = ["#cdf2ff", "#fff", "#b7e3ff"];
-      ctx.strokeStyle = colors[Math.floor(Math.random() * colors.length)];
-      ctx.shadowColor = "#fff0";
-      ctx.lineWidth = 1.7 + Math.sin(time / 15);
+      const grad = ctx.createLinearGradient(pts[0].x, pts[0].y, pts[pts.length-1].x, pts[pts.length-1].y);
+      grad.addColorStop(0, "#e7a1ff");
+      grad.addColorStop(0.5, "#cdf2ff");
+      grad.addColorStop(1, "#fff");
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = 1.5 + Math.sin(time / 15);
       ctx.globalAlpha = 0.89;
       ctx.stroke();
       ctx.restore();
