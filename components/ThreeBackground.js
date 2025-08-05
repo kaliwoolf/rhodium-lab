@@ -37,6 +37,26 @@ export default function ThreeBackground({ ...props }) {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  // Состояния для плавности
+  const [saturnOpacity, setSaturnOpacity] = useState(1)
+  const [saturnScale, setSaturnScale] = useState(1)
+
+  // Следим за скроллом для плавности (вынеси прямо под useEffect-скролла)
+  useEffect(() => {
+    const updateSaturn = () => {
+      // Получаем плавный scroll (можно брать из smoothScroll.current)
+      const scroll = smoothScroll.current || 0
+      // Фейд и scale с хорошим easing
+      const fade = Math.max(1 - scroll * 1.0, 0)
+      // Можно добавить easing для плавности
+      setSaturnOpacity(0.1 + 0.9 * fade) // fade от 1 до 0.1
+      setSaturnScale(0.98 + 0.25 * fade) // scale от 1.23 до 0.98
+      requestAnimationFrame(updateSaturn)
+    }
+    updateSaturn()
+    return () => {}
+  }, [])
+
   // Mouse tracking
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -126,29 +146,43 @@ export default function ThreeBackground({ ...props }) {
             </Suspense>
           </Canvas>
 
-          <Canvas
-            camera={{ position: [0, 0, 8], fov: 35 }}
-            gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping }}
+          <div
             style={{
               position: 'fixed',
-              top: 0,
-              left: 0,
-              width: '100vw',
-              height: '100vh',
+              top: 0, left: 0,
+              width: '100vw', height: '100vh',
               zIndex: -1,
-              pointerEvents: 'none'
+              pointerEvents: 'none',
+              opacity: saturnOpacity,
+              transform: `scale(${saturnScale})`,
+              transition: 'opacity 0.5s, transform 0.5s',
+              willChange: 'opacity, transform',
             }}
-            onCreated={({ camera }) => camera.layers.enable(1)}
           >
-            <Suspense fallback={null}>
-              {isMobile
-                ? <GlassSaturnMobile mouse={mouse} scrollRef={smoothScroll} />
-                : <GlassSaturn mouse={mouse} scrollRef={smoothScroll} />
-              }
-              <Environment
-                files="/env/starfield_2k.hdr" background={false} />          
-            </Suspense>
-          </Canvas>
+            <Canvas
+              camera={{ position: [0, 0, 8], fov: 35 }}
+              gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping }}
+              style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100vw',
+                height: '100vh',
+                zIndex: -1,
+                pointerEvents: 'none'
+              }}
+              onCreated={({ camera }) => camera.layers.enable(1)}
+            >
+              <Suspense fallback={null}>
+                {isMobile
+                  ? <GlassSaturnMobile mouse={mouse} scrollRef={smoothScroll} />
+                  : <GlassSaturn mouse={mouse} scrollRef={smoothScroll} />
+                }
+                <Environment
+                  files="/env/starfield_2k.hdr" background={false} />          
+              </Suspense>
+            </Canvas>
+          </div>
         </>
       )}
     </>
