@@ -50,14 +50,13 @@ export default function LightningEffect({
     <svg
       viewBox={`0 0 ${width} ${height}`}
       width="100%"
-      height={height}
+      height="100%"
       style={{
         position: "absolute",
         left: 0,
-        top: "50%",
-        transform: "translateY(-50%)",
+        top: 0,
         width: "100%",
-        height: height,
+        height: "100%",
         pointerEvents: "none",
         mixBlendMode: "screen",
         ...style,

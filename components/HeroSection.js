@@ -172,7 +172,7 @@ export default function HeroSection() {
           </motion.div>
           {/* LightningEffect фон — виден только при group-hover! */}
           <div className="absolute inset-0 z-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <LightningEffect height={48} />
+            <LightningEffect />
           </div>
         </div>      
       </div>
