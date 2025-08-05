@@ -93,47 +93,7 @@ export default function GlassSaturn({ mouse, scrollRef, scale = 2.4 }) {
 
         </group>
 
-        <mesh position={[-0.3, -0.7, 0]} rotation={[0.3, 0, 0]} renderOrder={5}>
-            <planeGeometry args={[2.6, 2.6]} />
-            <shaderMaterial
-              ref={maskRef}
-              transparent
-              depthWrite={false}
-              depthTest={false}
-              toneMapped={false}
-              blending={THREE.NormalBlending}
-              side={THREE.DoubleSide}
-              uniforms={{
-                uFade: { value: 1.0 }
-              }}
-               vertexShader={`
-                  varying vec2 vUv;
-                  void main() {
-                    vUv = uv;
-                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-                  }
-                `}
-                fragmentShader={`
-                  varying vec2 vUv;
-                  uniform float uFade;
-
-                  float random(vec2 st) {
-                    return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
-                  }
-
-                  void main() {
-                    vec2 center = vec2(0.4, 0.8);
-                    float d = distance(vUv, center);
-                    float mask = 1.0 - smoothstep(0.05, 0.3, d);
-
-                    float grain = random(vUv * 50.0);
-                    float alpha = min(mask * 1.5, 1.0) * mix(0.9, 1.0, grain);
-
-                    gl_FragColor = vec4(0.0, 0.0, 0.0, alpha);
-                  }
-                `}
-              />
-          </mesh>
+       
 
           {/* 🔮 Внешняя стеклянная сфера */}
           <mesh ref={ref} renderOrder={1}>
@@ -219,7 +179,17 @@ export default function GlassSaturn({ mouse, scrollRef, scale = 2.4 }) {
             />
           </mesh>
 
-
+          {/* 🌑 Внутренняя чёрная маска — в конце, позади колец */}
+          <mesh scale={[0.985, 0.985, 0.985]} renderOrder={-1}>
+              <sphereGeometry args={[0.52, 128, 128]} />
+              <meshBasicMaterial
+                color="black"
+                side={BackSide}
+                depthWrite={true}
+                depthTest={true}
+                toneMapped={false}
+              />
+          </mesh>
   </group>  
 )
 
