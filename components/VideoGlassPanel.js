@@ -27,19 +27,32 @@ const VideoRefractionMaterial = shaderMaterial(
     uniform float uThickness;
     uniform float time;
     varying vec2 vUv;
+
     void main() {
       float bump = sin(vUv.y * 18. + time * 0.7) * 0.04
                  + cos(vUv.x * 15. - time * 0.5) * 0.035;
+
+      // Разные смещения для каналов
+      float chroma = 0.008 * uThickness * uIntensity;
       vec2 refractUv = vUv + vec2(bump, bump) * uIntensity * uThickness;
 
-      vec4 videoColor = texture2D(uVideo, refractUv);
+      // Chromatic aberration — R, G, B сдвигаются по-разному
+      float r = texture2D(uVideo, refractUv + vec2(chroma, 0.0)).r;
+      float g = texture2D(uVideo, refractUv).g;
+      float b = texture2D(uVideo, refractUv - vec2(chroma, 0.0)).b;
 
+      vec3 color = vec3(r, g, b);
+
+      // Лёгкая металлизация — усиливаем яркость и контраст, "отблёски"
+      color = mix(color, vec3(1.12, 1.09, 1.17), 0.18 * uThickness);
+
+      // Чуть темнее по краям (в центре ярче)
       float vignette = smoothstep(0.0, 0.38, length(vUv - 0.5));
-      videoColor.rgb *= 1.0 - vignette * 0.26;
+      color *= 1.0 - vignette * 0.22;
 
-      gl_FragColor = videoColor;
+      gl_FragColor = vec4(color, 1.0);
     }
-  `
+    `
 )
 
 extend({ VideoRefractionMaterial })
@@ -48,7 +61,20 @@ function GlassPanel({ videoUrl }) {
   const mesh = useRef()
   const shaderRef = useRef()
   const [videoTexture, setVideoTexture] = useState(null)
+  const [hovered, setHovered] = useState(false)
   const [mouse, setMouse] = useState({ x: 0, y: 0 })
+
+  const handlePointerMove = (e) => {
+    setHovered(true)
+    setMouse({
+      x: (e.uv.x - 0.5) * 2, // именно e.uv, не e.clientX
+      y: -(e.uv.y - 0.5) * 2
+    })
+  }
+  const handlePointerOut = () => {
+    setHovered(false)
+    setMouse({ x: 0, y: 0 })
+  }
 
   useEffect(() => {
     const video = document.createElement("video")
