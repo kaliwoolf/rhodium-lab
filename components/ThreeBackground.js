@@ -182,7 +182,7 @@ export default function ThreeBackground({ ...props }) {
               onCreated={({ camera }) => camera.layers.enable(1)}
             >
               <Suspense fallback={null}>
-                <GlassSaturnMobile mouse={mouse} scrollRef={smoothScroll} scale={saturnScale} />
+                <GlassSaturn mouse={mouse} scrollRef={smoothScroll} scale={saturnScale} />
                 <Environment files="/env/starfield_2k.hdr" background={false} />          
               </Suspense>
             </Canvas>
