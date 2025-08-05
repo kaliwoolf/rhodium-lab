@@ -174,7 +174,12 @@ export default function ThreeBackground({ ...props }) {
                 width: '100vw',
                 height: '100vh',
                 zIndex: -1,
-                pointerEvents: 'none'
+                pointerEvents: 'none',
+                 ...(isMobile ? {} : {
+                  opacity: saturnOpacity,
+                  transition: 'opacity 0.5s cubic-bezier(0.6,0.2,0.2,1)',
+                  willChange: 'opacity',
+                }),  
               }}
               onCreated={({ camera }) => camera.layers.enable(1)}
             >
