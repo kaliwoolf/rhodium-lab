@@ -3,6 +3,7 @@ import { Canvas, useFrame } from "@react-three/fiber"
 import { RoundedBox, Environment, OrbitControls, shaderMaterial } from "@react-three/drei"
 import { extend } from "@react-three/fiber"
 import * as THREE from "three"
+import { EffectComposer, Bloom } from "@react-three/postprocessing"
 
 // === ShaderMaterial объявляем прямо тут ===
 const VideoRefractionMaterial = shaderMaterial(
@@ -128,11 +129,15 @@ function GlassPanel({ videoUrl }) {
             uThickness={1.4} // ← крути это значение!
           />
         )}
+       <mesh>
+          <boxGeometry args={[1.3 + 0.01, 0.85 + 0.01, 0.04 + 0.01]} />
+          <meshBasicMaterial color="#e9f7ff" transparent opacity={0.19} />
+        </mesh>  
       </RoundedBox>
     </>
   )
 }
-
+ыыы
 export default function VideoGlassPanel({ videoUrl = "/video/00002.mp4" }) {
   return (
     <div style={{ width: "100vw", height: "100vh", background: "#171923" }}>
@@ -150,6 +155,9 @@ export default function VideoGlassPanel({ videoUrl = "/video/00002.mp4" }) {
           maxPolarAngle={Math.PI / 2.12}
           minPolarAngle={Math.PI / 2.6}
         />
+        <EffectComposer>
+          <Bloom luminanceThreshold={0.13} luminanceSmoothing={0.44} intensity={0.56} />
+        </EffectComposer>  
       </Canvas>
     </div>
   )
