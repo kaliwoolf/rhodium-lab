@@ -1,16 +1,15 @@
 import { useRef, useEffect, useState } from "react"
 import { Canvas, useFrame } from "@react-three/fiber"
-import { Environment, OrbitControls, shaderMaterial } from "@react-three/drei"
+import { RoundedBox, Environment, OrbitControls, shaderMaterial } from "@react-three/drei"
 import { extend } from "@react-three/fiber"
-import { SubdivisionModifier } from 'three-stdlib/modifiers/SubdivisionModifier'
 import * as THREE from "three"
 
-// --- ShaderMaterial (твой рефракционный с хроматикой и металлизацией) ---
+// === ShaderMaterial объявляем прямо тут ===
 const VideoRefractionMaterial = shaderMaterial(
   {
     uVideo: null,
     uIntensity: 0.13,
-    uThickness: 1.2,
+    uThickness: 1.2, // добавили толщину!
     time: 0
   },
   // vertex
@@ -28,65 +27,38 @@ const VideoRefractionMaterial = shaderMaterial(
     uniform float uThickness;
     uniform float time;
     varying vec2 vUv;
+
     void main() {
       float bump = sin(vUv.y * 18. + time * 0.7) * 0.04
                  + cos(vUv.x * 15. - time * 0.5) * 0.035;
+
+      // Разные смещения для каналов
       float chroma = 0.008 * uThickness * uIntensity;
       vec2 refractUv = vUv + vec2(bump, bump) * uIntensity * uThickness;
+
+      // Chromatic aberration — R, G, B сдвигаются по-разному
       float r = texture2D(uVideo, refractUv + vec2(chroma, 0.0)).r;
       float g = texture2D(uVideo, refractUv).g;
       float b = texture2D(uVideo, refractUv - vec2(chroma, 0.0)).b;
+
       vec3 color = vec3(r, g, b);
+
+      // Лёгкая металлизация — усиливаем яркость и контраст, "отблёски"
       color = mix(color, vec3(1.12, 1.09, 1.17), 0.18 * uThickness);
+
+      // Чуть темнее по краям (в центре ярче)
       float vignette = smoothstep(0.0, 0.38, length(vUv - 0.5));
       color *= 1.0 - vignette * 0.22;
+
       gl_FragColor = vec4(color, 1.0);
     }
-  `
+    `
 )
+
 extend({ VideoRefractionMaterial })
 
-// --- SmoothBox с SubdivisionModifier ---
-function SmoothBox({ videoTexture, hovered, mouse, shaderRef, ...props }) {
-  const mesh = useRef()
-
-  // Apply subdivision ONCE after mount
-  useEffect(() => {
-    const baseGeometry = new THREE.BoxGeometry(1.3, 0.85, 0.04, 1, 1, 1)
-    const modifier = new SubdivisionModifier(3) // 2–3 обычно хватает
-    const smoothGeometry = modifier.modify(baseGeometry)
-    mesh.current.geometry = smoothGeometry
-  }, [])
-
-  useFrame(() => {
-    if (mesh.current) {
-      mesh.current.rotation.x += (((hovered ? mouse.y : 0) * 0.32) - mesh.current.rotation.x) * 0.13
-      mesh.current.rotation.y += (((hovered ? mouse.x : 0) * 0.44) - mesh.current.rotation.y) * 0.13
-    }
-  })
-
-  return (
-    <mesh
-      ref={mesh}
-      {...props}
-      onPointerMove={props.onPointerMove}
-      onPointerOut={props.onPointerOut}
-      castShadow
-      receiveShadow
-    >
-      {videoTexture && (
-        <videoRefractionMaterial
-          ref={shaderRef}
-          uVideo={videoTexture}
-          uIntensity={0.13}
-          uThickness={1.2}
-        />
-      )}
-    </mesh>
-  )
-}
-
 function GlassPanel({ videoUrl }) {
+  const mesh = useRef()
   const shaderRef = useRef()
   const [videoTexture, setVideoTexture] = useState(null)
   const [hovered, setHovered] = useState(false)
@@ -103,6 +75,7 @@ function GlassPanel({ videoUrl }) {
     setHovered(false)
     setMouse({ x: 0, y: 0 })
   }
+
 
   useEffect(() => {
     const video = document.createElement("video")
@@ -128,17 +101,35 @@ function GlassPanel({ videoUrl }) {
     if (shaderRef.current) shaderRef.current.uniforms.time.value = state.clock.getElapsedTime()
   })
 
+  useFrame(() => {
+    if (mesh.current) {
+      // Если навели мышь — крутится, ушли — плавно возвращается
+      mesh.current.rotation.x += (((hovered ? mouse.y : 0) * 0.32) - mesh.current.rotation.x) * 0.13
+      mesh.current.rotation.y += (((hovered ? mouse.x : 0) * 0.44) - mesh.current.rotation.y) * 0.13
+    }
+  })
+
   return (
-    <SmoothBox
-      position={[0, 0, 0]}
-      rotation={[0.23, -0.32, 0]}
-      videoTexture={videoTexture}
-      shaderRef={shaderRef}
-      hovered={hovered}
-      mouse={mouse}
-      onPointerMove={handlePointerMove}
-      onPointerOut={handlePointerOut}
-    />
+    <>
+      <RoundedBox
+        ref={mesh}
+        rotation={[0.23, -0.32, 0]}
+        args={[1.3, 0.85, 0.04]} // width, height, depth
+        radius={0.08}             // радиус скругления углов
+        smoothness={6}            // количество сегментов скругления
+        onPointerMove={handlePointerMove}
+        onPointerOut={handlePointerOut}
+      >
+        {videoTexture && (
+          <videoRefractionMaterial
+            ref={shaderRef}
+            uVideo={videoTexture}
+            uIntensity={0.12} // крути силу эффекта
+            uThickness={1.4} // ← крути это значение!
+          />
+        )}
+      </RoundedBox>
+    </>
   )
 }
 
@@ -148,10 +139,9 @@ export default function VideoGlassPanel({ videoUrl = "/video/00002.mp4" }) {
       <Canvas
         camera={{ position: [0, 0, 2.7], fov: 40 }}
         gl={{ antialias: true, alpha: true, preserveDrawingBuffer: false }}
-        shadows
       >
-        <ambientLight intensity={0.48} />
-        <directionalLight position={[3, 2, 3]} intensity={1.22} castShadow />
+        <ambientLight intensity={0.5} />
+        <directionalLight position={[3, 2, 3]} intensity={1.16} />
         <GlassPanel videoUrl={videoUrl} />
         <Environment preset="sunset" />
         <OrbitControls
