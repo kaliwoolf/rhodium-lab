@@ -127,6 +127,11 @@ export default function HeroSection() {
             }}
               className={`flex items-center gap-4 px-4 py-2 rounded-full border border-crimson text-sm md:text-base tracking-wide shadow-neon backdrop-blur-sm bg-white/5 hover:bg-white/10 ${pinned ? '' : 'mt-12'}`}
           >
+
+            <div className="absolute inset-0 z-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <LightningEffect />
+            </div>    
+
             <AdaptiveScrambleLink
               text="ПРОЕКТЫ"
               onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
@@ -170,10 +175,6 @@ export default function HeroSection() {
               disabled={activeSection === 'contact'}
             />
           </motion.div>
-          {/* LightningEffect фон — виден только при group-hover! */}
-          <div className="absolute inset-0 z-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <LightningEffect />
-          </div>
         </div>      
       </div>
     </main>
