@@ -48,6 +48,7 @@ function GlassPanel({ videoUrl }) {
   const mesh = useRef()
   const shaderRef = useRef()
   const [videoTexture, setVideoTexture] = useState(null)
+  const [mouse, setMouse] = useState({ x: 0, y: 0 })
 
   useEffect(() => {
     const video = document.createElement("video")
@@ -73,6 +74,24 @@ function GlassPanel({ videoUrl }) {
     if (shaderRef.current) shaderRef.current.uniforms.time.value = state.clock.getElapsedTime()
   })
 
+   useFrame(() => {
+    if (mesh.current) {
+      // плавное затухание к базовому положению
+      mesh.current.rotation.x += ((mouse.y * 0.32) - mesh.current.rotation.x) * 0.13
+      mesh.current.rotation.y += ((mouse.x * 0.45) - mesh.current.rotation.y) * 0.13
+    }
+  })
+
+  // Обработчик мыши
+  const handlePointerMove = (e) => {
+    // координаты -0.5 .. 0.5
+    setMouse({
+      x: (e.clientX / window.innerWidth - 0.5) * 2,
+      y: -(e.clientY / window.innerHeight - 0.5) * 2
+    })
+  }
+  const handlePointerOut = () => setMouse({ x: 0, y: 0 })
+
   return (
     <>
       {/* Видео-слой (фон, если нужен за пределами панели) */}
@@ -85,7 +104,7 @@ function GlassPanel({ videoUrl }) {
       )} */}
       {/* Стеклянная панель с искажением */}
       <mesh ref={mesh} rotation={[0.23, -0.32, 0]}>
-        <boxGeometry args={[1.25, 0.75, 0.11]} />
+        <boxGeometry args={[1.3, 0.85, 0.04]} />
         {videoTexture && (
           <videoRefractionMaterial
             ref={shaderRef}
