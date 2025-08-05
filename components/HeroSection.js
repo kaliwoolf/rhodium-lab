@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
-import ApaptiveScrambleLink from '../components/AdaptiveScrambleLink'
+import AdaptiveScrambleLink from '../components/AdaptiveScrambleLink'
 
 export default function HeroSection() {
   const { scrollY } = useScroll()
@@ -111,7 +111,7 @@ export default function HeroSection() {
           </div>
 
 
-          <AdaptiveScrambleLinks
+          <AdaptiveScrambleLink
             text="СВЯЗАТЬСЯ"
             onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
             className="hover:scale-105 transition-transform"
