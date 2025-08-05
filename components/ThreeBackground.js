@@ -24,9 +24,6 @@ export default function ThreeBackground({ ...props }) {
 
   const [saturnVisible, setSaturnVisible] = useState(false)
 
-  const [saturnMobileOpacity, setSaturnMobileOpacity] = useState(1);
-
-
   useEffect(() => {
     if (showCanvas) {
       // Чуть позже (например, через 80–120мс), чтобы Canvas успел отрисоваться
@@ -36,37 +33,6 @@ export default function ThreeBackground({ ...props }) {
       setSaturnVisible(false)
     }
   }, [showCanvas])
-
-  useEffect(() => {
-    if (isMobile) return; // Только для десктопа!
-
-    let raf;
-    const updateSaturnOpacity = () => {
-      const scroll = window.scrollY / window.innerHeight;
-      // fade — чем больше scroll, тем меньше opacity (до 0.1)
-      const fade = Math.max(1 - scroll * 1.0, 0);
-      setSaturnOpacity(0.1 + 0.9 * fade);
-      raf = requestAnimationFrame(updateSaturnOpacity);
-    };
-    updateSaturnOpacity();
-    return () => raf && cancelAnimationFrame(raf);
-  }, [isMobile]);
-
-  useEffect(() => {
-    if (!isMobile) return;
-
-    const handler = () => {
-      const scroll = window.scrollY / window.innerHeight;
-      setSaturnMobileOpacity(scroll < 0.2 ? 1 : 0.11);
-    };
-
-    window.addEventListener('scroll', handler);
-    // сразу применяем при загрузке
-    handler();
-
-    return () => window.removeEventListener('scroll', handler);
-  }, [isMobile]);
-
 
     
   useEffect(() => {
@@ -205,6 +171,9 @@ export default function ThreeBackground({ ...props }) {
               width: '100vw', height: '100vh',
               zIndex: -1,
               pointerEvents: 'none',
+              opacity: saturnVisible ? saturnOpacity : 0,
+              transition: 'opacity 1.1s cubic-bezier(0.77,0,0.18,1)',
+              willChange: 'opacity',
             }}
           >
             <Canvas
@@ -215,10 +184,11 @@ export default function ThreeBackground({ ...props }) {
                 height: '100vh',
                 zIndex: -1,
                 pointerEvents: 'none',
-                opacity: isMobile ? saturnMobileOpacity : saturnOpacity,
-                transform: `scale(${isMobile ? 1 : saturnScale})`,
-                willChange: 'opacity, transform',
-                transition: 'opacity 1.1s cubic-bezier(0.77,0,0.18,1), transform 0.7s cubic-bezier(0.77,0,0.18,1)',
+                 ...(isMobile ? {} : {
+                  opacity: saturnOpacity,
+                  transition: 'opacity 0.5s cubic-bezier(0.6,0.2,0.2,1)',
+                  willChange: 'opacity',
+                }),  
               }}
               onCreated={({ camera }) => camera.layers.enable(1)}
             >
