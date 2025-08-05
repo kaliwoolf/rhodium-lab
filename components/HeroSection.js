@@ -28,7 +28,7 @@ export default function HeroSection() {
   const sloganOpacity = clamp(1 - smoothScroll / 200, 0, 1)
 
   const buttonY = clamp(-smoothScroll * 0.27, -80, 0)
-  const buttonScale = clamp(1 - (smoothScroll / 300) * 0.15, 0.85, 1)
+  const buttonScale = clamp(1 - (smoothScroll / 300) * 0.25, 0.7, 1)
   const buttonOpacity = clamp(1 - smoothScroll / 300 * 0.1, 0.9, 1)
 
 
