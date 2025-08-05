@@ -109,15 +109,6 @@ function GlassPanel({ videoUrl }) {
     }
   })
 
-  // Обработчик мыши
-  const handlePointerMove = (e) => {
-    // координаты -0.5 .. 0.5
-    setMouse({
-      x: (e.clientX / window.innerWidth - 0.5) * 2,
-      y: -(e.clientY / window.innerHeight - 0.5) * 2
-    })
-  }
-
   return (
     <>
       {/* Видео-слой (фон, если нужен за пределами панели) */}
