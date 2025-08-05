@@ -49,7 +49,7 @@ export default function LightningEffect({
   return (
     <svg
       viewBox={`0 0 ${width} ${height}`}
-      width=100%
+      width="100%"
       height={height}
       style={{
         position: "absolute",
