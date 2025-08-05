@@ -8,6 +8,7 @@ import MouseTrails from '../components/MouseTrails'
 
 const Starfield = dynamic(() => import('./Starfield'), { ssr: false })
 const GlassSaturn = dynamic(() => import('./GlassSaturn'), { ssr: false })
+const GlassSaturnMobile = dynamic(() => import('./GlassSaturnMobile'), { ssr: false })
 const DynamicBloom = dynamic(() => import('./DynamicBloom'), { ssr: false })
 const SupernovaFlash = dynamic(() => import('./SupernovaFlash'), { ssr: false })
 
@@ -140,11 +141,12 @@ export default function ThreeBackground({ ...props }) {
             onCreated={({ camera }) => camera.layers.enable(1)}
           >
             <Suspense fallback={null}>
-              <GlassSaturn mouse={mouse} scrollRef={smoothScroll} />
+              {isMobile
+                ? <GlassSaturnMobile mouse={mouse} scrollRef={smoothScroll} />
+                : <GlassSaturn mouse={mouse} scrollRef={smoothScroll} />
+              }
               <Environment
-                files="/env/starfield_2k.hdr"
-                background={false}
-              />          
+                files="/env/starfield_2k.hdr" background={false} />          
             </Suspense>
           </Canvas>
         </>
