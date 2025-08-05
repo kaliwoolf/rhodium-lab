@@ -1,7 +1,6 @@
 import '../styles/globals.css'
 import dynamic from 'next/dynamic'
 import ResponsiveVideoBackground from '../components/ResponsiveVideoBackground'
-import VideoGlassPanel from '../components/VideoGlassPanel'
 
 // Отключаем SSR
 const ThreeBackground = dynamic(() => import('../components/ThreeBackground'), { ssr: false })
