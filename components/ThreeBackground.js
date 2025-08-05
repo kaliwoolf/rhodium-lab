@@ -205,9 +205,6 @@ export default function ThreeBackground({ ...props }) {
               width: '100vw', height: '100vh',
               zIndex: -1,
               pointerEvents: 'none',
-              opacity: isMobile ? saturnMobileOpacity : saturnOpacity,
-              transition: 'opacity 1.1s cubic-bezier(0.77,0,0.18,1)',
-              willChange: 'opacity',
             }}
           >
             <Canvas
@@ -219,8 +216,9 @@ export default function ThreeBackground({ ...props }) {
                 zIndex: -1,
                 pointerEvents: 'none',
                 opacity: isMobile ? saturnMobileOpacity : saturnOpacity,
-                transition: 'opacity 1.1s cubic-bezier(0.77,0,0.18,1)',
-                willChange: 'opacity',  
+                transform: `scale(${isMobile ? 1 : saturnScale})`,
+                willChange: 'opacity, transform',
+                transition: 'opacity 1.1s cubic-bezier(0.77,0,0.18,1), transform 0.7s cubic-bezier(0.77,0,0.18,1)',
               }}
               onCreated={({ camera }) => camera.layers.enable(1)}
             >
