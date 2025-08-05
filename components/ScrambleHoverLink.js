@@ -7,6 +7,7 @@ export default function ScrambleHoverLink({
   href,
   onClick,
   className = '',
+  disabled = false,
 }) {
   const spanRef = useRef(null)
   const intervalRef = useRef(null)
@@ -31,6 +32,7 @@ export default function ScrambleHoverLink({
       .join('')
 
   const startScramble = () => {
+    if (disabled) return
     if (!spanRef.current) return
     intervalRef.current = setInterval(() => {
       spanRef.current.textContent = scrambleText(originalText.current)
@@ -45,6 +47,10 @@ export default function ScrambleHoverLink({
   }
 
   const handleClick = (e) => {
+    if (disabled) {
+      e.preventDefault()
+      return
+    }
     if (onClick) {
       e.preventDefault()
       onClick()
@@ -63,6 +69,8 @@ export default function ScrambleHoverLink({
         maxWidth: `${text.length + 2}ch`,
         display: 'inline-block',
       }}
+      tabIndex={disabled ? -1 : 0}
+      aria-disabled={disabled}
     >
       {isClient ? (
         <span
