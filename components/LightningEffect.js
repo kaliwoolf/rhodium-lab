@@ -44,10 +44,10 @@ export default function LightningEffect({ width = 320, height = 46 }) {
       ctx.moveTo(pts[0].x, pts[0].y);
       pts.forEach(p => ctx.lineTo(p.x, p.y));
       ctx.strokeStyle = "#e7a1ff";
-      ctx.shadowColor = "#d666ff";
-      ctx.shadowBlur = 22;
-      ctx.lineWidth = 9.5;
-      ctx.globalAlpha = 0.32;
+      ctx.shadowColor = "#b666ff";
+      ctx.shadowBlur = 16;
+      ctx.lineWidth = 5.5;
+      ctx.globalAlpha = 0.28;
       ctx.stroke();
       ctx.restore();
 
@@ -56,10 +56,11 @@ export default function LightningEffect({ width = 320, height = 46 }) {
       ctx.beginPath();
       ctx.moveTo(pts[0].x, pts[0].y);
       pts.forEach(p => ctx.lineTo(p.x, p.y));
-      ctx.strokeStyle = "#fff";
+      const colors = ["#cdf2ff", "#fff", "#b7e3ff"];
+      ctx.strokeStyle = colors[Math.floor(Math.random() * colors.length)];
       ctx.shadowColor = "#fff0";
-      ctx.lineWidth = 2.7 + Math.sin(time / 15);
-      ctx.globalAlpha = 0.92;
+      ctx.lineWidth = 1.7 + Math.sin(time / 15);
+      ctx.globalAlpha = 0.89;
       ctx.stroke();
       ctx.restore();
 
