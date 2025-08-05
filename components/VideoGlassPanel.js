@@ -85,7 +85,7 @@ function GlassPanel({ videoUrl }) {
       )} */}
       {/* Стеклянная панель с искажением */}
       <mesh ref={mesh} rotation={[0.23, -0.32, 0]}>
-        <planeGeometry args={[1.25, 0.75]} />
+        <boxGeometry args={[1.25, 0.75, 0.11]} />
         {videoTexture && (
           <videoRefractionMaterial
             ref={shaderRef}
