@@ -92,7 +92,7 @@ export default function ThreeBackground() {
           zIndex: -2,
           pointerEvents: 'none',
           background: '#000000',
-          mix-blend-mode: 'screen'
+          mixBlendMode: 'screen'
         }}
         onCreated={({ camera }) => camera.layers.set(0)}
       >
