@@ -24,6 +24,9 @@ export default function ThreeBackground({ ...props }) {
 
   const [saturnVisible, setSaturnVisible] = useState(false)
 
+  const [saturnMobileOpacity, setSaturnMobileOpacity] = useState(1);
+
+
   useEffect(() => {
     if (showCanvas) {
       // Чуть позже (например, через 80–120мс), чтобы Canvas успел отрисоваться
@@ -33,6 +36,22 @@ export default function ThreeBackground({ ...props }) {
       setSaturnVisible(false)
     }
   }, [showCanvas])
+
+  useEffect(() => {
+    if (!isMobile) return;
+
+    const handler = () => {
+      const scroll = window.scrollY / window.innerHeight;
+      setSaturnMobileOpacity(scroll < 0.2 ? 1 : 0.11);
+    };
+
+    window.addEventListener('scroll', handler);
+    // сразу применяем при загрузке
+    handler();
+
+    return () => window.removeEventListener('scroll', handler);
+  }, [isMobile]);
+
 
     
   useEffect(() => {
@@ -184,11 +203,9 @@ export default function ThreeBackground({ ...props }) {
                 height: '100vh',
                 zIndex: -1,
                 pointerEvents: 'none',
-                 ...(isMobile ? {} : {
-                  opacity: saturnOpacity,
-                  transition: 'opacity 0.5s cubic-bezier(0.6,0.2,0.2,1)',
-                  willChange: 'opacity',
-                }),  
+                opacity: isMobile ? saturnMobileOpacity : saturnOpacity,
+                transition: 'opacity 1.1s cubic-bezier(0.77,0,0.18,1)',
+                willChange: 'opacity',  
               }}
               onCreated={({ camera }) => camera.layers.enable(1)}
             >
