@@ -8,7 +8,6 @@ import MouseTrails from '../components/MouseTrails'
 
 const Starfield = dynamic(() => import('./Starfield'), { ssr: false })
 const GlassSaturn = dynamic(() => import('./GlassSaturn'), { ssr: false })
-const GlassSaturnMobile = dynamic(() => import('./GlassSaturnMobile'), { ssr: false })
 const DynamicBloom = dynamic(() => import('./DynamicBloom'), { ssr: false })
 const SupernovaFlash = dynamic(() => import('./SupernovaFlash'), { ssr: false })
 
@@ -151,54 +150,43 @@ export default function ThreeBackground({ ...props }) {
             </Suspense>
           </Canvas>
 
-          {isMobile ? (
+          <div
+            style={{
+              position: 'fixed',
+              top: 0, left: 0,
+              width: '100vw', height: '100vh',
+              zIndex: -1,
+              pointerEvents: 'none',
+              opacity: saturnOpacity,
+              transition: 'opacity 0.5s cubic-bezier(0.6,0.2,0.2,1)',
+              willChange: 'opacity',
+            }}
+          >
             <Canvas
               camera={{ position: [0, 0, 8], fov: 35 }}
               gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping }}
               style={{
+                /* position: 'fixed', 
+                top: 0,
+                left: 0, */
                 width: '100vw',
                 height: '100vh',
                 zIndex: -1,
                 pointerEvents: 'none',
+                 ...(isMobile ? {} : {
+                  opacity: saturnOpacity,
+                  transition: 'opacity 0.5s cubic-bezier(0.6,0.2,0.2,1)',
+                  willChange: 'opacity',
+                }),  
               }}
               onCreated={({ camera }) => camera.layers.enable(1)}
             >
               <Suspense fallback={null}>
                 <GlassSaturnMobile mouse={mouse} scrollRef={smoothScroll} scale={saturnScale} />
-                <Environment files="/env/starfield_2k.hdr" background={false} />
+                <Environment files="/env/starfield_2k.hdr" background={false} />          
               </Suspense>
             </Canvas>
-          ) : (
-            <div
-              style={{
-                position: 'fixed',
-                top: 0, left: 0,
-                width: '100vw', height: '100vh',
-                zIndex: -1,
-                pointerEvents: 'none',
-                opacity: saturnOpacity,
-                transition: 'opacity 0.5s cubic-bezier(0.6,0.2,0.2,1)',
-                willChange: 'opacity',
-              }}
-            >
-              <Canvas
-                camera={{ position: [0, 0, 8], fov: 35 }}
-                gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping }}
-                style={{
-                  width: '100vw',
-                  height: '100vh',
-                  zIndex: -1,
-                  pointerEvents: 'none',
-                }}
-                onCreated={({ camera }) => camera.layers.enable(1)}
-              >
-                <Suspense fallback={null}>
-                  <GlassSaturn mouse={mouse} scrollRef={smoothScroll} scale={saturnScale} />
-                  <Environment files="/env/starfield_2k.hdr" background={false} />
-                </Suspense>
-              </Canvas>
-            </div>
-          )}
+          </div>
         </>
       )}
     </>
