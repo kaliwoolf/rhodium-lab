@@ -31,7 +31,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 16px 64px rgba(0,0,0,0.18), 0 2px 16px rgba(0,0,0,0.20);
   transition: transform 0.35s cubic-bezier(.38,.88,.34,1.05);
   will-change: transform;
 }
@@ -104,5 +103,12 @@
   .inner {
     height: 600px;
     transform: none !important;
+    transition: none !important;
+    will-change: auto !important;
+  }
+  .inner::before,
+  .inner::after {
+    opacity: 0 !important;      /* Просто делает невидимыми */
+    pointer-events: none !important;
   }
 }
