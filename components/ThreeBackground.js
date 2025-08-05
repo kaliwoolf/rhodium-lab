@@ -154,9 +154,9 @@ export default function ThreeBackground({ ...props }) {
               zIndex: -1,
               pointerEvents: 'none',
               opacity: saturnOpacity,
-              transform: `scale(${saturnScale})`,
-              transition: 'opacity 0.5s, transform 0.5s',
-              willChange: 'opacity, transform',
+              // УБЕРИ transform: scale(...) !!!
+              transition: 'opacity 0.5s cubic-bezier(0.6,0.2,0.2,1)',
+              willChange: 'opacity',
             }}
           >
             <Canvas
