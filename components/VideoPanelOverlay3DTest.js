@@ -204,8 +204,6 @@ function GlassPanelWithOverlay({ videoUrl }) {
     if (panelRef.current) panelRef.current.visible = true
   })
 
-  const panelRef = useRef()
-
   return (
     <primitive
       object={nodes.Panel}
