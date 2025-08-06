@@ -55,30 +55,21 @@ const VideoRefractionMaterial = shaderMaterial(
       // Tint
       color = mix(color, uTint, uTintStrength);
 
-      // ----- ДОБАВЛЯЕМ РЕАЛЬНОЕ ОТРАЖЕНИЕ (ENV MAP) -----
-      vec3 viewDir = normalize(vWorldPos - cameraPosition); // направление взгляда
-      vec3 reflectDir = reflect(normalize(vWorldPos - cameraPosition), normalize(vWorldNormal));
+      // Для отражения
+      vec3 viewDir = normalize(vWorldPos - cameraPosition);
+      vec3 reflectDir = reflect(viewDir, normalize(vWorldNormal));
       vec3 envColor = textureCube(uEnvMap, reflectDir).rgb;
-
-      // Контрастное отражение для rimlight (вторая envMap)
       vec3 rimColor = textureCube(uEnvMapRim, reflectDir).rgb;
 
-      // Rimlight-карта (например, по нормали к камере)
-      float rim = 1.0 - max(0.0, dot(normalize(vWorldNormal), normalize(cameraPosition - vWorldPos)));
-      rim = pow(rim, 2.7); // степень — ширина каймы
-
-      // Миксуешь:
-      vec3 finalEnv = mix(envColor, rimColor, rim * 0.78); // rim*0.7 — ширина и яркость rimlight
-
-      // Потом как обычно смешиваешь с color от видео:
-      color = mix(color, finalEnv, rim * 0.44); // или сильнее, если хочешь прям glow
-
-      // Смешиваем envMap c цветом панели, например — только по краям:
+      // Rimlight только по краю панели!
       float rim = smoothstep(0.75, 1.0, length(vUv - 0.5) * 2.15);
-      color = mix(color, envColor, rim * 0.23);
 
-      // Rimlight по краю для усиления
-      color += rim * 0.16;
+      // Миксуем rimColor только по краю!
+      vec3 finalEnv = mix(envColor, rimColor, rim * 0.78);
+
+      // Смешиваем env с цветом панели
+      color = mix(color, finalEnv, rim * 0.44);
+      color += rim * 0.16; // усиливаем световую кайму
 
       gl_FragColor = vec4(color, 0.75);
     }
