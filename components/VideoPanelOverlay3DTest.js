@@ -173,7 +173,6 @@ function GlassPanelWithOverlay({ videoUrl }) {
     }
   })
 
-  const [hovered, setHovered] = useState(false)
   const [videoAlpha, setVideoAlpha] = useState(0)
   const fadeSpeed = 2.5
 
