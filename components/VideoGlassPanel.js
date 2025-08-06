@@ -117,7 +117,7 @@ function GlassPanel({ videoUrl }) {
       <primitive
         ref={mesh}
         object={nodes.Cube} // или nodes.Panel, если так назвал в Blender
-        scale={[1.3, 0.85, 0.05]} // ← подбери значения под себя!
+        scale={[3.3, 3.85, 3.05]} // ← подбери значения под себя!
         rotation={[0.23, -0.32, 0]}
         onPointerMove={handlePointerMove}
         onPointerOut={handlePointerOut}
@@ -142,7 +142,7 @@ export default function VideoGlassPanel({ videoUrl = "/video/00002.mp4" }) {
         camera={{ position: [0, 0, 2.7], fov: 40 }}
         gl={{ antialias: true, alpha: true, preserveDrawingBuffer: false }}
       >
-        <ambientLight intensity={0.5} />
+        <ambientLight intensity={2} />
         <directionalLight position={[3, 2, 3]} intensity={1.16} />
         <GlassPanel videoUrl={videoUrl} />
         <Environment preset="sunset" />
