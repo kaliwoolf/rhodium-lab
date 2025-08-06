@@ -1,6 +1,6 @@
 // VideoPanelOverlay3DTest.js
 import { Canvas, useFrame } from "@react-three/fiber"
-import { useGLTF, Html, Environment, OrbitControls, shaderMaterial } from "@react-three/drei"
+import { useGLTF, Html, Environment, OrbitControls, shaderMaterial, useCubeTexture } from "@react-three/drei"
 import { useRef, useState, useEffect } from "react"
 import * as THREE from "three"
 import styles from '../styles/VideoPanelOverlay3DTest.module.css'
@@ -12,6 +12,7 @@ import { extend } from "@react-three/fiber"
 const VideoRefractionMaterial = shaderMaterial(
   {
     uVideo: null,
+    uEnvMap: null,    
     uIntensity: 0.15,
     uThickness: 1.25, // добавили толщину!
     uTint: [0.63, 0.98, 0.86], // зелёный tint, как в референсе
@@ -21,59 +22,56 @@ const VideoRefractionMaterial = shaderMaterial(
   // vertex
   `
     varying vec2 vUv;
+    varying vec3 vWorldNormal;
+    varying vec3 vWorldPos;
     void main() {
       vUv = uv;
+      vWorldNormal = normalize(normalMatrix * normal);
+      vWorldPos = (modelMatrix * vec4(position, 1.0)).xyz;
       gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    }
   `,
   // fragment
   `
     uniform sampler2D uVideo;
+    uniform samplerCube uEnvMap;
     uniform float uIntensity;
     uniform float uThickness;
     uniform vec3 uTint;
     uniform float uTintStrength;
     uniform float time;
     varying vec2 vUv;
+    varying vec3 vWorldNormal;
+    varying vec3 vWorldPos;
 
     void main() {
-      float bump = sin(vUv.y * 18. + time * 0.7) * 0.037
+      // Эффект линзы и chroma (как раньше)
+      float bump = sin(vUv.y * 17. + time * 0.7) * 0.037
                  + cos(vUv.x * 15. - time * 0.5) * 0.034;
-
-      // Разные смещения для каналов
       float chroma = 0.012 * uThickness * uIntensity;
       vec2 refractUv = vUv + vec2(bump, bump) * uIntensity * uThickness;
-
-      // Frosted blur (3 tap, можно больше)
-      vec3 blur = (
-        texture2D(uVideo, refractUv + 0.006).rgb +
-        texture2D(uVideo, refractUv - 0.006).rgb +
-        texture2D(uVideo, refractUv).rgb
-      ) / 3.0;
-
-      // Chromatic aberration — R, G, B сдвигаются по-разному
-      float r = texture2D(uVideo, refractUv + vec2(chroma, 0.0)).r;
-      float g = blur.g;
-      float b = texture2D(uVideo, refractUv - vec2(chroma, 0.0)).b;
-      vec3 color = vec3(r, g, b);
-
-      // Tint (цветная “линза”)
+      vec3 color = texture2D(uVideo, refractUv).rgb;
+      // Tint
       color = mix(color, uTint, uTintStrength);
 
-      // Rimlight по краю
-      float edge = smoothstep(0.83, 1.0, length(vUv - 0.5) * 2.15);
-      color += edge * 0.13;
+      // ----- ДОБАВЛЯЕМ РЕАЛЬНОЕ ОТРАЖЕНИЕ (ENV MAP) -----
+      vec3 viewDir = normalize(vWorldPos - cameraPosition); // направление взгляда
+      vec3 reflectDir = reflect(viewDir, normalize(vWorldNormal));
+      vec3 envColor = textureCube(uEnvMap, reflectDir).rgb;
 
-      // Лёгкая металлизация — усиливаем яркость и контраст, "отблёски"
-      color = mix(color, vec3(1.12, 1.09, 1.17), 0.18 * uThickness);
+      // Смешиваем envMap c цветом панели, например — только по краям:
+      float rim = smoothstep(0.75, 1.0, length(vUv - 0.5) * 2.15);
+      color = mix(color, envColor, rim * 0.55);
 
-      // Чуть темнее по краям (в центре ярче)
-      float vignette = smoothstep(0.0, 0.38, length(vUv - 0.5));
-      color *= 1.0 - vignette * 0.22;
+      // Rimlight по краю для усиления
+      color += rim * 0.13;
+
+      // Виньетка
+      float vignette = smoothstep(0.0, 0.41, length(vUv - 0.5));
+      color *= 1.0 - vignette * 0.19;
 
       gl_FragColor = vec4(color, 0.75);
     }
-    `
+  `
 )
 
 extend({ VideoRefractionMaterial })
@@ -85,7 +83,11 @@ function GlassPanelWithOverlay({ videoUrl }) {
   const [hovered, setHovered] = useState(false)
   const [mouse, setMouse] = useState({ x: 0, y: 0 })
   const { nodes } = useGLTF('/models/p1.glb')
-  console.log('nodes:', nodes)
+  
+  const envMap = useCubeTexture(
+    ['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'],
+    { path: '/hdr/warm01/' }
+  )
 
 
   const handlePointerMove = (e) => {
@@ -146,6 +148,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
         <videoRefractionMaterial
           ref={shaderRef}
           uVideo={videoTexture}
+          uEnvMap={envMap}   
           uIntensity={0.12}
           uThickness={1.4}
         />
