@@ -16,10 +16,10 @@ const VideoRefractionMaterial = shaderMaterial(
     uEnvMapRim: null,    
     uIntensity: 0.15,
     uThickness: 1.25, // добавили толщину!
-    uTint: [1.0, 1.0, 1.0], // зелёный tint, как в референсе
-    uTintStrength: 0.10,
-    uEnvAmount: 0.18,    // Сила envMap по всей панели (0.15–0.23 — "стеклянность")
-    uRimAmount: 0.65,    // Rim-смешивание (0.5–0.85 — кайма по краю)
+    uTint: [0.85, 0.95, 1.0], // зелёный tint, как в референсе
+    uTintStrength: 0.12,
+    uEnvAmount: 0.20,    // Сила envMap по всей панели (0.15–0.23 — "стеклянность")
+    uRimAmount: 0.75,    // Rim-смешивание (0.5–0.85 — кайма по краю)
     uVideoAlpha: 0.84,   // Прозрачность видео (0.7–1.0)
     uPanelAlpha: 0.32,   // Альфа всей панели
     time: 0
@@ -91,7 +91,7 @@ const VideoRefractionMaterial = shaderMaterial(
       vec3 rimMix = mix(baseMix, finalEnv, rim * uRimAmount);
 
       // Металлический specular + усиливаем кайму
-      float spec = pow(max(dot(viewDir, vWorldNormal), 0.0), 15.0);
+      float spec = pow(max(dot(viewDir, vWorldNormal), 0.0), 22.0);
       rimMix += rim * 0.16 + hardRim * 0.25 + spec * 0.12;
 
       gl_FragColor = vec4(rimMix, uPanelAlpha);
@@ -112,7 +112,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
   // "Обычное" стекло
   const envMapNeutral = useCubeTexture(
     ['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'],
-    { path: '/hdr/warm02/' }
+    { path: '/hdr/warm01/' }
   )
   // Для rimlight — контрастная
   const envMapRim = useCubeTexture(
