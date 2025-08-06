@@ -5,6 +5,8 @@ import { useRef, useState, useEffect } from "react"
 import * as THREE from "three"
 import styles from '../styles/VideoPanelOverlay.module.css'
 import CourseSlider from '../components/CourseSlider'
+import { extend } from "@react-three/fiber"
+
 
 // shaderMaterial как в твоём VideoGlassPanel.js
 const VideoRefractionMaterial = shaderMaterial(
@@ -57,6 +59,8 @@ const VideoRefractionMaterial = shaderMaterial(
     `
 )
 
+extend({ VideoRefractionMaterial })
+
 function GlassPanelWithOverlay({ videoUrl, children }) {
   const mesh = useRef()
   const shaderRef = useRef()
@@ -98,7 +102,7 @@ function GlassPanelWithOverlay({ videoUrl, children }) {
     <primitive
       ref={mesh}
       object={nodes.Panel}
-      scale={[0.36, 0.4, 0.25]}
+      scale={[0.47, 0.28, 0.013]} // подбери под свою сцену!
       onPointerMove={e => {
         setHovered(true)
         setMouse({
@@ -120,10 +124,36 @@ function GlassPanelWithOverlay({ videoUrl, children }) {
         />
       )}
       {/* HTML-оверлей */}
-      <Html center>
-  <div style={{ color: "white", background: "#171923", fontSize: 40, padding: 32 }}>Тест панели!</div>
-</Html>
-
+      <Html
+        position={[0, 0, 0.009]} // чуть выше панели (толщина+)
+        center
+        occlude
+        distanceFactor={1.01}
+        transform
+        className={styles.panel}
+        style={{ width: '94vw', maxWidth: 1300, height: 740, pointerEvents: 'auto' }}
+      >
+        {/* Вставляем твою разметку и CSS */}
+        <div className={styles.inner}>
+          <div className={styles.videoWrapper}>
+            <video
+              src={videoUrl}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+              style={{ width: '100%', height: '100%', objectFit: 'cover', background: 'black' }}
+            />
+          </div>
+          <div className={styles.content}>
+            <h3 className="text-white text-xl font-semibold px-6 py-2 rounded-full bg-[rgba(255,255,255,0.1)] backdrop-blur-md border border-white/20 shadow-md mb-6 w-fit mx-auto">
+              Актуальные проекты
+            </h3>
+            <CourseSlider />
+          </div>
+        </div>
+      </Html>
     </primitive>
   )
 }
