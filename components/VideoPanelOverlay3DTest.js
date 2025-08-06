@@ -3,7 +3,7 @@ import { Canvas, useFrame } from "@react-three/fiber"
 import { useGLTF, Html, Environment } from "@react-three/drei"
 import { useRef, useState, useEffect } from "react"
 import * as THREE from "three"
-import styles from '../styles/VideoPanelOverlay.module.css'
+import styles from '../styles/VideoPanelOverlay3DTest.module.css'
 import CourseSlider from '../components/CourseSlider'
 import { extend } from "@react-three/fiber"
 
