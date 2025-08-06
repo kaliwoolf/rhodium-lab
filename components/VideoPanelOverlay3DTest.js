@@ -120,36 +120,10 @@ function GlassPanelWithOverlay({ videoUrl, children }) {
         />
       )}
       {/* HTML-оверлей */}
-      <Html
-        position={[0, 0, 0.009]} // чуть выше панели (толщина+)
-        center
-        occlude
-        distanceFactor={1.01}
-        transform
-        className={styles.panel}
-        style={{ width: '94vw', maxWidth: 1300, height: 740, pointerEvents: 'auto' }}
-      >
-        {/* Вставляем твою разметку и CSS */}
-        <div className={styles.inner}>
-          <div className={styles.videoWrapper}>
-            <video
-              src={videoUrl}
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="auto"
-              style={{ width: '100%', height: '100%', objectFit: 'cover', background: 'black' }}
-            />
-          </div>
-          <div className={styles.content}>
-            <h3 className="text-white text-xl font-semibold px-6 py-2 rounded-full bg-[rgba(255,255,255,0.1)] backdrop-blur-md border border-white/20 shadow-md mb-6 w-fit mx-auto">
-              Актуальные проекты
-            </h3>
-            <CourseSlider />
-          </div>
-        </div>
-      </Html>
+      <Html center>
+  <div style={{ color: "white", background: "#171923", fontSize: 40, padding: 32 }}>Тест панели!</div>
+</Html>
+
     </primitive>
   )
 }
