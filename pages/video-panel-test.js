@@ -7,7 +7,7 @@ const VideoPanelOverlay3DTest = dynamic(() => import('../components/VideoPanelOv
 export default function VideoPanelTest() {
   return (
     <div style={{ width: "100vw", height: "100vh", background: "#171923" }}>
-      <VideoPanelOverlay3DTest />
+      <VideoPanelOverlay3DTest videoUrl="/video/00004.mp4"/>
     </div>
   )
 }
