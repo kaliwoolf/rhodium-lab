@@ -66,10 +66,6 @@ const VideoRefractionMaterial = shaderMaterial(
       // Rimlight по краю для усиления
       color += rim * 0.13;
 
-      // Виньетка
-      float vignette = smoothstep(0.0, 0.41, length(vUv - 0.5));
-      color *= 1.0 - vignette * 0.19;
-
       gl_FragColor = vec4(color, 0.75);
     }
   `
