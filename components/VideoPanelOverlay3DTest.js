@@ -12,8 +12,10 @@ import { extend } from "@react-three/fiber"
 const VideoRefractionMaterial = shaderMaterial(
   {
     uVideo: null,
-    uIntensity: 0.13,
-    uThickness: 1.2, // добавили толщину!
+    uIntensity: 0.15,
+    uThickness: 1.25, // добавили толщину!
+    uTint: [0.63, 0.98, 0.86], // зелёный tint, как в референсе
+    uTintStrength: 0.22,
     time: 0
   },
   // vertex
@@ -29,23 +31,38 @@ const VideoRefractionMaterial = shaderMaterial(
     uniform sampler2D uVideo;
     uniform float uIntensity;
     uniform float uThickness;
+    uniform vec3 uTint;
+    uniform float uTintStrength;
     uniform float time;
     varying vec2 vUv;
 
     void main() {
-      float bump = sin(vUv.y * 18. + time * 0.7) * 0.04
-                 + cos(vUv.x * 15. - time * 0.5) * 0.035;
+      float bump = sin(vUv.y * 18. + time * 0.7) * 0.037
+                 + cos(vUv.x * 15. - time * 0.5) * 0.034;
 
       // Разные смещения для каналов
-      float chroma = 0.008 * uThickness * uIntensity;
+      float chroma = 0.012 * uThickness * uIntensity;
       vec2 refractUv = vUv + vec2(bump, bump) * uIntensity * uThickness;
+
+      // Frosted blur (3 tap, можно больше)
+      vec3 blur = (
+        texture2D(uVideo, refractUv + 0.006).rgb +
+        texture2D(uVideo, refractUv - 0.006).rgb +
+        texture2D(uVideo, refractUv).rgb
+      ) / 3.0;
 
       // Chromatic aberration — R, G, B сдвигаются по-разному
       float r = texture2D(uVideo, refractUv + vec2(chroma, 0.0)).r;
-      float g = texture2D(uVideo, refractUv).g;
+      float g = blur.g;
       float b = texture2D(uVideo, refractUv - vec2(chroma, 0.0)).b;
-
       vec3 color = vec3(r, g, b);
+
+      // Tint (цветная “линза”)
+      color = mix(color, uTint, uTintStrength);
+
+      // Rimlight по краю
+      float edge = smoothstep(0.83, 1.0, length(vUv - 0.5) * 2.15);
+      color += edge * 0.13;
 
       // Лёгкая металлизация — усиливаем яркость и контраст, "отблёски"
       color = mix(color, vec3(1.12, 1.09, 1.17), 0.18 * uThickness);
@@ -54,7 +71,7 @@ const VideoRefractionMaterial = shaderMaterial(
       float vignette = smoothstep(0.0, 0.38, length(vUv - 0.5));
       color *= 1.0 - vignette * 0.22;
 
-      gl_FragColor = vec4(color, 1.0);
+      gl_FragColor = vec4(color, 0.75);
     }
     `
 )
@@ -120,7 +137,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
     <primitive
       ref={mesh}
       object={nodes.Panel}
-      scale={[0.36, 0.4, 0.25]} // подбери под свою сцену!
+      scale={[0.36, 0.44, 0.3]} // подбери под свою сцену!
       rotation={[0, 0, 0]}
       onPointerMove={handlePointerMove}
       onPointerOut={handlePointerOut}
