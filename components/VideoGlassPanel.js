@@ -109,7 +109,7 @@ function GlassPanel({ videoUrl }) {
   useFrame(() => {
     if (mesh.current) {
       // Если навели мышь — крутится, ушли — плавно возвращается
-      mesh.current.rotation.x += (((hovered ? mouse.y : 0) * 0.22) - mesh.current.rotation.x) * 0.13
+      mesh.current.rotation.x += (((hovered ? mouse.y : 0) * 0.32) - mesh.current.rotation.x) * 0.13
       mesh.current.rotation.y += (((hovered ? mouse.x : 0) * 0.30) - mesh.current.rotation.y) * 0.13
     }
   })
