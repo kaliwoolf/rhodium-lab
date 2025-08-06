@@ -48,10 +48,10 @@ const VideoRefractionMaterial = shaderMaterial(
 
     void main() {
       // Эффект линзы и chroma (как раньше)
-      float bump = sin(vUv.y * 17. + time * 0.7) * 0.037
-                 + cos(vUv.x * 15. - time * 0.5) * 0.034;
+      float bump = sin(vUv.y * 17. + time * 0.7) * 0.012
+                 + cos(vUv.x * 15. - time * 0.5) * 0.010;
       float chroma = 0.012 * uThickness * uIntensity;
-      vec2 refractUv = vUv;
+      vec2 refractUv = vUv + vec2(bump, bump) * uIntensity * uThickness;
       vec3 color = texture2D(uVideo, refractUv).rgb;
       // Tint
       color = mix(color, uTint, uTintStrength);
