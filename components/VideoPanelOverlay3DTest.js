@@ -150,7 +150,6 @@ function GlassPanelWithOverlay({ videoUrl }) {
             <h3 className="text-white text-xl font-semibold px-6 py-2 rounded-full bg-[rgba(255,255,255,0.1)] backdrop-blur-md border border-white/20 shadow-md mb-6 w-fit mx-auto">
               Актуальные проекты
             </h3>
-            <CourseSlider />
           </div>
         </div>
       </Html>
