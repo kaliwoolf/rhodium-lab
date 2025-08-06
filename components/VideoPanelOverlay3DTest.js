@@ -98,7 +98,7 @@ function GlassPanelWithOverlay({ videoUrl, children }) {
     <primitive
       ref={mesh}
       object={nodes.Panel}
-      scale={[0.47, 0.28, 0.013]} // подбери под свою сцену!
+      scale={[0.36, 0.4, 0.25]}
       onPointerMove={e => {
         setHovered(true)
         setMouse({
