@@ -146,18 +146,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
       >
         {/* Вставляем твою разметку и CSS */}
         <div className={styles.inner}>
-          <div className={styles.videoWrapper}>
-            <video
-              src={videoUrl}
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="auto"
-              style={{ width: '100%', height: '100%', objectFit: 'cover', background: 'black' }}
-            />
-          </div>
-          <div className={styles.content}>
+           <div className={styles.content}>
             <h3 className="text-white text-xl font-semibold px-6 py-2 rounded-full bg-[rgba(255,255,255,0.1)] backdrop-blur-md border border-white/20 shadow-md mb-6 w-fit mx-auto">
               Актуальные проекты
             </h3>
