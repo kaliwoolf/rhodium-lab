@@ -1,6 +1,6 @@
 // VideoPanelOverlay3DTest.js
 import { Canvas, useFrame } from "@react-three/fiber"
-import { useGLTF, Html, Environment } from "@react-three/drei"
+import { useGLTF, Html, Environment, OrbitControls, shaderMaterial } from "@react-three/drei"
 import { useRef, useState, useEffect } from "react"
 import * as THREE from "three"
 import styles from '../styles/VideoPanelOverlay3DTest.module.css'
@@ -61,13 +61,28 @@ const VideoRefractionMaterial = shaderMaterial(
 
 extend({ VideoRefractionMaterial })
 
-function GlassPanelWithOverlay({ videoUrl, children }) {
+function GlassPanelWithOverlay({ videoUrl }) {
   const mesh = useRef()
   const shaderRef = useRef()
-  const { nodes } = useGLTF('/models/p1.glb')
   const [videoTexture, setVideoTexture] = useState(null)
   const [hovered, setHovered] = useState(false)
   const [mouse, setMouse] = useState({ x: 0, y: 0 })
+  const { nodes } = useGLTF('/models/p1.glb')
+  console.log('nodes:', nodes)
+
+
+  const handlePointerMove = (e) => {
+    setHovered(true)
+    setMouse({
+      x: (e.uv.x - 0.5) * 2,
+      y: -(e.uv.y - 0.5) * 2
+    })
+  }
+  const handlePointerOut = () => {
+    setHovered(false)
+    setMouse({ x: 0, y: 0 })
+  }
+
 
   useEffect(() => {
     const video = document.createElement("video")
@@ -89,38 +104,33 @@ function GlassPanelWithOverlay({ videoUrl, children }) {
     }
   }, [videoUrl])
 
+  useFrame((state) => {
+    if (shaderRef.current) shaderRef.current.uniforms.time.value = state.clock.getElapsedTime()
+  })
+
   useFrame(() => {
     if (mesh.current) {
-      mesh.current.rotation.x += (((hovered ? mouse.y : 0) * 0.18) - mesh.current.rotation.x) * 0.12
-      mesh.current.rotation.y += (((hovered ? mouse.x : 0) * 0.32) - mesh.current.rotation.y) * 0.12
+      // Если навели мышь — крутится, ушли — плавно возвращается
+      mesh.current.rotation.x += (((hovered ? mouse.y : 0) * 0.32) - mesh.current.rotation.x) * 0.13
+      mesh.current.rotation.y += (((hovered ? mouse.x : 0) * 0.30) - mesh.current.rotation.y) * 0.13
     }
-    if (shaderRef.current)
-      shaderRef.current.uniforms.time.value = performance.now() * 0.001
   })
 
   return (
     <primitive
       ref={mesh}
       object={nodes.Panel}
-      scale={[0.47, 0.28, 0.013]} // подбери под свою сцену!
-      onPointerMove={e => {
-        setHovered(true)
-        setMouse({
-          x: (e.uv.x - 0.5) * 2,
-          y: -(e.uv.y - 0.5) * 2,
-        })
-      }}
-      onPointerOut={() => {
-        setHovered(false)
-        setMouse({ x: 0, y: 0 })
-      }}
+      scale={[0.36, 0.4, 0.25]} // подбери под свою сцену!
+      rotation={[0, 0, 0]}
+      onPointerMove={handlePointerMove}
+      onPointerOut={handlePointerOut}
     >
       {videoTexture && (
         <videoRefractionMaterial
           ref={shaderRef}
           uVideo={videoTexture}
           uIntensity={0.12}
-          uThickness={1.2}
+          uThickness={1.4}
         />
       )}
       
