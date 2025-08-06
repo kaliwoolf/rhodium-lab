@@ -138,7 +138,6 @@ function GlassPanelWithOverlay({ videoUrl }) {
       <Html
         position={[0, 0, 0.009]} // чуть выше панели (толщина+)
         center
-        occlude
         distanceFactor={1.01}
         transform
         className={styles.panel}
