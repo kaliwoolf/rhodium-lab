@@ -6,6 +6,7 @@ import * as THREE from "three"
 import styles from '../styles/VideoPanelOverlay3DTest.module.css'
 import CourseSlider from '../components/CourseSlider'
 import { extend } from "@react-three/fiber"
+import { useThree } from "@react-three/fiber"
 
 
 // shaderMaterial как в твоём VideoGlassPanel.js
@@ -39,6 +40,7 @@ const VideoRefractionMaterial = shaderMaterial(
   // fragment
   `
     uniform sampler2D uVideo;
+    uniform sampler2D uBackground;
     uniform samplerCube uEnvMap;
     uniform samplerCube uEnvMapRim;
     uniform float uIntensity;
@@ -65,13 +67,22 @@ const VideoRefractionMaterial = shaderMaterial(
       // Lens bump + chromatic
       float chroma = 0.024 * uThickness * uIntensity;
       vec2 refractUv = vUv + vec2(bump, bump) * uIntensity * uThickness;
+      
+      // Преломляем фон сцены:
+      vec3 bgColor;
+      bgColor.r = texture2D(uBackground, refractUv + vec2(chroma, 0.0)).r;
+      bgColor.g = texture2D(uBackground, refractUv).g;
+      bgColor.b = texture2D(uBackground, refractUv - vec2(chroma, 0.0)).b;
+
       vec3 videoColor;
       videoColor.r = texture2D(uVideo, refractUv + vec2(chroma, 0.0)).r;
       videoColor.g = texture2D(uVideo, refractUv).g;
       videoColor.b = texture2D(uVideo, refractUv - vec2(chroma, 0.0)).b;
 
+      vec3 panelColor = mix(bgColor, videoColor, uVideoAlpha); // fade-in видео
+
       // Tint
-      videoColor = mix(videoColor, uTint, uTintStrength);
+      panelColor = mix(panelColor, uTint, uTintStrength);
 
       // Reflection env
       vec3 viewDir = normalize(vWorldPos - cameraPosition);
@@ -86,11 +97,8 @@ const VideoRefractionMaterial = shaderMaterial(
       // Rim+env
       vec3 finalEnv = mix(envColor, rimColor, rim * 0.92);
 
-      // Смешиваем envMap и видео по всей панели!
-      vec3 baseMix = mix(envColor, videoColor, uVideoAlpha);
-
       // Добавляем envAmount для стеклянности (0.14–0.23)
-      baseMix = mix(baseMix, envColor, uEnvAmount);
+      vec3 baseMix = mix(baseMix, envColor, uEnvAmount);
 
       // Rim-кайма по краю
       vec3 rimMix = mix(baseMix, finalEnv, rim * uRimAmount);
@@ -108,6 +116,7 @@ extend({ VideoRefractionMaterial })
 
 function GlassPanelWithOverlay({ videoUrl }) {
   const mesh = useRef()
+  const panelRef = useRef()     
   const shaderRef = useRef()
   const [videoTexture, setVideoTexture] = useState(null)
   const [hovered, setHovered] = useState(false)
@@ -178,12 +187,31 @@ function GlassPanelWithOverlay({ videoUrl }) {
     setVideoAlpha(prev => THREE.MathUtils.lerp(prev, hovered ? 1 : 0, delta * fadeSpeed))
   })
 
+  const { gl, scene, camera, size } = useThree()
+  const bgRenderTarget = useRef()
+  
+  useEffect(() => {
+    bgRenderTarget.current = new THREE.WebGLRenderTarget(size.width, size.height)
+    return () => bgRenderTarget.current?.dispose()
+  }, [size.width, size.height])
+
+  useFrame(() => {
+    if (!bgRenderTarget.current) return
+    if (panelRef.current) panelRef.current.visible = false
+    gl.setRenderTarget(bgRenderTarget.current)
+    gl.render(scene, camera)
+    gl.setRenderTarget(null)
+    if (panelRef.current) panelRef.current.visible = true
+  })
+
+  const panelRef = useRef()
+
   return (
     <primitive
-      ref={mesh}
       object={nodes.Panel}
       scale={[0.46, 0.54, 0.3]} // подбери под свою сцену!
-      rotation={[0, 0.08, 0]}
+      rotation={[0, 0.18, 0]}
+      ref={panelRef} 
       onPointerMove={handlePointerMove}     // ← для наклона
       onPointerOut={(e) => {
         handlePointerOut(e)                 // ← для сброса наклона
@@ -194,6 +222,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
       {videoTexture && (
         <videoRefractionMaterial
           ref={shaderRef}
+          uBackground={bgRenderTarget.current?.texture}
           uVideo={videoTexture}
           uEnvMap={envMapNeutral}
           uEnvMapRim={envMapRim}
