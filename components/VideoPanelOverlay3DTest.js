@@ -16,8 +16,12 @@ const VideoRefractionMaterial = shaderMaterial(
     uEnvMapRim: null,    
     uIntensity: 0.15,
     uThickness: 1.25, // добавили толщину!
-    uTint: [0.63, 0.98, 0.86], // зелёный tint, как в референсе
-    uTintStrength: 0.22,
+    uTint: [1.0, 1.0, 1.0], // зелёный tint, как в референсе
+    uTintStrength: 0.10,
+    uEnvAmount: 0.18,    // Сила envMap по всей панели (0.15–0.23 — "стеклянность")
+    uRimAmount: 0.65,    // Rim-смешивание (0.5–0.85 — кайма по краю)
+    uVideoAlpha: 0.84,   // Прозрачность видео (0.7–1.0)
+    uPanelAlpha: 0.32,   // Альфа всей панели
     time: 0
   },
   // vertex
@@ -41,48 +45,56 @@ const VideoRefractionMaterial = shaderMaterial(
     uniform float uThickness;
     uniform vec3 uTint;
     uniform float uTintStrength;
+    uniform float uEnvAmount;
+    uniform float uRimAmount;
+    uniform float uVideoAlpha;
+    uniform float uPanelAlpha;
     uniform float time;
     varying vec2 vUv;
     varying vec3 vWorldNormal;
     varying vec3 vWorldPos;
 
     void main() {
-      // Эффект линзы и chroma (как раньше)
+      // Lens bump + chromatic
       float bump = sin(vUv.y * 17. + time * 0.7) * 0.012
                  + cos(vUv.x * 15. - time * 0.5) * 0.010;
-
       float chroma = 0.024 * uThickness * uIntensity;
       vec2 refractUv = vUv + vec2(bump, bump) * uIntensity * uThickness;
-      vec3 color;
-      color.r = texture2D(uVideo, refractUv + vec2(chroma, 0.0)).r;
-      color.g = texture2D(uVideo, refractUv).g;
-      color.b = texture2D(uVideo, refractUv - vec2(chroma, 0.0)).b;
+      vec3 videoColor;
+      videoColor.r = texture2D(uVideo, refractUv + vec2(chroma, 0.0)).r;
+      videoColor.g = texture2D(uVideo, refractUv).g;
+      videoColor.b = texture2D(uVideo, refractUv - vec2(chroma, 0.0)).b;
 
       // Tint
-      color = mix(color, uTint, uTintStrength);
+      videoColor = mix(videoColor, uTint, uTintStrength);
 
-      // Для отражения
+      // Reflection env
       vec3 viewDir = normalize(vWorldPos - cameraPosition);
       vec3 reflectDir = reflect(viewDir, normalize(vWorldNormal));
       vec3 envColor = textureCube(uEnvMap, reflectDir).rgb;
       vec3 rimColor = textureCube(uEnvMapRim, reflectDir).rgb;
-      
-      // Rim по краю
+
+      // Rim по краю панели
       float rim = smoothstep(0.65, 0.92, length(vUv - 0.5) * 1.13);
-      // Чёткая кайма (опционально)
       float hardRim = smoothstep(0.93, 0.98, length(vUv - 0.5));
 
-      // Миксуем rimColor только по краю!
-      vec3 finalEnv = mix(envColor, rimColor, rim * 0.95);
+      // Rim+env
+      vec3 finalEnv = mix(envColor, rimColor, rim * 0.92);
 
-      // Металлический shine
-      float spec = pow(max(dot(viewDir, vWorldNormal), 0.0), 14.0);
+      // Смешиваем envMap и видео по всей панели!
+      vec3 baseMix = mix(envColor, videoColor, uVideoAlpha);
 
-      // Смешиваем env с цветом панели
-      color = mix(color, finalEnv, rim * 0.6);
-      color += rim * 0.16; // усиливаем световую кайму
+      // Добавляем envAmount для стеклянности (0.14–0.23)
+      baseMix = mix(baseMix, envColor, uEnvAmount);
 
-      gl_FragColor = vec4(color, 0.30);
+      // Rim-кайма по краю
+      vec3 rimMix = mix(baseMix, finalEnv, rim * uRimAmount);
+
+      // Металлический specular + усиливаем кайму
+      float spec = pow(max(dot(viewDir, vWorldNormal), 0.0), 15.0);
+      rimMix += rim * 0.16 + hardRim * 0.25 + spec * 0.12;
+
+      gl_FragColor = vec4(rimMix, uPanelAlpha);
     }
   `
 )
@@ -158,7 +170,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
     <primitive
       ref={mesh}
       object={nodes.Panel}
-      scale={[0.36, 0.44, 0.3]} // подбери под свою сцену!
+      scale={[0.46, 0.54, 0.3]} // подбери под свою сцену!
       rotation={[0, 0, 0]}
       onPointerMove={handlePointerMove}
       onPointerOut={handlePointerOut}
@@ -171,7 +183,13 @@ function GlassPanelWithOverlay({ videoUrl }) {
           uEnvMapRim={envMapRim}
           uIntensity={0.12}
           uThickness={1.4}
-        />
+          uEnvAmount={0.18}    // Прозрачность envMap (0.12…0.22)
+          uRimAmount={0.68}    // Сила rim-каймы
+          uVideoAlpha={0.84}   // Прозрачность видео (0.70…1.0)
+          uPanelAlpha={0.30}   // Итоговая прозрачность (0.20…0.38)
+          uTint={[0.63, 0.98, 0.86]}
+          uTintStrength={0.18}
+          />
       )}
 
       {/* HTML-оверлей */}
