@@ -12,7 +12,8 @@ import { extend } from "@react-three/fiber"
 const VideoRefractionMaterial = shaderMaterial(
   {
     uVideo: null,
-    uEnvMap: null,    
+    uEnvMap: null,
+    uEnvMapRim: null,    
     uIntensity: 0.15,
     uThickness: 1.25, // добавили толщину!
     uTint: [0.63, 0.98, 0.86], // зелёный tint, как в референсе
