@@ -55,6 +55,13 @@ const VideoRefractionMaterial = shaderMaterial(
     varying vec3 vWorldPos;
 
     void main() {
+
+      // Фрагмент для классного дисторшна через noise:
+      float noise = fract(sin(dot(vUv * 0.87, vec2(12.9898,78.233))) * 43758.5453);
+      float bump = sin(vUv.y * 18. + time * 0.8) * 0.012
+           + cos(vUv.x * 14. - time * 0.54) * 0.011
+           + (noise - 0.5) * 0.055; // добавил шум
+
       // Lens bump + chromatic
       float bump = sin(vUv.y * 17. + time * 0.7) * 0.012
                  + cos(vUv.x * 15. - time * 0.5) * 0.010;
@@ -166,14 +173,26 @@ function GlassPanelWithOverlay({ videoUrl }) {
     }
   })
 
+  const [hovered, setHovered] = useState(false)
+  const [videoAlpha, setVideoAlpha] = useState(0)
+  const fadeSpeed = 2.5
+
+  useFrame((_, delta) => {
+    setVideoAlpha(prev => THREE.MathUtils.lerp(prev, hovered ? 1 : 0, delta * fadeSpeed))
+  })
+
   return (
     <primitive
       ref={mesh}
       object={nodes.Panel}
       scale={[0.46, 0.54, 0.3]} // подбери под свою сцену!
-      rotation={[0, 0, 0]}
-      onPointerMove={handlePointerMove}
-      onPointerOut={handlePointerOut}
+      rotation={[0, 0.08, 0]}
+      onPointerMove={handlePointerMove}     // ← для наклона
+      onPointerOut={(e) => {
+        handlePointerOut(e)                 // ← для сброса наклона
+        setHovered(false)                   // ← для fade-out видео
+      }}
+      onPointerOver={() => setHovered(true)} 
     >
       {videoTexture && (
         <videoRefractionMaterial
@@ -185,7 +204,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
           uThickness={1.4}
           uEnvAmount={0.18}    // Прозрачность envMap (0.12…0.22)
           uRimAmount={0.68}    // Сила rim-каймы
-          uVideoAlpha={0.84}   // Прозрачность видео (0.70…1.0)
+          uVideoAlpha={videoAlpha}
           uPanelAlpha={0.30}   // Итоговая прозрачность (0.20…0.38)
           uTint={[0.63, 0.98, 0.86]}
           uTintStrength={0.18}
