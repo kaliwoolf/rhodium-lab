@@ -65,7 +65,7 @@ function GlassPanel({ videoUrl }) {
   const [videoTexture, setVideoTexture] = useState(null)
   const [hovered, setHovered] = useState(false)
   const [mouse, setMouse] = useState({ x: 0, y: 0 })
-  const { nodes } = useGLTF('/models/panel.glb') 
+  const { nodes } = useGLTF('/models/p1.glb') 
 
   const handlePointerMove = (e) => {
     setHovered(true)
@@ -116,7 +116,7 @@ function GlassPanel({ videoUrl }) {
     <>
       <primitive
         ref={mesh}
-        object={nodes.Plane} // или nodes.Panel, если так назвал в Blender
+        object={nodes.Panel} // или nodes.Panel, если так назвал в Blender
         scale={[3.3, 3.85, 3.05]} // ← подбери значения под себя!
         rotation={[0.23, -0.32, 0]}
         onPointerMove={handlePointerMove}
