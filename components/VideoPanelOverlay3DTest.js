@@ -51,7 +51,7 @@ const VideoRefractionMaterial = shaderMaterial(
       float bump = sin(vUv.y * 17. + time * 0.7) * 0.037
                  + cos(vUv.x * 15. - time * 0.5) * 0.034;
       float chroma = 0.012 * uThickness * uIntensity;
-      vec2 refractUv = vUv + vec2(bump, bump) * uIntensity * uThickness;
+      vec2 refractUv = vUv;
       vec3 color = texture2D(uVideo, refractUv).rgb;
       // Tint
       color = mix(color, uTint, uTintStrength);
@@ -63,16 +63,16 @@ const VideoRefractionMaterial = shaderMaterial(
       vec3 rimColor = textureCube(uEnvMapRim, reflectDir).rgb;
 
       // Rimlight только по краю панели!
-      float rim = smoothstep(0.75, 1.0, length(vUv - 0.5) * 2.15);
+      float rim = smoothstep(0.59, 0.89, length(vUv - 0.5) * 1.15);
 
       // Миксуем rimColor только по краю!
-      vec3 finalEnv = mix(envColor, rimColor, rim * 0.78);
+      vec3 finalEnv = mix(envColor, rimColor, rim * 0.95);
 
       // Смешиваем env с цветом панели
-      color = mix(color, finalEnv, rim * 0.44);
+      color = mix(color, finalEnv, rim * 0.6);
       color += rim * 0.16; // усиливаем световую кайму
 
-      gl_FragColor = vec4(color, 0.75);
+      gl_FragColor = vec4(color, 0.30);
     }
   `
 )
