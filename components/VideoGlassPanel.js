@@ -117,6 +117,7 @@ function GlassPanel({ videoUrl }) {
       <primitive
         ref={mesh}
         object={nodes.Cube} // или nodes.Panel, если так назвал в Blender
+        scale={[0.28, 0.28, 0.08]} // ← подбери значения под себя!
         rotation={[0.23, -0.32, 0]}
         onPointerMove={handlePointerMove}
         onPointerOut={handlePointerOut}
