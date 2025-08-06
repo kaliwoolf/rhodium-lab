@@ -61,7 +61,7 @@ const VideoRefractionMaterial = shaderMaterial(
 
       // Смешиваем envMap c цветом панели, например — только по краям:
       float rim = smoothstep(0.75, 1.0, length(vUv - 0.5) * 2.15);
-      color = mix(color, envColor, rim * 0.55);
+      color = mix(color, envColor, rim * 0.23);
 
       // Rimlight по краю для усиления
       color += rim * 0.13;
@@ -85,12 +85,6 @@ function GlassPanelWithOverlay({ videoUrl }) {
   const [mouse, setMouse] = useState({ x: 0, y: 0 })
   const { nodes } = useGLTF('/models/p1.glb')
   
-  const envMap = useCubeTexture(
-    ['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'],
-    { path: '/hdr/warm01/' }
-  )
-
-
   const handlePointerMove = (e) => {
     setHovered(true)
     setMouse({
@@ -103,6 +97,8 @@ function GlassPanelWithOverlay({ videoUrl }) {
     setMouse({ x: 0, y: 0 })
   }
 
+  const [videoTexture, setVideoTexture] = useState(null)
+  const [videoCubeTexture, setVideoCubeTexture] = useState(null)
 
   useEffect(() => {
     const video = document.createElement("video")
@@ -117,12 +113,14 @@ function GlassPanelWithOverlay({ videoUrl }) {
     video.play()
     const texture = new THREE.VideoTexture(video)
     setVideoTexture(texture)
+    setVideoCubeTexture(new THREE.CubeTexture([texture, texture, texture, texture, texture, texture]))
     return () => {
       texture.dispose()
       video.pause()
       video.src = ""
     }
   }, [videoUrl])
+
 
   useFrame((state) => {
     if (shaderRef.current) shaderRef.current.uniforms.time.value = state.clock.getElapsedTime()
@@ -149,7 +147,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
         <videoRefractionMaterial
           ref={shaderRef}
           uVideo={videoTexture}
-          uEnvMap={envMap}   
+          uEnvMap={videoCubeTexture}   
           uIntensity={0.12}
           uThickness={1.4}
         />
