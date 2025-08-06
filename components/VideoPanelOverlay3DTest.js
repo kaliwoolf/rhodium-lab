@@ -35,6 +35,7 @@ const VideoRefractionMaterial = shaderMaterial(
   `
     uniform sampler2D uVideo;
     uniform samplerCube uEnvMap;
+    uniform samplerCube uEnvMapRim;
     uniform float uIntensity;
     uniform float uThickness;
     uniform vec3 uTint;
@@ -56,15 +57,28 @@ const VideoRefractionMaterial = shaderMaterial(
 
       // ----- ДОБАВЛЯЕМ РЕАЛЬНОЕ ОТРАЖЕНИЕ (ENV MAP) -----
       vec3 viewDir = normalize(vWorldPos - cameraPosition); // направление взгляда
-      vec3 reflectDir = reflect(viewDir, normalize(vWorldNormal));
+      vec3 reflectDir = reflect(normalize(vWorldPos - cameraPosition), normalize(vWorldNormal));
       vec3 envColor = textureCube(uEnvMap, reflectDir).rgb;
+
+      // Контрастное отражение для rimlight (вторая envMap)
+      vec3 rimColor = textureCube(uEnvMapRim, reflectDir).rgb;
+
+      // Rimlight-карта (например, по нормали к камере)
+      float rim = 1.0 - max(0.0, dot(normalize(vWorldNormal), normalize(cameraPosition - vWorldPos)));
+      rim = pow(rim, 2.7); // степень — ширина каймы
+
+      // Миксуешь:
+      vec3 finalEnv = mix(envColor, rimColor, rim * 0.78); // rim*0.7 — ширина и яркость rimlight
+
+      // Потом как обычно смешиваешь с color от видео:
+      color = mix(color, finalEnv, rim * 0.44); // или сильнее, если хочешь прям glow
 
       // Смешиваем envMap c цветом панели, например — только по краям:
       float rim = smoothstep(0.75, 1.0, length(vUv - 0.5) * 2.15);
       color = mix(color, envColor, rim * 0.23);
 
       // Rimlight по краю для усиления
-      color += rim * 0.13;
+      color += rim * 0.16;
 
       gl_FragColor = vec4(color, 0.75);
     }
@@ -81,9 +95,15 @@ function GlassPanelWithOverlay({ videoUrl }) {
   const [mouse, setMouse] = useState({ x: 0, y: 0 })
   const { nodes } = useGLTF('/models/p1.glb')
   
-  const envMap = useCubeTexture(
+  // "Обычное" стекло
+  const envMapNeutral = useCubeTexture(
     ['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'],
     { path: '/hdr/warm01/' }
+  )
+  // Для rimlight — контрастная
+  const envMapRim = useCubeTexture(
+    ['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'],
+    { path: '/hdr/hi01/' }
   )
 
 
@@ -145,7 +165,8 @@ function GlassPanelWithOverlay({ videoUrl }) {
         <videoRefractionMaterial
           ref={shaderRef}
           uVideo={videoTexture}
-          uEnvMap={envMap}   
+          uEnvMap={envMapNeutral}
+          uEnvMapRim={envMapRim}
           uIntensity={0.12}
           uThickness={1.4}
         />
