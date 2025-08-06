@@ -109,8 +109,8 @@ function GlassPanel({ videoUrl }) {
   useFrame(() => {
     if (mesh.current) {
       // Если навели мышь — крутится, ушли — плавно возвращается
-      mesh.current.rotation.x += (((hovered ? mouse.y : 0) * 0.32) - mesh.current.rotation.x) * 0.13
-      mesh.current.rotation.y += (((hovered ? mouse.x : 0) * 0.44) - mesh.current.rotation.y) * 0.13
+      mesh.current.rotation.x += (((hovered ? mouse.y : 0) * 0.22) - mesh.current.rotation.x) * 0.13
+      mesh.current.rotation.y += (((hovered ? mouse.x : 0) * 0.30) - mesh.current.rotation.y) * 0.13
     }
   })
   
@@ -119,7 +119,7 @@ function GlassPanel({ videoUrl }) {
       <primitive
         ref={mesh}
         object={nodes.Panel} // или nodes.Panel, если так назвал в Blender
-        scale={[0.36, 0.4, 0.3]}
+        scale={[0.36, 0.4, 0.25]}
         rotation={[0, 0, 0]}
         onPointerMove={handlePointerMove}
         onPointerOut={handlePointerOut}
@@ -151,8 +151,7 @@ export default function VideoGlassPanel({ videoUrl = "/video/00002.mp4" }) {
         <OrbitControls
           enablePan={false}
           enableZoom={false}
-          maxPolarAngle={Math.PI / 2.12}
-          minPolarAngle={Math.PI / 2.6}
+          enableRotate={false}
         />
       </Canvas>
     </div>
