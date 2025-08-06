@@ -81,6 +81,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
   const mesh = useRef()
   const shaderRef = useRef()
   const [videoTexture, setVideoTexture] = useState(null)
+  const [videoCubeTexture, setVideoCubeTexture] = useState(null)
   const [hovered, setHovered] = useState(false)
   const [mouse, setMouse] = useState({ x: 0, y: 0 })
   const { nodes } = useGLTF('/models/p1.glb')
@@ -96,9 +97,6 @@ function GlassPanelWithOverlay({ videoUrl }) {
     setHovered(false)
     setMouse({ x: 0, y: 0 })
   }
-
-  const [videoTexture, setVideoTexture] = useState(null)
-  const [videoCubeTexture, setVideoCubeTexture] = useState(null)
 
   useEffect(() => {
     const video = document.createElement("video")
