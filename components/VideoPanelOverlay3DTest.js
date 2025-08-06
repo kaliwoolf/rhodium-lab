@@ -50,9 +50,14 @@ const VideoRefractionMaterial = shaderMaterial(
       // Эффект линзы и chroma (как раньше)
       float bump = sin(vUv.y * 17. + time * 0.7) * 0.012
                  + cos(vUv.x * 15. - time * 0.5) * 0.010;
-      float chroma = 0.012 * uThickness * uIntensity;
+
+      float chroma = 0.024 * uThickness * uIntensity;
       vec2 refractUv = vUv + vec2(bump, bump) * uIntensity * uThickness;
-      vec3 color = texture2D(uVideo, refractUv).rgb;
+      vec3 color;
+      color.r = texture2D(uVideo, refractUv + vec2(chroma, 0.0)).r;
+      color.g = texture2D(uVideo, refractUv).g;
+      color.b = texture2D(uVideo, refractUv - vec2(chroma, 0.0)).b;
+
       // Tint
       color = mix(color, uTint, uTintStrength);
 
@@ -61,12 +66,17 @@ const VideoRefractionMaterial = shaderMaterial(
       vec3 reflectDir = reflect(viewDir, normalize(vWorldNormal));
       vec3 envColor = textureCube(uEnvMap, reflectDir).rgb;
       vec3 rimColor = textureCube(uEnvMapRim, reflectDir).rgb;
-
-      // Rimlight только по краю панели!
-      float rim = smoothstep(0.59, 0.89, length(vUv - 0.5) * 1.15);
+      
+      // Rim по краю
+      float rim = smoothstep(0.65, 0.92, length(vUv - 0.5) * 1.13);
+      // Чёткая кайма (опционально)
+      float hardRim = smoothstep(0.93, 0.98, length(vUv - 0.5));
 
       // Миксуем rimColor только по краю!
       vec3 finalEnv = mix(envColor, rimColor, rim * 0.95);
+
+      // Металлический shine
+      float spec = pow(max(dot(viewDir, vWorldNormal), 0.0), 14.0);
 
       // Смешиваем env с цветом панели
       color = mix(color, finalEnv, rim * 0.6);
