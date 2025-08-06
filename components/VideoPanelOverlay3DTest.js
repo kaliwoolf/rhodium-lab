@@ -63,8 +63,6 @@ const VideoRefractionMaterial = shaderMaterial(
            + (noise - 0.5) * 0.055; // добавил шум
 
       // Lens bump + chromatic
-      float bump = sin(vUv.y * 17. + time * 0.7) * 0.012
-                 + cos(vUv.x * 15. - time * 0.5) * 0.010;
       float chroma = 0.024 * uThickness * uIntensity;
       vec2 refractUv = vUv + vec2(bump, bump) * uIntensity * uThickness;
       vec3 videoColor;
