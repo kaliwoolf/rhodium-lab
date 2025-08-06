@@ -81,11 +81,16 @@ function GlassPanelWithOverlay({ videoUrl }) {
   const mesh = useRef()
   const shaderRef = useRef()
   const [videoTexture, setVideoTexture] = useState(null)
-  const [videoCubeTexture, setVideoCubeTexture] = useState(null)
   const [hovered, setHovered] = useState(false)
   const [mouse, setMouse] = useState({ x: 0, y: 0 })
   const { nodes } = useGLTF('/models/p1.glb')
   
+  const envMap = useCubeTexture(
+    ['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'],
+    { path: '/hdr/warm01/' }
+  )
+
+
   const handlePointerMove = (e) => {
     setHovered(true)
     setMouse({
@@ -97,6 +102,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
     setHovered(false)
     setMouse({ x: 0, y: 0 })
   }
+
 
   useEffect(() => {
     const video = document.createElement("video")
@@ -111,14 +117,12 @@ function GlassPanelWithOverlay({ videoUrl }) {
     video.play()
     const texture = new THREE.VideoTexture(video)
     setVideoTexture(texture)
-    setVideoCubeTexture(new THREE.CubeTexture([texture, texture, texture, texture, texture, texture]))
     return () => {
       texture.dispose()
       video.pause()
       video.src = ""
     }
   }, [videoUrl])
-
 
   useFrame((state) => {
     if (shaderRef.current) shaderRef.current.uniforms.time.value = state.clock.getElapsedTime()
@@ -145,7 +149,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
         <videoRefractionMaterial
           ref={shaderRef}
           uVideo={videoTexture}
-          uEnvMap={videoCubeTexture}   
+          uEnvMap={envMap}   
           uIntensity={0.12}
           uThickness={1.4}
         />
