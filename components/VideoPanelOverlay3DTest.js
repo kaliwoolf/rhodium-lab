@@ -126,9 +126,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
   const [mouse, setMouse] = useState({ x: 0, y: 0 })
   const { nodes } = useGLTF('/models/p1.glb')
   const forceRerender = useRef(false)
-  const videoAlpha = useRef(0);
-
-
+  
 
   // "Обычное" стекло
   const envMapNeutral = useCubeTexture(
@@ -188,23 +186,24 @@ function GlassPanelWithOverlay({ videoUrl }) {
 
   // Анимация
   useFrame((state, delta) => {
-    // Tilt как было
+    if (!shaderRef.current) return
+
+    // Время
+    shaderRef.current.uniforms.time.value = state.clock.getElapsedTime()
+
+    // Поворот панели
     if (panelRef.current) {
       panelRef.current.rotation.x += (((hovered ? mouse.y : 0) * 0.32) - panelRef.current.rotation.x) * 0.13
       panelRef.current.rotation.y += (((hovered ? mouse.x : 0) * 0.30) - panelRef.current.rotation.y) * 0.13
     }
-    // Fade-in/out видео через стейт
-    const targetAlpha = hovered ? 1 : 0;
-    const fadeSpeed = 2.5;
-    videoAlpha.current = THREE.MathUtils.lerp(videoAlpha.current, targetAlpha, delta * fadeSpeed);
 
-    // Передаём альфу в шейдер:
-    if (shaderRef.current) {
-      shaderRef.current.uniforms.uVideoAlpha.value = videoAlpha.current;
-    }
-  });
-
-  const showVideo = videoAlpha.current > 0.001;
+    
+    // Плавный fade-in/fade-out видео
+    const currentAlpha = shaderRef.current.uniforms.uVideoAlpha.value
+    const targetAlpha = hovered ? 1 : 0
+    const fadeSpeed = 2.5
+    shaderRef.current.uniforms.uVideoAlpha.value = THREE.MathUtils.lerp(currentAlpha, targetAlpha, delta * fadeSpeed)
+  })
 
   const { gl, scene, camera, size } = useThree()
   const bgRenderTarget = useRef()  
@@ -246,7 +245,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
         <videoRefractionMaterial
           ref={shaderRef}
           uBackground={bgRenderTarget.current?.texture}
-          uVideo={showVideo ? videoTexture : null}
+          uVideo={hovered ? videoTexture : null}
           uEnvMap={envMapNeutral}
           uEnvMapRim={envMapRim}
           uIntensity={0.12}
