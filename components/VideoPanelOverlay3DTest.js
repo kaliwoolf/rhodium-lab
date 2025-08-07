@@ -182,6 +182,8 @@ function GlassPanelWithOverlay({ videoUrl }) {
   useFrame((state, delta) => {
     if (!shaderRef.current) return
 
+    const shader = shaderRef.current;  
+
     // Время
     shaderRef.current.uniforms.time.value = state.clock.getElapsedTime()
 
@@ -192,10 +194,10 @@ function GlassPanelWithOverlay({ videoUrl }) {
     }
 
     // Плавный fade-in/fade-out видео
-    const currentAlpha = shaderRef.current.uniforms.uVideoAlpha.value
+    const currentAlpha = shader.uniforms.uVideoAlpha.value
     const targetAlpha = hovered ? 1 : 0
     const fadeSpeed = 2.5
-    shaderRef.current.uniforms.uVideoAlpha.value = THREE.MathUtils.lerp(currentAlpha, targetAlpha, delta * fadeSpeed)
+    shader.uniforms.uVideoAlpha.value = THREE.MathUtils.lerp(currentAlpha, targetAlpha, delta * fadeSpeed)
   })
 
   const { gl, scene, camera, size } = useThree()
@@ -231,14 +233,13 @@ function GlassPanelWithOverlay({ videoUrl }) {
         <videoRefractionMaterial
           ref={shaderRef}
           uBackground={bgRenderTarget.current?.texture}
-          uVideo={hovered ? videoTexture : null}
+          uVideo={videoTexture} 
           uEnvMap={envMapNeutral}
           uEnvMapRim={envMapRim}
           uIntensity={0.12}
           uThickness={1.4}
           uEnvAmount={0.20}    // Прозрачность envMap (0.12…0.22)
           uRimAmount={0.18}    // Сила rim-каймы
-          uPanelAlpha={0.30}   // Итоговая прозрачность (0.20…0.38)
           uTint={[0.63, 0.98, 0.86]}
           uTintStrength={0.18}
           />
