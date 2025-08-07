@@ -168,28 +168,28 @@ function GlassPanelWithOverlay({ videoUrl }) {
     }
   }, [videoUrl])
 
-  useFrame((state) => {
-    if (shaderRef.current) shaderRef.current.uniforms.time.value = state.clock.getElapsedTime()
-  })
+  // Анимация
+  useFrame((state, delta) => {
+    if (!shaderRef.current) return
 
-  useFrame(() => {
+    // Время
+    shaderRef.current.uniforms.time.value = state.clock.getElapsedTime()
+
+    // Поворот панели
     if (panelRef.current) {
-      // Если навели мышь — крутится, ушли — плавно возвращается
       panelRef.current.rotation.x += (((hovered ? mouse.y : 0) * 0.32) - panelRef.current.rotation.x) * 0.13
       panelRef.current.rotation.y += (((hovered ? mouse.x : 0) * 0.30) - panelRef.current.rotation.y) * 0.13
     }
-  })
 
-  const [videoAlpha, setVideoAlpha] = useState(0)
-  const fadeSpeed = 2.5
-
-  useFrame((_, delta) => {
-    setVideoAlpha(prev => THREE.MathUtils.lerp(prev, hovered ? 1 : 0, delta * fadeSpeed))
+    // Плавный fade-in/fade-out видео
+    const currentAlpha = shaderRef.current.uniforms.uVideoAlpha.value
+    const targetAlpha = hovered ? 1 : 0
+    const fadeSpeed = 2.5
+    shaderRef.current.uniforms.uVideoAlpha.value = THREE.MathUtils.lerp(currentAlpha, targetAlpha, delta * fadeSpeed)
   })
 
   const { gl, scene, camera, size } = useThree()
-  const bgRenderTarget = useRef()
-  
+  const bgRenderTarget = useRef()  
   useEffect(() => {
     bgRenderTarget.current = new THREE.WebGLRenderTarget(size.width, size.height)
     return () => bgRenderTarget.current?.dispose()
@@ -228,7 +228,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
           uThickness={1.4}
           uEnvAmount={0.20}    // Прозрачность envMap (0.12…0.22)
           uRimAmount={0.18}    // Сила rim-каймы
-          uVideoAlpha={videoAlpha}
+          uVideoAlpha={0}    
           uPanelAlpha={0.30}   // Итоговая прозрачность (0.20…0.38)
           uTint={[0.63, 0.98, 0.86]}
           uTintStrength={0.18}
