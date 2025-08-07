@@ -4,7 +4,7 @@
   left: 50%;
   transform: translate(-50%, -50%) scale(0.9);
   opacity: 1 !important;
-  pointer-events: auto !important;
+  pointer-events: none !important;
   transition: opacity 0.5s ease, transform 0.5s ease;
   z-index: 50;
   perspective: 1200px;
