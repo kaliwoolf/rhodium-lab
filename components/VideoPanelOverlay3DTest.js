@@ -204,7 +204,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
     }
   });
 
-  const showVideo = videoAlpha > 0.01;
+  const showVideo = videoAlpha.current > 0.01;
 
   const { gl, scene, camera, size } = useThree()
   const bgRenderTarget = useRef()  
