@@ -187,19 +187,12 @@ function GlassPanelWithOverlay({ videoUrl }) {
 
   // Анимация
   useFrame((state, delta) => {
-    if (!shaderRef.current) return
-
-    // Время
-    shaderRef.current.uniforms.time.value = state.clock.getElapsedTime()
-
-    // Поворот панели
+    // Tilt как было
     if (panelRef.current) {
       panelRef.current.rotation.x += (((hovered ? mouse.y : 0) * 0.32) - panelRef.current.rotation.x) * 0.13
       panelRef.current.rotation.y += (((hovered ? mouse.x : 0) * 0.30) - panelRef.current.rotation.y) * 0.13
     }
-
-    
-    // Плавный fade-in/fade-out видео
+    // Fade-in/out видео через стейт
     const targetAlpha = hovered ? 1 : 0;
     const fadeSpeed = 2.5;
     setVideoAlpha(prev => {
@@ -209,7 +202,9 @@ function GlassPanelWithOverlay({ videoUrl }) {
     if (shaderRef.current) {
       shaderRef.current.uniforms.uVideoAlpha.value = videoAlpha;
     }
+  });
 
+  const showVideo = videoAlpha > 0.01;
 
   const { gl, scene, camera, size } = useThree()
   const bgRenderTarget = useRef()  
@@ -236,8 +231,6 @@ function GlassPanelWithOverlay({ videoUrl }) {
       forceRerender.current = false
     }
   })
-
-  const showVideo = videoAlpha > 0.01;
 
   return (
     <primitive
