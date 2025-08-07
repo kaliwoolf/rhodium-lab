@@ -98,7 +98,7 @@ const VideoRefractionMaterial = shaderMaterial(
       vec3 finalEnv = mix(envColor, rimColor, rim * 0.92);
 
       // Добавляем envAmount для стеклянности (0.14–0.23)
-      vec3 baseMix = mix(baseMix, envColor, uEnvAmount);
+      vec3 baseMix = mix(panelColor, envColor, uEnvAmount);
 
       // Rim-кайма по краю
       vec3 rimMix = mix(baseMix, finalEnv, rim * uRimAmount);
