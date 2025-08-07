@@ -150,6 +150,17 @@ function GlassPanelWithOverlay({ videoUrl }) {
     setMouse({ x: 0, y: 0 })
   }
 
+  const handlePointerOver = (e) => {
+  setHovered(true)
+  if (e.uv) {
+    setMouse({
+      x: (e.uv.x - 0.5) * 2,
+      y: -(e.uv.y - 0.5) * 2
+    })
+  }
+}
+
+
 
   useEffect(() => {
     const video = document.createElement("video")
@@ -220,12 +231,9 @@ function GlassPanelWithOverlay({ videoUrl }) {
       scale={[0.46, 0.54, 0.28]} // подбери под свою сцену!
       rotation={[0, 0.18, 0]}
       ref={panelRef} 
-      onPointerMove={handlePointerMove}     // ← для наклона
-      onPointerOut={(e) => {
-        handlePointerOut(e)                 // ← для сброса наклона
-        setHovered(false)                   // ← для fade-out видео
-      }}
-      onPointerOver={() => setHovered(true)} 
+      onPointerMove={handlePointerMove}
+      onPointerOut={handlePointerOut}
+      onPointerOver={handlePointerOver} 
     >
       {videoTexture && (
         <videoRefractionMaterial
