@@ -21,7 +21,7 @@ const VideoRefractionMaterial = shaderMaterial(
     uTintStrength: 0.12,
     uEnvAmount: 0.20,    // Сила envMap по всей панели (0.15–0.23 — "стеклянность")
     uRimAmount: 0.75,    // Rim-смешивание (0.5–0.85 — кайма по краю)
-    uVideoAlpha: 0.84,   // Прозрачность видео (0.7–1.0)
+    uVideoAlpha: 0,   // Прозрачность видео (0.7–1.0)
     uPanelAlpha: 0.32,   // Альфа всей панели
     time: 0
   },
