@@ -69,7 +69,7 @@ const VideoRefractionMaterial = shaderMaterial(
       float bump = sin(vUv.y * 18. + time * 0.8) * 0.012
            + cos(vUv.x * 14. - time * 0.54) * 0.011
            + (noise - 0.5) * 0.055
-           + (frost - 0.5) * 0.09;   // ← вот здесь добавили frost!
+           + (frost - 0.5) * 0.13;   // ← вот здесь добавили frost!
 
 
       // Lens bump + chromatic
@@ -92,9 +92,8 @@ const VideoRefractionMaterial = shaderMaterial(
       // Tint
       panelColor = mix(panelColor, uTint, uTintStrength);
 
-      float frostOpacity = smoothstep(0.28, 0.82, frost); // чем больше frost, тем плотнее вуаль
-      panelColor = mix(panelColor, vec3(0.95, 0.98, 1.0), frostOpacity * 0.45); // холодный белый лёд
-
+      float frostOpacity = smoothstep(0.22, 0.82, frost); // чем больше frost, тем плотнее вуаль
+      panelColor.rgb = mix(panelColor.rgb, 1.0 - (1.0 - panelColor.rgb) * (1.0 - frost * 0.32), frostOpacity * 0.6);
 
       // Reflection env
       vec3 viewDir = normalize(vWorldPos - cameraPosition);
@@ -119,7 +118,8 @@ const VideoRefractionMaterial = shaderMaterial(
       float spec = pow(max(dot(viewDir, vWorldNormal), 0.0), 22.0);
       rimMix += rim * 0.16 + hardRim * 0.25 + spec * 0.12;
 
-      gl_FragColor = vec4(rimMix, uPanelAlpha);
+      float frostAlpha = uPanelAlpha + frostOpacity * 0.2; 
+      gl_FragColor = vec4(rimMix, frostAlpha);
     }
   `
 )
