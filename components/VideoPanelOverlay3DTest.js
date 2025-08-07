@@ -173,10 +173,10 @@ function GlassPanelWithOverlay({ videoUrl }) {
   })
 
   useFrame(() => {
-    if (panelRef.current.current) {
+    if (panelRef.current) {
       // Если навели мышь — крутится, ушли — плавно возвращается
-      panelRef.current.current.rotation.x += (((hovered ? mouse.y : 0) * 0.32) - panelRef.current.current.rotation.x) * 0.13
-      panelRef.current.current.rotation.y += (((hovered ? mouse.x : 0) * 0.30) - panelRef.current.current.rotation.y) * 0.13
+      panelRef.current.rotation.x += (((hovered ? mouse.y : 0) * 0.32) - panelRef.current.rotation.x) * 0.13
+      panelRef.current.rotation.y += (((hovered ? mouse.x : 0) * 0.30) - panelRef.current.rotation.y) * 0.13
     }
   })
 
