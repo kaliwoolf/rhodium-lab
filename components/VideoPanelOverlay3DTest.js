@@ -126,7 +126,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
   const [mouse, setMouse] = useState({ x: 0, y: 0 })
   const { nodes } = useGLTF('/models/p1.glb')
   const forceRerender = useRef(false)
-  
+
 
   // "Обычное" стекло
   const envMapNeutral = useCubeTexture(
@@ -153,6 +153,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
   const handlePointerOut = () => {
      setHovered(false);
      setMouse({ x: 0, y: 0 });
+     if (shaderRef.current) shaderRef.current.uniforms.uVideoAlpha.value = 0;
   };
 
 
