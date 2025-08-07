@@ -183,6 +183,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
     if (shaderRef.current) {
       shaderRef.current.uniforms.uVideoAlpha.value = 0
     }
+    videoAlpha.current = 0; // ← вот эту строчку добавь!
   }, [videoTexture])
 
 
@@ -197,8 +198,6 @@ function GlassPanelWithOverlay({ videoUrl }) {
     const targetAlpha = hovered ? 1 : 0;
     const fadeSpeed = 2.5;
     videoAlpha.current = THREE.MathUtils.lerp(videoAlpha.current, targetAlpha, delta * fadeSpeed);
-
-    // Передаём альфу в шейдер:
     if (shaderRef.current) {
       shaderRef.current.uniforms.uVideoAlpha.value = videoAlpha.current;
     }
@@ -246,7 +245,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
         <videoRefractionMaterial
           ref={shaderRef}
           uBackground={bgRenderTarget.current?.texture}
-          uVideo={showVideo ? videoTexture : null}
+          uVideo={videoTexture} 
           uEnvMap={envMapNeutral}
           uEnvMapRim={envMapRim}
           uIntensity={0.12}
