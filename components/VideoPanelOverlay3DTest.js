@@ -146,7 +146,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
     { path: '/hdr/hi01/' }
   )
 
-  const frostTexture = useTexture('/textures/frost_noise.jpg')
+  const frostTexture = useTexture('/textures/frost_noise.png')
 
 
   const handlePointerMove = (e) => {
