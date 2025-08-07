@@ -74,6 +74,8 @@ const VideoRefractionMaterial = shaderMaterial(
       bgColor.g = texture2D(uBackground, refractUv).g;
       bgColor.b = texture2D(uBackground, refractUv - vec2(chroma, 0.0)).b;
 
+      float fade = step(0.01, uVideoAlpha); // 0 если <0.01, 1 если >=0.01
+
       vec3 videoColor;
       videoColor.r = texture2D(uVideo, refractUv + vec2(chroma, 0.0)).r;
       videoColor.g = texture2D(uVideo, refractUv).g;
