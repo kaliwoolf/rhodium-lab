@@ -171,7 +171,13 @@ function GlassPanelWithOverlay({ videoUrl }) {
     }
   }, [videoUrl])
 
-s
+  useEffect(() => {
+    if (shaderRef.current) {
+      shaderRef.current.uniforms.uVideoAlpha.value = 0
+    }
+  }, [videoTexture])
+
+
   // Анимация
   useFrame((state, delta) => {
     if (!shaderRef.current) return
@@ -225,7 +231,7 @@ s
         <videoRefractionMaterial
           ref={shaderRef}
           uBackground={bgRenderTarget.current?.texture}
-          uVideo={videoTexture}s
+          uVideo={hovered ? videoTexture : null}
           uEnvMap={envMapNeutral}
           uEnvMapRim={envMapRim}
           uIntensity={0.12}
