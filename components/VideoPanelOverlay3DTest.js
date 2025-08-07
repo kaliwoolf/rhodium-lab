@@ -125,9 +125,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
   const [hovered, setHovered] = useState(false)
   const [mouse, setMouse] = useState({ x: 0, y: 0 })
   const { nodes } = useGLTF('/models/p1.glb')
-  console.log('Panel:', nodes.Panel)
 
-  
   // "Обычное" стекло
   const envMapNeutral = useCubeTexture(
     ['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'],
@@ -153,11 +151,9 @@ function GlassPanelWithOverlay({ videoUrl }) {
   }
 
   const handlePointerOver = (e) => {
-    setHovered(true)
-    setMouse({
-        x: 0.01,
-        y: 0.01
-    })
+     setHovered(true)
+     setMouse({ x: 0.01, y: 0.01 }) // небольшое смещение, чтобы шейдер сработал
+     forceRerender.current = true   // флаг, что нужно перерендерить фон
   }
 
 
@@ -218,11 +214,21 @@ function GlassPanelWithOverlay({ videoUrl }) {
 
   useFrame(() => {
     if (!bgRenderTarget.current) return
+
+    // Скрываем панель перед рендером фона
     if (panelRef.current) panelRef.current.visible = false
+
     gl.setRenderTarget(bgRenderTarget.current)
     gl.render(scene, camera)
     gl.setRenderTarget(null)
+
     if (panelRef.current) panelRef.current.visible = true
+
+    // 🔥 Принудительный микроскопический сдвиг, чтобы фон обновился
+    if (forceRerender.current && panelRef.current) {
+      panelRef.current.rotation.x += 0.0001
+      forceRerender.current = false
+    }
   })
 
   return (
