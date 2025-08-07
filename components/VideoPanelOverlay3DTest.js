@@ -62,7 +62,7 @@ const VideoRefractionMaterial = shaderMaterial(
     void main() {
 
       // 1. Сэмплируем frost texture
-      float frost = texture2D(uFrost, vUv * 1.16 + time * 0.01).r;
+      float frost = texture2D(uFrost, vUv * 1.08).r;
 
       // 2. Усиливаем bump через frost
       float noise = fract(sin(dot(vUv * 0.87, vec2(12.9898,78.233))) * 43758.5453);
