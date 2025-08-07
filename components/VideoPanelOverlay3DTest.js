@@ -126,6 +126,8 @@ function GlassPanelWithOverlay({ videoUrl }) {
   const [mouse, setMouse] = useState({ x: 0, y: 0 })
   const { nodes } = useGLTF('/models/p1.glb')
   const forceRerender = useRef(false)
+  const videoAlpha = useRef(0)
+
 
 
   // "Обычное" стекло
@@ -153,7 +155,6 @@ function GlassPanelWithOverlay({ videoUrl }) {
   const handlePointerOut = () => {
      setHovered(false);
      setMouse({ x: 0, y: 0 });
-     if (shaderRef.current) shaderRef.current.uniforms.uVideoAlpha.value = 0;
   };
 
 
@@ -184,6 +185,13 @@ function GlassPanelWithOverlay({ videoUrl }) {
     }
   }, [videoTexture])
 
+  useEffect(() => {
+    if (hovered && shaderRef.current) {
+      shaderRef.current.uniforms.uVideoAlpha.value = 0
+      videoAlpha.current = 0
+    }
+  }, [hovered, videoTexture])
+
 
   // Анимация
   useFrame((state, delta) => {
@@ -200,10 +208,12 @@ function GlassPanelWithOverlay({ videoUrl }) {
 
     
     // Плавный fade-in/fade-out видео
-    const currentAlpha = shaderRef.current.uniforms.uVideoAlpha.value
-    const targetAlpha = hovered ? 1 : 0
-    const fadeSpeed = 2.5
-    shaderRef.current.uniforms.uVideoAlpha.value = THREE.MathUtils.lerp(currentAlpha, targetAlpha, delta * fadeSpeed)
+     if (hovered) {
+      // Только когда hovered, плавно лерпим к 1
+      const fadeSpeed = 2.5
+      videoAlpha.current = THREE.MathUtils.lerp(videoAlpha.current, 1, delta * fadeSpeed)
+      shaderRef.current.uniforms.uVideoAlpha.value = videoAlpha.current
+  }
   })
 
   const { gl, scene, camera, size } = useThree()
