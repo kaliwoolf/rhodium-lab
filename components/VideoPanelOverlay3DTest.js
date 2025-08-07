@@ -125,6 +125,8 @@ function GlassPanelWithOverlay({ videoUrl }) {
   const [hovered, setHovered] = useState(false)
   const [mouse, setMouse] = useState({ x: 0, y: 0 })
   const { nodes } = useGLTF('/models/p1.glb')
+  console.log('Panel:', nodes.Panel)
+
   
   // "Обычное" стекло
   const envMapNeutral = useCubeTexture(
