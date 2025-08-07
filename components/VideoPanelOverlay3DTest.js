@@ -7,6 +7,7 @@ import styles from '../styles/VideoPanelOverlay3DTest.module.css'
 import CourseSlider from '../components/CourseSlider'
 import { extend } from "@react-three/fiber"
 import { useThree } from "@react-three/fiber"
+import { useTexture } from '@react-three/drei'
 
 
 // shaderMaterial как в твоём VideoGlassPanel.js
@@ -14,7 +15,8 @@ const VideoRefractionMaterial = shaderMaterial(
   {
     uVideo: null,
     uEnvMap: null,
-    uEnvMapRim: null,    
+    uEnvMapRim: null,
+    uFrost: null,    
     uIntensity: 0.15,
     uThickness: 1.25, // добавили толщину!
     uTint: [0.85, 0.95, 1.0], // зелёный tint, как в референсе
@@ -51,18 +53,24 @@ const VideoRefractionMaterial = shaderMaterial(
     uniform float uRimAmount;
     uniform float uVideoAlpha;
     uniform float uPanelAlpha;
+    uniform sampler2D uFrost;
     uniform float time;
     varying vec2 vUv;
     varying vec3 vWorldNormal;
     varying vec3 vWorldPos;
-
+   
     void main() {
 
-      // Фрагмент для классного дисторшна через noise:
+      // 1. Сэмплируем frost texture
+      float frost = texture2D(uFrost, vUv * 1.16 + time * 0.01).r;
+
+      // 2. Усиливаем bump через frost
       float noise = fract(sin(dot(vUv * 0.87, vec2(12.9898,78.233))) * 43758.5453);
       float bump = sin(vUv.y * 18. + time * 0.8) * 0.012
            + cos(vUv.x * 14. - time * 0.54) * 0.011
-           + (noise - 0.5) * 0.055; // добавил шум
+           + (noise - 0.5) * 0.055
+           + (frost - 0.5) * 0.09;   // ← вот здесь добавили frost!
+
 
       // Lens bump + chromatic
       float chroma = 0.024 * uThickness * uIntensity;
@@ -84,6 +92,10 @@ const VideoRefractionMaterial = shaderMaterial(
       // Tint
       panelColor = mix(panelColor, uTint, uTintStrength);
 
+      float frostOpacity = smoothstep(0.28, 0.82, frost); // чем больше frost, тем плотнее вуаль
+      panelColor = mix(panelColor, vec3(0.95, 0.98, 1.0), frostOpacity * 0.45); // холодный белый лёд
+
+
       // Reflection env
       vec3 viewDir = normalize(vWorldPos - cameraPosition);
       vec3 reflectDir = reflect(viewDir, normalize(vWorldNormal));
@@ -91,11 +103,11 @@ const VideoRefractionMaterial = shaderMaterial(
       vec3 rimColor = textureCube(uEnvMapRim, reflectDir).rgb;
 
       // Rim по краю панели
-      float rim = smoothstep(0.65, 0.92, length(vUv - 0.5) * 1.13);
-      float hardRim = smoothstep(0.93, 0.98, length(vUv - 0.5));
+      float rim = smoothstep(0.63, 0.96, length(vUv - 0.5) * 1.13);
+      float hardRim = smoothstep(0.91, 0.98, length(vUv - 0.5));
 
       // Rim+env
-      vec3 finalEnv = mix(envColor, rimColor, rim * 0.92);
+      vec3 finalEnv = mix(envColor, rimColor, rim * 0.95);
 
       // Добавляем envAmount для стеклянности (0.14–0.23)
       vec3 baseMix = mix(panelColor, envColor, uEnvAmount);
@@ -133,6 +145,8 @@ function GlassPanelWithOverlay({ videoUrl }) {
     ['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'],
     { path: '/hdr/hi01/' }
   )
+
+  const frostTexture = useTexture('/textures/frost_noise.jpg')
 
 
   const handlePointerMove = (e) => {
@@ -222,6 +236,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
           ref={shaderRef}
           uBackground={bgRenderTarget.current?.texture}
           uVideo={videoTexture}
+          uFrost={frostTexture}
           uEnvMap={envMapNeutral}
           uEnvMapRim={envMapRim}
           uIntensity={0.12}
