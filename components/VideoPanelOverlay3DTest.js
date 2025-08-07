@@ -81,7 +81,8 @@ const VideoRefractionMaterial = shaderMaterial(
       videoColor.g = texture2D(uVideo, refractUv).g * fade;
       videoColor.b = texture2D(uVideo, refractUv - vec2(chroma, 0.0)).b * fade;
 
-      vec3 panelColor = mix(bgColor, videoColor, uVideoAlpha); // fade-in видео
+      float fade = step(0.01, uVideoAlpha);
+      vec3 panelColor = mix(bgColor, mix(bgColor, videoColor, uVideoAlpha), fade);
 
       // Tint
       panelColor = mix(panelColor, uTint, uTintStrength);
