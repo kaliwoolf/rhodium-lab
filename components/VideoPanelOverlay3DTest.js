@@ -154,6 +154,10 @@ function GlassPanelWithOverlay({ videoUrl }) {
 
   const handlePointerOver = (e) => {
     setHovered(true)
+    setMouse({
+        x: 0.01,
+        y: 0.01
+    })
   }
 
 
