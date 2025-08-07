@@ -126,9 +126,6 @@ function GlassPanelWithOverlay({ videoUrl }) {
   const [mouse, setMouse] = useState({ x: 0, y: 0 })
   const { nodes } = useGLTF('/models/p1.glb')
   const forceRerender = useRef(false)
-  const videoAlpha = useRef(0)
-
-
 
   // "Обычное" стекло
   const envMapNeutral = useCubeTexture(
@@ -166,7 +163,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
     video.loop = true
     video.muted = true
     video.playsInline = true
-    video.autoplay = true
+    video.autoplay = false
     video.preload = "auto"
     video.style.display = "none"
     video.play()
@@ -186,11 +183,18 @@ function GlassPanelWithOverlay({ videoUrl }) {
   }, [videoTexture])
 
   useEffect(() => {
-    if (hovered && shaderRef.current) {
-      shaderRef.current.uniforms.uVideoAlpha.value = 0
-      videoAlpha.current = 0
+    if (!videoTexture) return
+    const video = videoTexture.image
+    if (!video) return
+
+    if (hovered) {
+      video.play()
+    } else {
+      video.pause()
+      video.currentTime = 0 // сбрасываем кадр
     }
   }, [hovered, videoTexture])
+
 
 
   // Анимация
@@ -208,12 +212,10 @@ function GlassPanelWithOverlay({ videoUrl }) {
 
     
     // Плавный fade-in/fade-out видео
-     if (hovered) {
-      // Только когда hovered, плавно лерпим к 1
-      const fadeSpeed = 2.5
-      videoAlpha.current = THREE.MathUtils.lerp(videoAlpha.current, 1, delta * fadeSpeed)
-      shaderRef.current.uniforms.uVideoAlpha.value = videoAlpha.current
-  }
+    const currentAlpha = shaderRef.current.uniforms.uVideoAlpha.value
+    const targetAlpha = hovered ? 1 : 0
+    const fadeSpeed = 2.5
+    shaderRef.current.uniforms.uVideoAlpha.value = THREE.MathUtils.lerp(currentAlpha, targetAlpha, delta * fadeSpeed)
   })
 
   const { gl, scene, camera, size } = useThree()
@@ -256,7 +258,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
         <videoRefractionMaterial
           ref={shaderRef}
           uBackground={bgRenderTarget.current?.texture}
-          uVideo={hovered ? videoTexture : null}
+          uVideo={videoTexture}
           uEnvMap={envMapNeutral}
           uEnvMapRim={envMapRim}
           uIntensity={0.12}
