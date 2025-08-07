@@ -163,7 +163,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
     video.loop = true
     video.muted = true
     video.playsInline = true
-    video.autoplay = false
+    video.autoplay = true
     video.preload = "auto"
     video.style.display = "none"
     video.play()
@@ -182,20 +182,6 @@ function GlassPanelWithOverlay({ videoUrl }) {
     }
   }, [videoTexture])
 
-  useEffect(() => {
-    if (!videoTexture) return
-    const video = videoTexture.image
-    if (!video) return
-
-    if (hovered) {
-      video.play()
-    } else {
-      video.pause()
-      video.currentTime = 0 // сбрасываем кадр
-    }
-  }, [hovered, videoTexture])
-
-
 
   // Анимация
   useFrame((state, delta) => {
@@ -210,7 +196,6 @@ function GlassPanelWithOverlay({ videoUrl }) {
       panelRef.current.rotation.y += (((hovered ? mouse.x : 0) * 0.30) - panelRef.current.rotation.y) * 0.13
     }
 
-    
     // Плавный fade-in/fade-out видео
     const currentAlpha = shaderRef.current.uniforms.uVideoAlpha.value
     const targetAlpha = hovered ? 1 : 0
@@ -258,7 +243,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
         <videoRefractionMaterial
           ref={shaderRef}
           uBackground={bgRenderTarget.current?.texture}
-          uVideo={videoTexture}
+          uVideo={hovered ? videoTexture : null}
           uEnvMap={envMapNeutral}
           uEnvMapRim={envMapRim}
           uIntensity={0.12}
