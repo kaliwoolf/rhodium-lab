@@ -231,7 +231,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
         <videoRefractionMaterial
           ref={shaderRef}
           uBackground={bgRenderTarget.current?.texture}
-          uVideo={videoTexture}
+          uVideo={hovered ? videoTexture : null}
           uEnvMap={envMapNeutral}
           uEnvMapRim={envMapRim}
           uIntensity={0.12}
