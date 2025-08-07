@@ -126,6 +126,8 @@ function GlassPanelWithOverlay({ videoUrl }) {
   const [mouse, setMouse] = useState({ x: 0, y: 0 })
   const { nodes } = useGLTF('/models/p1.glb')
   const forceRerender = useRef(false)
+  const [videoAlpha, setVideoAlpha] = useState(0);
+
 
   // "Обычное" стекло
   const envMapNeutral = useCubeTexture(
@@ -139,23 +141,20 @@ function GlassPanelWithOverlay({ videoUrl }) {
   )
 
 
-  const handlePointerMove = (e) => {
-    setHovered(true)
-    setMouse({
-      x: (e.uv.x - 0.5) * 2,
-      y: -(e.uv.y - 0.5) * 2
-    })
-  }
-  const handlePointerOut = () => {
-    setHovered(false)
-    setMouse({ x: 0, y: 0 })
-  }
-
   const handlePointerOver = (e) => {
-     setHovered(true)
-     setMouse({ x: 0.01, y: 0.01 }) // небольшое смещение, чтобы шейдер сработал
-     forceRerender.current = true   // флаг, что нужно перерендерить фон
-  }
+   setHovered(true);
+   // НЕ трогать mouse тут — пусть он остаётся в (0,0), если не двигается
+  };
+  const handlePointerMove = (e) => {
+     setMouse({
+       x: (e.uv.x - 0.5) * 2,
+       y: -(e.uv.y - 0.5) * 2
+     });
+  };
+  const handlePointerOut = () => {
+     setHovered(false);
+     setMouse({ x: 0, y: 0 });
+  };
 
 
 
@@ -199,12 +198,18 @@ function GlassPanelWithOverlay({ videoUrl }) {
       panelRef.current.rotation.y += (((hovered ? mouse.x : 0) * 0.30) - panelRef.current.rotation.y) * 0.13
     }
 
+    
     // Плавный fade-in/fade-out видео
-    const currentAlpha = shaderRef.current.uniforms.uVideoAlpha.value
-    const targetAlpha = hovered ? 1 : 0
-    const fadeSpeed = 2.5
-    shaderRef.current.uniforms.uVideoAlpha.value = THREE.MathUtils.lerp(currentAlpha, targetAlpha, delta * fadeSpeed)
-  })
+    const targetAlpha = hovered ? 1 : 0;
+    const fadeSpeed = 2.5;
+    setVideoAlpha(prev => {
+      const next = THREE.MathUtils.lerp(prev, targetAlpha, delta * fadeSpeed);
+      return Math.abs(next - targetAlpha) < 0.01 ? targetAlpha : next;
+    });
+    if (shaderRef.current) {
+      shaderRef.current.uniforms.uVideoAlpha.value = videoAlpha;
+    }
+
 
   const { gl, scene, camera, size } = useThree()
   const bgRenderTarget = useRef()  
@@ -232,6 +237,8 @@ function GlassPanelWithOverlay({ videoUrl }) {
     }
   })
 
+  const showVideo = videoAlpha > 0.01;
+
   return (
     <primitive
       object={nodes.Panel}
@@ -246,7 +253,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
         <videoRefractionMaterial
           ref={shaderRef}
           uBackground={bgRenderTarget.current?.texture}
-          uVideo={hovered ? videoTexture : null}
+          uVideo={showVideo ? videoTexture : null}
           uEnvMap={envMapNeutral}
           uEnvMapRim={envMapRim}
           uIntensity={0.12}
