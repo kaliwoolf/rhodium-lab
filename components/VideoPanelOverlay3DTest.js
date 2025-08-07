@@ -126,7 +126,8 @@ function GlassPanelWithOverlay({ videoUrl }) {
   const [mouse, setMouse] = useState({ x: 0, y: 0 })
   const { nodes } = useGLTF('/models/p1.glb')
   const forceRerender = useRef(false)
-  const [videoAlpha, setVideoAlpha] = useState(0);
+  const videoAlpha = useRef(0);
+
 
 
   // "Обычное" стекло
@@ -195,12 +196,11 @@ function GlassPanelWithOverlay({ videoUrl }) {
     // Fade-in/out видео через стейт
     const targetAlpha = hovered ? 1 : 0;
     const fadeSpeed = 2.5;
-    setVideoAlpha(prev => {
-      const next = THREE.MathUtils.lerp(prev, targetAlpha, delta * fadeSpeed);
-      return Math.abs(next - targetAlpha) < 0.01 ? targetAlpha : next;
-    });
+    videoAlpha.current = THREE.MathUtils.lerp(videoAlpha.current, targetAlpha, delta * fadeSpeed);
+
+    // Передаём альфу в шейдер:
     if (shaderRef.current) {
-      shaderRef.current.uniforms.uVideoAlpha.value = videoAlpha;
+      shaderRef.current.uniforms.uVideoAlpha.value = videoAlpha.current;
     }
   });
 
