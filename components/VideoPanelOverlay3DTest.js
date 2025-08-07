@@ -171,18 +171,10 @@ function GlassPanelWithOverlay({ videoUrl }) {
     }
   }, [videoUrl])
 
-  useEffect(() => {
-    if (shaderRef.current) {
-      shaderRef.current.uniforms.uVideoAlpha.value = 0
-    }
-  }, [videoTexture])
-
-
+s
   // Анимация
   useFrame((state, delta) => {
     if (!shaderRef.current) return
-
-    const shader = shaderRef.current;  
 
     // Время
     shaderRef.current.uniforms.time.value = state.clock.getElapsedTime()
@@ -194,10 +186,10 @@ function GlassPanelWithOverlay({ videoUrl }) {
     }
 
     // Плавный fade-in/fade-out видео
-    const currentAlpha = shader.uniforms.uVideoAlpha.value
+    const currentAlpha = shaderRef.current.uniforms.uVideoAlpha.value
     const targetAlpha = hovered ? 1 : 0
     const fadeSpeed = 2.5
-    shader.uniforms.uVideoAlpha.value = THREE.MathUtils.lerp(currentAlpha, targetAlpha, delta * fadeSpeed)
+    shaderRef.current.uniforms.uVideoAlpha.value = THREE.MathUtils.lerp(currentAlpha, targetAlpha, delta * fadeSpeed)
   })
 
   const { gl, scene, camera, size } = useThree()
@@ -233,7 +225,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
         <videoRefractionMaterial
           ref={shaderRef}
           uBackground={bgRenderTarget.current?.texture}
-          uVideo={videoTexture} 
+          uVideo={videoTexture}s
           uEnvMap={envMapNeutral}
           uEnvMapRim={envMapRim}
           uIntensity={0.12}
