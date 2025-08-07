@@ -168,6 +168,13 @@ function GlassPanelWithOverlay({ videoUrl }) {
     }
   }, [videoUrl])
 
+  useEffect(() => {
+    if (shaderRef.current) {
+      shaderRef.current.uniforms.uVideoAlpha.value = 0
+    }
+  }, [videoTexture])
+
+
   // Анимация
   useFrame((state, delta) => {
     if (!shaderRef.current) return
@@ -228,7 +235,6 @@ function GlassPanelWithOverlay({ videoUrl }) {
           uThickness={1.4}
           uEnvAmount={0.20}    // Прозрачность envMap (0.12…0.22)
           uRimAmount={0.18}    // Сила rim-каймы
-          uVideoAlpha={0}    
           uPanelAlpha={0.30}   // Итоговая прозрачность (0.20…0.38)
           uTint={[0.63, 0.98, 0.86]}
           uTintStrength={0.18}
