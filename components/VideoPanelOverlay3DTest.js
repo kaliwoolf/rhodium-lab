@@ -89,34 +89,44 @@ const VideoRefractionMaterial = shaderMaterial(
       vec3 envColor = textureCube(uEnvMap, reflectDir).rgb;
       vec3 rimColor = textureCube(uEnvMapRim, reflectDir).rgb;
 
-      // Rim по краю панели
+      /*
       float rim = smoothstep(0.88, 0.98, length(vUv - 0.5) * 1.13);
       float hardRim = smoothstep(0.93, 0.98, length(vUv - 0.5));
-
-      // Rim+env
       vec3 finalEnv = mix(envColor, rimColor, pow(rim, 1.4));
-      finalEnv += (rimColor - envColor) * hardRim * 0.9; // Только самая обводка
-
-      // Добавляем envAmount для стеклянности (0.14–0.23)
+      finalEnv += (rimColor - envColor) * hardRim * 0.9; 
       vec3 baseMix = mix(panelColor, envColor, uEnvAmount);
-
-      // Rim-кайма по краю
       vec3 rimMix = mix(baseMix, finalEnv, rim * uRimAmount);
-
-      // Металлический specular + усиливаем кайму
       float spec = pow(max(dot(viewDir, vWorldNormal), 0.0), 22.0);
       rimMix += rim * 0.16 + hardRim * 0.25 + spec * 0.12;
-
-      // === КАЙМА AT/NOTION ===
       float edge = smoothstep(0.94, 1.0, length(vUv - 0.5) * 1.13);
       vec3 edgeColor = vec3(0.86, 0.97, 1.0);
       float edgeGlow = edge * 0.82 + pow(edge, 6.0) * 0.45;
-
       vec3 rimmed = mix(rimMix, edgeColor, edgeGlow);
-
-      // (опционально) Блик сверху панели:
       float topGlow = smoothstep(0.85, 1.01, vUv.y) * 0.16;
       vec3 result = mix(rimmed, edgeColor, topGlow * edge);
+      */
+
+    // === FRESNEL RIM EFFECT ===
+
+      // Сила каймы (можно вынести в uniform, сейчас просто константа)
+      float fresnelPower = 2.8; // чем больше — тем тоньше кайма (2.0–4.0)
+      float fresnelStrength = uRimAmount * 1.2; // множитель, можно поиграть
+
+      // Fresnel rim: угол между камерой и нормалью
+      float fresnel = pow(1.0 - abs(dot(normalize(vWorldNormal), normalize(viewDir))), fresnelPower);
+
+      // Цвет каймы (белый с лёгкой тёплой ноткой)
+      vec3 edgeColor = vec3(1.1, 1.05, 0.8);
+
+      // Можно добавить reflection/env как тебе нужно:
+      vec3 envMix = mix(panelColor, envColor, uEnvAmount);
+
+      // Итоговый цвет: база + rim
+      vec3 result = envMix + fresnel * edgeColor * fresnelStrength;
+
+      // (Опционально) добавить небольшой specular highlight
+      float spec = pow(max(dot(viewDir, vWorldNormal), 0.0), 20.0);
+      result += spec * edgeColor * 0.08;
 
       gl_FragColor = vec4(result, uPanelAlpha);
     }
