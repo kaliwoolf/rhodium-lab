@@ -75,10 +75,8 @@ const VideoRefractionMaterial = shaderMaterial(
       bgColor.g = texture2D(uBackground, refractUv).g;
       bgColor.b = texture2D(uBackground, refractUv - vec2(chroma, 0.0)).b;
 
-      vec3 videoColor;
-      videoColor.r = texture2D(uVideo, refractUv + vec2(chroma, 0.0)).r;
-      videoColor.g = texture2D(uVideo, refractUv).g;
-      videoColor.b = texture2D(uVideo, refractUv - vec2(chroma, 0.0)).b;
+      vec3 videoColor = texture2D(uVideo, vUv).rgb;
+
 
       vec3 panelColor = mix(bgColor, videoColor, uVideoAlpha);
 
