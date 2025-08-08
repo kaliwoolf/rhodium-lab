@@ -1,7 +1,7 @@
 // VideoPanelOverlay3DTest.js
 import { Canvas, useFrame } from "@react-three/fiber"
 import { useGLTF, Html, Environment, OrbitControls, shaderMaterial, useCubeTexture } from "@react-three/drei"
-import { useRef, useState, useEffect, useMemo } from "react"
+import { useRef, useState, useEffect } from "react"
 import * as THREE from "three"
 import styles from '../styles/VideoPanelOverlay3DTest.module.css'
 import CourseSlider from '../components/CourseSlider'
@@ -24,7 +24,6 @@ const VideoRefractionMaterial = shaderMaterial(
     uRimAmount: 0.75,    // Rim-смешивание (0.5–0.85 — кайма по краю)
     uVideoAlpha: 0,   // Прозрачность видео (0.7–1.0)
     uPanelAlpha: 0.32,   // Альфа всей панели
-    uForward: new THREE.Vector3(0, 0, 1),
     time: 0
   },
   // vertex
@@ -53,7 +52,6 @@ const VideoRefractionMaterial = shaderMaterial(
     uniform float uRimAmount;
     uniform float uVideoAlpha;
     uniform float uPanelAlpha;
-    uniform vec3 uForward;
     uniform float time;
     varying vec2 vUv;
     varying vec3 vWorldNormal;
@@ -64,8 +62,8 @@ const VideoRefractionMaterial = shaderMaterial(
       // Фрагмент для классного дисторшна через noise:
       float noise = fract(sin(dot(vUv * 0.87, vec2(12.9898,78.233))) * 43758.5453);
       float bump = sin(vUv.y * 18. + time * 0.8) * 0.012
-                 + cos(vUv.x * 14. - time * 0.54) * 0.011
-                 + (noise - 0.5) * 0.055; 
+           + cos(vUv.x * 14. - time * 0.54) * 0.011
+           + (noise - 0.5) * 0.055; // добавил шум
 
       // Lens bump + chromatic
       float chroma = 0.05 * uThickness * uIntensity;
@@ -78,95 +76,64 @@ const VideoRefractionMaterial = shaderMaterial(
       bgColor.b = texture2D(uBackground, refractUv - vec2(chroma, 0.0)).b;
 
       vec3 videoColor = texture2D(uVideo, vUv).rgb;
+
+
       vec3 panelColor = mix(bgColor, videoColor, uVideoAlpha);
+
+      // Tint
       panelColor = mix(panelColor, uTint, uTintStrength);
 
       // Reflection env
-      vec3 viewDir    = normalize(cameraPosition - vWorldPos);
-      vec3 nrm        = normalize(vWorldNormal);
-      vec3 reflectDir = reflect(-viewDir, nrm);
-      vec3 envColor   = textureCube(uEnvMap, reflectDir).rgb;
-      vec3 rimColor   = textureCube(uEnvMapRim, reflectDir).rgb;
+      vec3 viewDir = normalize(vWorldPos - cameraPosition);
+      vec3 reflectDir = reflect(viewDir, normalize(vWorldNormal));
+      vec3 envColor = textureCube(uEnvMap, reflectDir).rgb;
+      vec3 rimColor = textureCube(uEnvMapRim, reflectDir).rgb;
 
-      // Насколько этот фрагмент "фронтальный" к плоскости панели (1 = фронт, 0 = бок)
-      float faceFront = abs(dot(nrm, normalize(uForward)));
-      float sideFactor = 1.0 - faceFront; // 1 на боках, 0 на фронте
+      /*
+      float rim = smoothstep(0.88, 0.98, length(vUv - 0.5) * 1.13);
+      float hardRim = smoothstep(0.93, 0.98, length(vUv - 0.5));
+      vec3 finalEnv = mix(envColor, rimColor, pow(rim, 1.4));
 
+      finalEnv += (rimColor - envColor) * hardRim * 0.9; 
+      vec3 baseMix = mix(panelColor, envColor, uEnvAmount);
+      vec3 rimMix = mix(baseMix, finalEnv, rim * uRimAmount);
+      float spec = pow(max(dot(viewDir, vWorldNormal), 0.0), 22.0);
+      rimMix += rim * 0.16 + hardRim * 0.25 + spec * 0.12;
+      float edge = smoothstep(0.94, 1.0, length(vUv - 0.5) * 1.13);
+      vec3 edgeColor = vec3(0.86, 0.97, 1.0);
+      float edgeGlow = edge * 0.82 + pow(edge, 6.0) * 0.45;
+      vec3 rimmed = mix(rimMix, edgeColor, edgeGlow);
+      float topGlow = smoothstep(0.85, 1.01, vUv.y) * 0.16;
+      vec3 result = mix(rimmed, edgeColor, topGlow * edge);
+      */
 
-      // Fresnel (сила у края)
-      float ndv = max(dot(nrm, viewDir), 0.0);
-      float fresnel = pow(1.0 - ndv, 2.8);
-      float fresnelStrength = uRimAmount * 0.55;
+      vec3 envMix = mix(panelColor, envColor, uEnvAmount);
 
-      // У края берём более контрастный кубмап
-      vec3 envCombined = mix(envColor, rimColor, pow(fresnel, 1.25));
-      vec3 sidePanel   = mix(panelColor, bgColor, sideFactor * 0.55); // бока «тоньше»
-      vec3 envMix      = mix(sidePanel, envCombined, uEnvAmount * mix(0.35, 1.0, faceFront));
+      // Расчёт fresnel rim
+      float fresnel = pow(1.0 - abs(dot(normalize(vWorldNormal), normalize(viewDir))), 2.8);
+      float fresnelStrength = uRimAmount * 1.2;
 
-      // Цвета каймы
-      vec3 edgeColor   = vec3(1.10, 1.05, 0.80);
-      vec3 atEdgeColor = vec3(1.12, 0.78, 1.24);
+      vec3 edgeColor = vec3(1.1, 1.05, 0.8); // для объемной каймы (fresnel rim)
+      vec3 atEdgeColor = vec3(1.12, 0.78, 1.24); // AT фирменная кайма
 
       vec3 result = envMix + fresnel * edgeColor * fresnelStrength;
 
-      // Узкий hotspot на фаске + базовый спекуляр
-      float spec    = pow(ndv, 20.0);
-      float rimSpec = pow(1.0 - ndv, 8.0);
+      // Спекуляр
+      float spec = pow(max(dot(viewDir, vWorldNormal), 0.0), 20.0);
       result += spec * edgeColor * 0.08;
-      result += rimSpec * edgeColor * 0.22;
 
-      // Мягкий эмиссионный ореол по краям
-      float glowRim = pow(1.0 - ndv, 9.0);
-      result += glowRim * vec3(1.30, 1.15, 1.25) * 0.18;
+      float rimSpec = pow(1.0 - max(dot(normalize(vWorldNormal), normalize(viewDir)), 0.0), 8.0);
+      result += rimSpec * edgeColor * 0.55;  // ↑ сделай 0.35–0.8 под вкус
 
-      // === Скруглённая рамка по периметру (SDF rounded-rect) ===
-      // Центрируем UV в [-0.5..0.5]
-      vec2 uv = clamp(vUv, 0.0, 1.0);
-      vec2 p  = uv - 0.5;
+      float glowRim = pow(1.0 - abs(dot(normalize(vWorldNormal), normalize(viewDir))), 9.0);
+      result += glowRim * vec3(1.30, 1.15, 1.25) * 0.2; // цвет/силу можно крутить
 
-      // Полуразмеры прямоугольника (в UV). 0.5 — до самой границы карты.
-      vec2 halfSize = vec2(0.5);
+      // Прибавляем живую кайму AT/Notion
+      float edge = smoothstep(0.92, 1.0, length(vUv - 0.5) * 1.02); // было 0.85/1.08
+      float edgeNoise = edge * (0.92 + 0.15 * noise);
+      result += edgeNoise * atEdgeColor * 1.5; // 1.1–2.0
 
-      // Радиус скругления в UV. Подбери под свой мэш/UV (0.07–0.12 обычно ок).
-      float radius = 0.085;
-
-      // Signed distance до скруглённого прямоугольника
-      // (источник: iq, "rounded box sdf")
-      vec2 q = abs(p) - (halfSize - vec2(radius));
-      float sdf = length(max(q, 0.0)) - radius; // <0 внутри, ~0 на границе, >0 снаружи
-
-      // Толщина контура и сглаживание
-      float border = 0.016;              // толщина рамки (уменьши, если надо тоньше)
-      float aa     = fwidth(sdf) * 1.5;  // антиалиас (мягче край)
-
-      // Маска тонкого "кольца" по границе: внутри между [-border .. 0]
-      float inner = smoothstep(-border - aa, -aa, sdf); // подкрашиваем до границы
-      float outer = 1.0 - smoothstep(0.0, aa, sdf);     // убираем всё дальше от границы
-      float edgeMask = inner * outer;
-
-            // Внешний мягкий glow за краем
-      float glowMask = smoothstep(0.0, border*2.2 + aa*2.0, sdf);
-
-      // Чуть «живости» (как и было)
-      float edgeNoise = edgeMask * (0.92 + 0.15 * noise);
-
-      // Ослабляем все "яркие" слои на боках
-      float brightGate = mix(0.25, 1.0, faceFront); // 0.25 на чистом боку, 1.0 на фронте
-      result += brightGate * (spec * edgeColor * 0.08);
-      result += brightGate * (rimSpec * edgeColor * 0.28);
-      result += brightGate * (glowRim * vec3(1.30,1.15,1.25) * 0.18);
-
-      // Рамку/глоу по периметру тоже поджать на боках
-      result += brightGate * (edgeNoise * atEdgeColor * 0.90);
-      result += brightGate * (edgeMask  * rimColor    * 0.10);
-      result += brightGate * (glowMask  * atEdgeColor * 0.14);
-
-      // Альфа: фронт плотнее, бока прозрачнее
-      float viewAlpha = uPanelAlpha
-        * mix(0.28, 1.0, faceFront)  // бока 28% от альфы, фронт 100%
-        * mix(0.60, 1.0, ndv);       // grazing углы ещё чуть тоньше
-
-      gl_FragColor = vec4(result, viewAlpha);
+      gl_FragColor = vec4(result, uPanelAlpha);
     }
   `
 )
@@ -191,8 +158,8 @@ function GlassPanelWithOverlay({ videoUrl }) {
   // амплитуда и скорости парения (можешь крутить)
   const floatAmp = useRef({ rot: 0.055, rotZ: 0.035, posY: 0.03 })
   const floatSpd = useRef({ x: 0.17, y: 0.14, z: 0.11, yPos: 0.60 })
-  const tmpForward = useMemo(() => new THREE.Vector3(), [])
 
+ 
   // "Обычное" стекло
   const envMapNeutral = useCubeTexture(
     ['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'],
@@ -219,6 +186,8 @@ function GlassPanelWithOverlay({ videoUrl }) {
      setHovered(false);
      setMouse({ x: 0, y: 0 });
   };
+
+
 
   useEffect(() => {
     const video = document.createElement("video")
@@ -278,6 +247,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
     shaderRef.current.uniforms.uVideoAlpha.value = THREE.MathUtils.lerp(cur, to, delta * 2.5)
   })
 
+
   const { gl, scene, camera, size } = useThree()
   const bgRenderTarget = useRef()  
   useEffect(() => {
@@ -304,14 +274,6 @@ function GlassPanelWithOverlay({ videoUrl }) {
     }
   })
 
-    const uf = shaderRef.current.uniforms.uForward;
-    if (uf?.value?.copy) {
-      panelRef.current.getWorldDirection(tmpForward);
-      tmpForward.multiplyScalar(-1);                // делаем +Z «вперёд»
-      uf.value.copy(tmpForward);                    // ⬅️ теперь ок
-    }
-
-
   return (
     <group rotation={[0, 0, 0]}>
       <primitive
@@ -332,12 +294,10 @@ function GlassPanelWithOverlay({ videoUrl }) {
             uIntensity={0.22}
             uThickness={2.4}
             uEnvAmount={0.22}    // Прозрачность envMap (0.12…0.22)
-            uRimAmount={0.30}    // Сила rim-каймы
+            uRimAmount={0.42}    // Сила rim-каймы
             uPanelAlpha={0.68}
             uTint={[0.63, 0.98, 0.86]}
             uTintStrength={0.0}
-            transparent
-            depthWrite={false}
             />
         )}
 
