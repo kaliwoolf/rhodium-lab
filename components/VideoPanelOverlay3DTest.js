@@ -292,7 +292,7 @@ export default function VideoPanelOverlay3DTest() {
   return (
     <div style={{ width: "100vw", height: "100vh", background: "#171923" }}>
       <Canvas
-        camera={{ position: [0, 0, 2.8], fov: 40 }}
+        camera={{ position: [0, 0, 3], fov: 25 }}
         gl={{ antialias: true, alpha: true, preserveDrawingBuffer: false }}
       >
         <ambientLight intensity={2.8} />
