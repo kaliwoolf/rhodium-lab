@@ -111,7 +111,7 @@ const VideoRefractionMaterial = shaderMaterial(
 
       // Расчёт fresnel rim
       float fresnel = pow(1.0 - abs(dot(normalize(vWorldNormal), normalize(viewDir))), 2.8);
-      float fresnelStrength = uRimAmount * 1.2;
+      float fresnelStrength = uRimAmount * 1.1;
 
       vec3 edgeColor = vec3(1.1, 1.05, 0.8); // для объемной каймы (fresnel rim)
       vec3 atEdgeColor = vec3(1.12, 0.78, 1.24); // AT фирменная кайма
@@ -123,15 +123,15 @@ const VideoRefractionMaterial = shaderMaterial(
       result += spec * edgeColor * 0.08;
 
       float rimSpec = pow(1.0 - max(dot(normalize(vWorldNormal), normalize(viewDir)), 0.0), 8.0);
-      result += rimSpec * edgeColor * 0.55;  // ↑ сделай 0.35–0.8 под вкус
+      result += rimSpec * edgeColor * 0.35;  // ↑ сделай 0.35–0.8 под вкус
 
       float glowRim = pow(1.0 - abs(dot(normalize(vWorldNormal), normalize(viewDir))), 9.0);
       result += glowRim * vec3(1.30, 1.15, 1.25) * 0.2; // цвет/силу можно крутить
 
       // Прибавляем живую кайму AT/Notion
-      float edge = smoothstep(0.92, 1.0, length(vUv - 0.5) * 1.02); // было 0.85/1.08
+      float edge = smoothstep(0.95, 1.0, length(vUv - 0.5) * 0.72); // было 0.85/1.08
       float edgeNoise = edge * (0.92 + 0.15 * noise);
-      result += edgeNoise * atEdgeColor * 1.5; // 1.1–2.0
+      result += edgeNoise * atEdgeColor * 1.2; // 1.1–2.0
 
       gl_FragColor = vec4(result, uPanelAlpha);
     }
@@ -298,6 +298,8 @@ function GlassPanelWithOverlay({ videoUrl }) {
             uPanelAlpha={0.68}
             uTint={[0.63, 0.98, 0.86]}
             uTintStrength={0.0}
+            transparent
+            depthWrite={false}
             />
         )}
 
