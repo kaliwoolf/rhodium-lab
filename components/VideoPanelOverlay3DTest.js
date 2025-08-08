@@ -13,7 +13,7 @@ import { useThree } from "@react-three/fiber"
 const VideoRefractionMaterial = shaderMaterial(
   {
     uVideo: null,
-    uBackground: null
+    uBackground: null,
     uEnvMap: null,
     uEnvMapRim: null,    
     uIntensity: 0.15,
