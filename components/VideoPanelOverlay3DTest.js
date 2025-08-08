@@ -145,7 +145,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
   const [videoTexture, setVideoTexture] = useState(null)
   const [hovered, setHovered] = useState(false)
   const [mouse, setMouse] = useState({ x: 0, y: 0 })
-  const { nodes } = useGLTF('/models/p3.3')
+  const { nodes } = useGLTF('/models/p3.glb')
   const forceRerender = useRef(false)
   // Стартовая ориентация панели и настройки парения
   const baseRot = useRef(new THREE.Euler(
