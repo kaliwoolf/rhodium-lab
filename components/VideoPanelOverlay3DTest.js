@@ -256,8 +256,9 @@ function GlassPanelWithOverlay({ videoUrl }) {
             uEnvMapRim={envMapRim}
             uIntensity={0.22}
             uThickness={2.4}
-            uEnvAmount={0.23}    // Прозрачность envMap (0.12…0.22)
-            uRimAmount={0.28}    // Сила rim-каймы
+            uEnvAmount={0.38}    // Прозрачность envMap (0.12…0.22)
+            uRimAmount={0.42}    // Сила rim-каймы
+            uPanelAlpha={0.68}
             uTint={[0.63, 0.98, 0.86]}
             uTintStrength={0.0}
             />
@@ -294,8 +295,8 @@ export default function VideoPanelOverlay3DTest() {
         camera={{ position: [0, 0, 2.8], fov: 40 }}
         gl={{ antialias: true, alpha: true, preserveDrawingBuffer: false }}
       >
-        <ambientLight intensity={2} />
-        <directionalLight position={[3, 2, 3]} intensity={1.14} />
+        <ambientLight intensity={2.8} />
+        <directionalLight position={[3, 2, 3]} intensity={2.4} />
         <Environment preset="sunset" />
         <GlassPanelWithOverlay videoUrl="/video/00004.mp4" />
       </Canvas>
