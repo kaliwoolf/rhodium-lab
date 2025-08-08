@@ -122,12 +122,20 @@ const VideoRefractionMaterial = shaderMaterial(
       float spec = pow(max(dot(viewDir, vWorldNormal), 0.0), 20.0);
       result += spec * edgeColor * 0.08;
 
+      float rimSpec = pow(1.0 - max(dot(normalize(vWorldNormal), normalize(viewDir)), 0.0), 8.0);
+      result += rimSpec * edgeColor * 0.55;  // ↑ сделай 0.35–0.8 под вкус
+
+      float glowRim = pow(1.0 - abs(dot(normalize(vWorldNormal), normalize(viewDir))), 9.0);
+      result += glowRim * vec3(1.30, 1.15, 1.25) * 0.5; // цвет/силу можно крутить
+
       // Контур по UV для AT/Notion каймы
       float edge = smoothstep(0.85, 1.0, length(vUv - 0.5) * 1.08);
       float edgeNoise = edge * (0.9 + 0.18 * noise);
 
       // Прибавляем живую кайму AT/Notion
-      result += edgeNoise * atEdgeColor * 1.1;
+      float edge = smoothstep(0.92, 1.0, length(vUv - 0.5) * 1.02); // было 0.85/1.08
+      float edgeNoise = edge * (0.92 + 0.15 * noise);
+      result += edgeNoise * atEdgeColor * 1.5; // 1.1–2.0
 
       gl_FragColor = vec4(result, uPanelAlpha);
     }
@@ -145,7 +153,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
   const [mouse, setMouse] = useState({ x: 0, y: 0 })
   const { nodes } = useGLTF('/models/p3.glb')
   const forceRerender = useRef(false)
-
+ 
   // "Обычное" стекло
   const envMapNeutral = useCubeTexture(
     ['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'],
