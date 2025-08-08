@@ -128,10 +128,6 @@ const VideoRefractionMaterial = shaderMaterial(
       float glowRim = pow(1.0 - abs(dot(normalize(vWorldNormal), normalize(viewDir))), 9.0);
       result += glowRim * vec3(1.30, 1.15, 1.25) * 0.5; // цвет/силу можно крутить
 
-      // Контур по UV для AT/Notion каймы
-      float edge = smoothstep(0.85, 1.0, length(vUv - 0.5) * 1.08);
-      float edgeNoise = edge * (0.9 + 0.18 * noise);
-
       // Прибавляем живую кайму AT/Notion
       float edge = smoothstep(0.92, 1.0, length(vUv - 0.5) * 1.02); // было 0.85/1.08
       float edgeNoise = edge * (0.92 + 0.15 * noise);
