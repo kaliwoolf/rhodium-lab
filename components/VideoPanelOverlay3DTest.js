@@ -90,11 +90,12 @@ const VideoRefractionMaterial = shaderMaterial(
       vec3 rimColor = textureCube(uEnvMapRim, reflectDir).rgb;
 
       // Rim по краю панели
-      float rim = smoothstep(0.65, 0.92, length(vUv - 0.5) * 1.13);
+      float rim = smoothstep(0.88, 0.98, length(vUv - 0.5) * 1.13);
       float hardRim = smoothstep(0.93, 0.98, length(vUv - 0.5));
 
       // Rim+env
-      vec3 finalEnv = mix(envColor, rimColor, rim * 0.92);
+      vec3 finalEnv = mix(envColor, rimColor, pow(rim, 1.4));
+      finalEnv += (rimColor - envColor) * hardRim * 0.9; // Только самая обводка
 
       // Добавляем envAmount для стеклянности (0.14–0.23)
       vec3 baseMix = mix(panelColor, envColor, uEnvAmount);
