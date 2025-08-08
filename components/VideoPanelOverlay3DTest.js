@@ -123,7 +123,7 @@ const VideoRefractionMaterial = shaderMaterial(
       result += spec * edgeColor * 0.08;
 
       // Контур по UV для AT/Notion каймы
-      float edge = smoothstep(0.93, 1.0, length(vUv - 0.5) * 1.08);
+      float edge = smoothstep(0.85, 1.0, length(vUv - 0.5) * 1.08);
       float edgeNoise = edge * (0.9 + 0.18 * noise);
 
       // Прибавляем живую кайму AT/Notion
