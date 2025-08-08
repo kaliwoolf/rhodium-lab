@@ -238,7 +238,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
   })
 
   return (
-    <group rotation={[Math.PI * 0.18, Math.PI * 0.18, 0]}>
+    <group rotation={[Math.PI * 0.12, 0, 0]}>
       <primitive
         object={nodes.Panel}
         scale={[0.46, 0.54, 0.28]} // подбери под свою сцену!
