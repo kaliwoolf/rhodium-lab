@@ -333,7 +333,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
             uPanelAlpha={0.68}
             uTint={[0.63, 0.98, 0.86]}
             uTintStrength={0.0}
-            uForward: [0, 0, 1], // world-направление "фронта" панели, заполним в useFrame
+            uForward: {[0, 0, 1]} // world-направление "фронта" панели, заполним в useFrame
             transparent
             depthWrite={false}
             />
