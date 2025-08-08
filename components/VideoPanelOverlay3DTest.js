@@ -241,7 +241,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
     <group rotation={[0, Math.PI * 0.12, 0]}>
       <primitive
         object={nodes.Panel}
-        scale={[0.46, 0.54, 0.28]} // подбери под свою сцену!
+        scale={[1.0, 1.0, 1.0]} // подбери под свою сцену!
         ref={panelRef} 
         onPointerMove={handlePointerMove}
         onPointerOut={handlePointerOut}
