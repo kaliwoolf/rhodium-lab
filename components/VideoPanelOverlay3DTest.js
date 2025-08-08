@@ -149,6 +149,16 @@ function GlassPanelWithOverlay({ videoUrl }) {
   const [mouse, setMouse] = useState({ x: 0, y: 0 })
   const { nodes } = useGLTF('/models/p3.glb')
   const forceRerender = useRef(false)
+  // Стартовая ориентация панели и настройки парения
+  const baseRot = useRef(new THREE.Euler(
+    THREE.MathUtils.degToRad(-12), // X — наклон вперёд/назад
+    THREE.MathUtils.degToRad(25),  // Y — поворот вбок
+    THREE.MathUtils.degToRad(0)    // Z — крен
+  ))
+  // амплитуда и скорости парения (можешь крутить)
+  const floatAmp = useRef({ rot: 0.055, rotZ: 0.035, posY: 0.03 })
+  const floatSpd = useRef({ x: 0.17, y: 0.14, z: 0.11, yPos: 0.60 })
+
  
   // "Обычное" стекло
   const envMapNeutral = useCubeTexture(
@@ -199,58 +209,37 @@ function GlassPanelWithOverlay({ videoUrl }) {
     }
   }, [videoUrl])
 
-  useEffect(() => {
-    if (shaderRef.current) {
-      shaderRef.current.uniforms.uVideoAlpha.value = 0
-    }
-  }, [videoTexture])
-
-
-  // Анимация
+  // Анимация + "парение"
   useFrame((state, delta) => {
-    if (!shaderRef.current) return
+    if (!shaderRef.current || !panelRef.current) return
 
-    // Время
-    shaderRef.current.uniforms.time.value = state.clock.getElapsedTime()
+    const t = state.clock.getElapsedTime()
+    shaderRef.current.uniforms.time.value = t
 
-    // Поворот панели
-    if (panelRef.current) {
-      panelRef.current.rotation.x += (((hovered ? mouse.y : 0) * 0.32) - panelRef.current.rotation.x) * 0.13
-      panelRef.current.rotation.y += (((hovered ? mouse.x : 0) * 0.30) - panelRef.current.rotation.y) * 0.13
-    }
+    // Мягкое «парение»: базовый угол + лёгкое покачивание
+    const wobX = Math.sin(t * 0.17) * 0.055
+    const wobY = Math.cos(t * 0.14) * 0.055
+    const wobZ = Math.sin(t * 0.11) * 0.035
 
-    // Плавный fade-in/fade-out видео
-    const currentAlpha = shaderRef.current.uniforms.uVideoAlpha.value
-    const targetAlpha = hovered ? 1 : 0
-    const fadeSpeed = 2.5
-    shaderRef.current.uniforms.uVideoAlpha.value = THREE.MathUtils.lerp(currentAlpha, targetAlpha, delta * fadeSpeed)
+    // Целевые углы = базовый угол + парение + реакция на hover
+    const targetX = baseRot.current.x + wobX + (hovered ? mouse.y * 0.32 : 0)
+    const targetY = baseRot.current.y + wobY + (hovered ? mouse.x * 0.30 : 0)
+    const targetZ = baseRot.current.z + wobZ
+
+    // Плавно тянем текущую ротацию к целевой
+    panelRef.current.rotation.x += (targetX - panelRef.current.rotation.x) * 0.12
+    panelRef.current.rotation.y += (targetY - panelRef.current.rotation.y) * 0.12
+    panelRef.current.rotation.z += (targetZ - panelRef.current.rotation.z) * 0.12
+
+    // Небольшое вертикальное «плавание»
+    panelRef.current.position.y = Math.sin(t * 0.6) * 0.03
+
+    // Плавный fade-in/fade-out видео (как было)
+    const cur = shaderRef.current.uniforms.uVideoAlpha.value
+    const to = hovered ? 1 : 0
+    shaderRef.current.uniforms.uVideoAlpha.value = THREE.MathUtils.lerp(cur, to, delta * 2.5)
   })
 
-  const { gl, scene, camera, size } = useThree()
-  const bgRenderTarget = useRef()  
-  useEffect(() => {
-    bgRenderTarget.current = new THREE.WebGLRenderTarget(size.width, size.height)
-    return () => bgRenderTarget.current?.dispose()
-  }, [size.width, size.height])
-
-  useFrame(() => {
-    if (!bgRenderTarget.current) return
-
-    // Скрываем панель перед рендером фона
-    if (panelRef.current) panelRef.current.visible = false
-
-    gl.setRenderTarget(bgRenderTarget.current)
-    gl.render(scene, camera)
-    gl.setRenderTarget(null)
-
-    if (panelRef.current) panelRef.current.visible = true
-
-    // 🔥 Принудительный микроскопический сдвиг, чтобы фон обновился
-    if (forceRerender.current && panelRef.current) {
-      panelRef.current.rotation.x += 0.0001
-      forceRerender.current = false
-    }
-  })
 
   return (
     <group rotation={[0, 0, 0]}>
