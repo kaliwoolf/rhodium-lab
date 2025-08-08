@@ -107,7 +107,18 @@ const VideoRefractionMaterial = shaderMaterial(
       float spec = pow(max(dot(viewDir, vWorldNormal), 0.0), 22.0);
       rimMix += rim * 0.16 + hardRim * 0.25 + spec * 0.12;
 
-      gl_FragColor = vec4(rimMix, uPanelAlpha);
+      // === КАЙМА AT/NOTION ===
+      float edge = smoothstep(0.94, 1.0, length(vUv - 0.5) * 1.13);
+      vec3 edgeColor = vec3(0.86, 0.97, 1.0);
+      float edgeGlow = edge * 0.82 + pow(edge, 6.0) * 0.45;
+
+      vec3 rimmed = mix(rimMix, edgeColor, edgeGlow);
+
+      // (опционально) Блик сверху панели:
+      float topGlow = smoothstep(0.85, 1.01, vUv.y) * 0.16;
+      vec3 result = mix(rimmed, edgeColor, topGlow * edge);
+
+      gl_FragColor = vec4(result, uPanelAlpha);
     }
   `
 )
