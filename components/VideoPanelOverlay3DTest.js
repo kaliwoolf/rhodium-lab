@@ -93,6 +93,7 @@ const VideoRefractionMaterial = shaderMaterial(
       float rim = smoothstep(0.88, 0.98, length(vUv - 0.5) * 1.13);
       float hardRim = smoothstep(0.93, 0.98, length(vUv - 0.5));
       vec3 finalEnv = mix(envColor, rimColor, pow(rim, 1.4));
+
       finalEnv += (rimColor - envColor) * hardRim * 0.9; 
       vec3 baseMix = mix(panelColor, envColor, uEnvAmount);
       vec3 rimMix = mix(baseMix, finalEnv, rim * uRimAmount);
@@ -106,27 +107,30 @@ const VideoRefractionMaterial = shaderMaterial(
       vec3 result = mix(rimmed, edgeColor, topGlow * edge);
       */
 
-    // === FRESNEL RIM EFFECT ===
 
-      // Сила каймы (можно вынести в uniform, сейчас просто константа)
-      float fresnelPower = 2.8; // чем больше — тем тоньше кайма (2.0–4.0)
-      float fresnelStrength = uRimAmount * 1.2; // множитель, можно поиграть
+      // Расчёт fresnel rim
+      float fresnel = pow(1.0 - abs(dot(normalize(vWorldNormal), normalize(viewDir))), 2.0);
+      float fresnelStrength = uRimAmount * 1.2; // можно поиграть
 
-      // Fresnel rim: угол между камерой и нормалью
-      float fresnel = pow(1.0 - abs(dot(normalize(vWorldNormal), normalize(viewDir))), fresnelPower);
+      vec3 edgeColor = vec3(1.1, 1.05, 0.8); // для объемной каймы (fresnel rim)
+      vec3 atEdgeColor = vec3(1.12, 0.78, 1.24); // AT фирменная кайма
 
-      // Цвет каймы (белый с лёгкой тёплой ноткой)
-      vec3 edgeColor = vec3(1.1, 1.05, 0.8);
-
-      // Можно добавить reflection/env как тебе нужно:
-      vec3 envMix = mix(panelColor, envColor, uEnvAmount);
-
-      // Итоговый цвет: база + rim
       vec3 result = envMix + fresnel * edgeColor * fresnelStrength;
 
-      // (Опционально) добавить небольшой specular highlight
+      // Спекуляр
       float spec = pow(max(dot(viewDir, vWorldNormal), 0.0), 20.0);
       result += spec * edgeColor * 0.08;
+
+      // Контур по UV для AT/Notion каймы
+      float edge = smoothstep(0.93, 1.0, length(vUv - 0.5) * 1.08);
+      float edgeNoise = edge * (0.9 + 0.18 * noise);
+
+      // Прибавляем живую кайму AT/Notion
+      result += edgeNoise * atEdgeColor * 1.5;
+
+      // (Можно добавить ещё гибридный вариант, если хочешь более сложный контур)
+      // float hybrid = max(fresnel * 0.8, edge * 1.2);
+      // result += hybrid * atEdgeColor * 1.2;
 
       gl_FragColor = vec4(result, uPanelAlpha);
     }
