@@ -62,8 +62,8 @@ const VideoRefractionMaterial = shaderMaterial(
       // Фрагмент для классного дисторшна через noise:
       float noise = fract(sin(dot(vUv * 0.87, vec2(12.9898,78.233))) * 43758.5453);
       float bump = sin(vUv.y * 18. + time * 0.8) * 0.012
-           + cos(vUv.x * 14. - time * 0.54) * 0.011
-           + (noise - 0.5) * 0.055; // добавил шум
+                 + cos(vUv.x * 14. - time * 0.54) * 0.011
+                 + (noise - 0.5) * 0.055; 
 
       // Lens bump + chromatic
       float chroma = 0.05 * uThickness * uIntensity;
@@ -76,62 +76,60 @@ const VideoRefractionMaterial = shaderMaterial(
       bgColor.b = texture2D(uBackground, refractUv - vec2(chroma, 0.0)).b;
 
       vec3 videoColor = texture2D(uVideo, vUv).rgb;
-
-
       vec3 panelColor = mix(bgColor, videoColor, uVideoAlpha);
-
-      // Tint
       panelColor = mix(panelColor, uTint, uTintStrength);
 
       // Reflection env
-      vec3 viewDir = normalize(vWorldPos - cameraPosition);
+      vec3 viewDir    = normalize(vWorldPos - cameraPosition);
+      vec3 nrm        = normalize(vWorldNormal);
       vec3 reflectDir = reflect(viewDir, normalize(vWorldNormal));
-      vec3 envColor = textureCube(uEnvMap, reflectDir).rgb;
-      vec3 rimColor = textureCube(uEnvMapRim, reflectDir).rgb;
+      vec3 envColor   = textureCube(uEnvMap, reflectDir).rgb;
+      vec3 rimColor   = textureCube(uEnvMapRim, reflectDir).rgb;
 
-      /*
-      float rim = smoothstep(0.88, 0.98, length(vUv - 0.5) * 1.13);
-      float hardRim = smoothstep(0.93, 0.98, length(vUv - 0.5));
-      vec3 finalEnv = mix(envColor, rimColor, pow(rim, 1.4));
+      // Fresnel (сила у края)
+      float ndv = max(dot(nrm, normalize(viewDir)), 0.0);
+      float fresnel = pow(1.0 - ndv, 2.8);
+      float fresnelStrength = uRimAmount * 0.7;
 
-      finalEnv += (rimColor - envColor) * hardRim * 0.9; 
-      vec3 baseMix = mix(panelColor, envColor, uEnvAmount);
-      vec3 rimMix = mix(baseMix, finalEnv, rim * uRimAmount);
-      float spec = pow(max(dot(viewDir, vWorldNormal), 0.0), 22.0);
-      rimMix += rim * 0.16 + hardRim * 0.25 + spec * 0.12;
-      float edge = smoothstep(0.94, 1.0, length(vUv - 0.5) * 1.13);
-      vec3 edgeColor = vec3(0.86, 0.97, 1.0);
-      float edgeGlow = edge * 0.82 + pow(edge, 6.0) * 0.45;
-      vec3 rimmed = mix(rimMix, edgeColor, edgeGlow);
-      float topGlow = smoothstep(0.85, 1.01, vUv.y) * 0.16;
-      vec3 result = mix(rimmed, edgeColor, topGlow * edge);
-      */
+      // У края берём более контрастный кубмап
+      vec3 envCombined = mix(envColor, rimColor, pow(fresnel, 1.25));
 
-      vec3 envMix = mix(panelColor, envColor, uEnvAmount);
+      // База = преломление/видео + отражения
+      vec3 envMix = mix(panelColor, envCombined, uEnvAmount);
 
-      // Расчёт fresnel rim
-      float fresnel = pow(1.0 - abs(dot(normalize(vWorldNormal), normalize(viewDir))), 2.8);
-      float fresnelStrength = uRimAmount * 1.2;
-
-      vec3 edgeColor = vec3(1.1, 1.05, 0.8); // для объемной каймы (fresnel rim)
-      vec3 atEdgeColor = vec3(1.12, 0.78, 1.24); // AT фирменная кайма
+      // Цвета каймы
+      vec3 edgeColor   = vec3(1.10, 1.05, 0.80);
+      vec3 atEdgeColor = vec3(1.12, 0.78, 1.24);
 
       vec3 result = envMix + fresnel * edgeColor * fresnelStrength;
 
-      // Спекуляр
-      float spec = pow(max(dot(viewDir, vWorldNormal), 0.0), 20.0);
+      // Узкий hotspot на фаске + базовый спекуляр
+      float spec    = pow(ndv, 20.0);
+      float rimSpec = pow(1.0 - ndv, 8.0);
       result += spec * edgeColor * 0.08;
+      result += rimSpec * edgeColor * 0.42;
 
-      float rimSpec = pow(1.0 - max(dot(normalize(vWorldNormal), normalize(viewDir)), 0.0), 8.0);
-      result += rimSpec * edgeColor * 0.55;  // ↑ сделай 0.35–0.8 под вкус
+      // Мягкий эмиссионный ореол по краям
+      float glowRim = pow(1.0 - ndv, 9.0);
+      result += glowRim * vec3(1.30, 1.15, 1.25) * 0.30;
 
-      float glowRim = pow(1.0 - abs(dot(normalize(vWorldNormal), normalize(viewDir))), 9.0);
-      result += glowRim * vec3(1.30, 1.15, 1.25) * 0.5; // цвет/силу можно крутить
+      // === Прямоугольная рамка по периметру (устойчива к UV) ===
+      vec2 uv = clamp(vUv, 0.0, 1.0);
+      vec2 d  = abs(uv - 0.5);            // 0 в центре, ~0.5 у границы
+      float rect = max(d.x, d.y);         // расстояние до прямоугольной границы (0..0.5)
+      float border = 0.030;               // толщина рамки
+      float aa = fwidth(rect) * 1.2;      // сглаживание
 
-      // Прибавляем живую кайму AT/Notion
-      float edge = smoothstep(0.92, 1.0, length(vUv - 0.5) * 1.02); // было 0.85/1.08
-      float edgeNoise = edge * (0.92 + 0.15 * noise);
-      result += edgeNoise * atEdgeColor * 1.5; // 1.1–2.0
+      float edgeMask  = smoothstep(0.5 - border - aa, 0.5 - aa*0.5, rect);
+      float edgeNoise = edgeMask * (0.92 + 0.15 * noise);
+
+      // Рисуем фирменную кайму и немножко подмешиваем контрастный кубмап
+      result += edgeNoise * atEdgeColor * 1.2;
+      result += edgeMask * rimColor * 0.25; // подчёркнуть обводку отражением
+
+      // Внешний мягкий glow за краем (деликатно)
+      float glowMask = smoothstep(0.5 - (border*2.1) - aa, 0.5 - (border*1.1) - aa*0.5, rect);
+      result += glowMask * atEdgeColor * 0.25;
 
       gl_FragColor = vec4(result, uPanelAlpha);
     }
@@ -147,7 +145,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
   const [videoTexture, setVideoTexture] = useState(null)
   const [hovered, setHovered] = useState(false)
   const [mouse, setMouse] = useState({ x: 0, y: 0 })
-  const { nodes } = useGLTF('/models/p3.glb')
+  const { nodes } = useGLTF('/models/p3.3')
   const forceRerender = useRef(false)
   // Стартовая ориентация панели и настройки парения
   const baseRot = useRef(new THREE.Euler(
