@@ -299,6 +299,7 @@ export default function VideoPanelOverlay3DTest() {
         <directionalLight position={[3, 2, 3]} intensity={2.4} />
         <Environment preset="sunset" />
         <GlassPanelWithOverlay videoUrl="/video/00004.mp4" />
+        <OrbitControls enablePan={false} enableZoom={false} />
       </Canvas>
     </div>
   )
