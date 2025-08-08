@@ -238,7 +238,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
   })
 
   return (
-    <group rotation={[0, Math.PI * 0.12, 0]}>
+    <group rotation={[0, Math.PI * 0.05, 0]}>
       <primitive
         object={nodes.Panel}
         scale={[1.0, 1.0, 1.0]} // подбери под свою сцену!
@@ -292,7 +292,7 @@ export default function VideoPanelOverlay3DTest() {
   return (
     <div style={{ width: "100vw", height: "100vh", background: "#171923" }}>
       <Canvas
-        camera={{ position: [0, 0, 3], fov: 75 }}
+        camera={{ position: [0, 0, 1], fov: 75 }}
         gl={{ antialias: true, alpha: true, preserveDrawingBuffer: false }}
       >
         <ambientLight intensity={2.8} />
