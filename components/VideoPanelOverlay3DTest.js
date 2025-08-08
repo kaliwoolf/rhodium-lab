@@ -24,7 +24,7 @@ const VideoRefractionMaterial = shaderMaterial(
     uRimAmount: 0.75,    // Rim-смешивание (0.5–0.85 — кайма по краю)
     uVideoAlpha: 0,   // Прозрачность видео (0.7–1.0)
     uPanelAlpha: 0.32,   // Альфа всей панели
-    uForward: [0, 0, 1], // world-направление "фронта" панели, заполним в useFrame
+    uForward: new THREE.Vector3(0, 0, 1),
     time: 0
   },
   // vertex
@@ -304,11 +304,13 @@ function GlassPanelWithOverlay({ videoUrl }) {
     }
   })
 
-  if (panelRef.current && shaderRef.current) {
-    panelRef.current.getWorldDirection(tmpForward); // вернёт -Z
-    tmpForward.multiplyScalar(-1); // делаем +Z как "вперёд" (чтобы интуитивно)
-    shaderRef.current.uniforms.uForward.value.copy(tmpForward);
-  }
+    const uf = shaderRef.current.uniforms.uForward;
+    if (uf?.value?.copy) {
+      panelRef.current.getWorldDirection(tmpForward);
+      tmpForward.multiplyScalar(-1);                // делаем +Z «вперёд»
+      uf.value.copy(tmpForward);                    // ⬅️ теперь ок
+    }
+
 
   return (
     <group rotation={[0, 0, 0]}>
