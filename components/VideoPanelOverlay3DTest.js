@@ -1,7 +1,7 @@
 // VideoPanelOverlay3DTest.js
 import { Canvas, useFrame } from "@react-three/fiber"
 import { useGLTF, Html, Environment, OrbitControls, shaderMaterial, useCubeTexture } from "@react-three/drei"
-import { useRef, useState, useEffect } from "react"
+import { useRef, useState, useEffect, useMemo } from "react"
 import * as THREE from "three"
 import styles from '../styles/VideoPanelOverlay3DTest.module.css'
 import CourseSlider from '../components/CourseSlider'
@@ -52,6 +52,7 @@ const VideoRefractionMaterial = shaderMaterial(
     uniform float uRimAmount;
     uniform float uVideoAlpha;
     uniform float uPanelAlpha;
+    uniform vec3 uForward;
     uniform float time;
     varying vec2 vUv;
     varying vec3 vWorldNormal;
@@ -86,6 +87,11 @@ const VideoRefractionMaterial = shaderMaterial(
       vec3 envColor   = textureCube(uEnvMap, reflectDir).rgb;
       vec3 rimColor   = textureCube(uEnvMapRim, reflectDir).rgb;
 
+      // Насколько этот фрагмент "фронтальный" к плоскости панели (1 = фронт, 0 = бок)
+      float faceFront = abs(dot(nrm, normalize(uForward)));
+      float sideFactor = 1.0 - faceFront; // 1 на боках, 0 на фронте
+
+
       // Fresnel (сила у края)
       float ndv = max(dot(nrm, viewDir), 0.0);
       float fresnel = pow(1.0 - ndv, 2.8);
@@ -93,9 +99,8 @@ const VideoRefractionMaterial = shaderMaterial(
 
       // У края берём более контрастный кубмап
       vec3 envCombined = mix(envColor, rimColor, pow(fresnel, 1.25));
-
-      // База = преломление/видео + отражения
-      vec3 envMix = mix(panelColor, envCombined, uEnvAmount);
+      vec3 sidePanel   = mix(panelColor, bgColor, sideFactor * 0.55); // бока «тоньше»
+      vec3 envMix      = mix(sidePanel, envCombined, uEnvAmount * mix(0.35, 1.0, faceFront));
 
       // Цвета каймы
       vec3 edgeColor   = vec3(1.10, 1.05, 0.80);
@@ -138,19 +143,28 @@ const VideoRefractionMaterial = shaderMaterial(
       float outer = 1.0 - smoothstep(0.0, aa, sdf);     // убираем всё дальше от границы
       float edgeMask = inner * outer;
 
-      // Внешний мягкий glow за краем
+            // Внешний мягкий glow за краем
       float glowMask = smoothstep(0.0, border*2.2 + aa*2.0, sdf);
 
       // Чуть «живости» (как и было)
       float edgeNoise = edgeMask * (0.92 + 0.15 * noise);
 
-      // Добавляем цвет каймы и лёгкий внешний свет
-      result += edgeNoise * atEdgeColor * 0.90;
-      result += edgeMask  * rimColor    * 0.12;
-      result += glowMask  * atEdgeColor * 0.18;
+      // Ослабляем все "яркие" слои на боках
+      float brightGate = mix(0.25, 1.0, faceFront); // 0.25 на чистом боку, 1.0 на фронте
+      result += brightGate * (spec * edgeColor * 0.08);
+      result += brightGate * (rimSpec * edgeColor * 0.28);
+      result += brightGate * (glowRim * vec3(1.30,1.15,1.25) * 0.18);
 
-      // Бока прозрачнее, фронт плотнее
-      float viewAlpha = uPanelAlpha * mix(0.35, 1.0, ndv); // при ndv=0 → 35% от альфы
+      // Рамку/глоу по периметру тоже поджать на боках
+      result += brightGate * (edgeNoise * atEdgeColor * 0.90);
+      result += brightGate * (edgeMask  * rimColor    * 0.10);
+      result += brightGate * (glowMask  * atEdgeColor * 0.14);
+
+      // Альфа: фронт плотнее, бока прозрачнее
+      float viewAlpha = uPanelAlpha
+        * mix(0.28, 1.0, faceFront)  // бока 28% от альфы, фронт 100%
+        * mix(0.60, 1.0, ndv);       // grazing углы ещё чуть тоньше
+
       gl_FragColor = vec4(result, viewAlpha);
     }
   `
@@ -176,8 +190,8 @@ function GlassPanelWithOverlay({ videoUrl }) {
   // амплитуда и скорости парения (можешь крутить)
   const floatAmp = useRef({ rot: 0.055, rotZ: 0.035, posY: 0.03 })
   const floatSpd = useRef({ x: 0.17, y: 0.14, z: 0.11, yPos: 0.60 })
+  const tmpForward = useMemo(() => new THREE.Vector3(), [])
 
- 
   // "Обычное" стекло
   const envMapNeutral = useCubeTexture(
     ['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'],
@@ -204,8 +218,6 @@ function GlassPanelWithOverlay({ videoUrl }) {
      setHovered(false);
      setMouse({ x: 0, y: 0 });
   };
-
-
 
   useEffect(() => {
     const video = document.createElement("video")
@@ -265,7 +277,6 @@ function GlassPanelWithOverlay({ videoUrl }) {
     shaderRef.current.uniforms.uVideoAlpha.value = THREE.MathUtils.lerp(cur, to, delta * 2.5)
   })
 
-
   const { gl, scene, camera, size } = useThree()
   const bgRenderTarget = useRef()  
   useEffect(() => {
@@ -292,6 +303,12 @@ function GlassPanelWithOverlay({ videoUrl }) {
     }
   })
 
+  if (panelRef.current && shaderRef.current) {
+    panelRef.current.getWorldDirection(tmpForward); // вернёт -Z
+    tmpForward.multiplyScalar(-1); // делаем +Z как "вперёд" (чтобы интуитивно)
+    shaderRef.current.uniforms.uForward.value.copy(tmpForward);
+  }
+
   return (
     <group rotation={[0, 0, 0]}>
       <primitive
@@ -316,6 +333,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
             uPanelAlpha={0.68}
             uTint={[0.63, 0.98, 0.86]}
             uTintStrength={0.0}
+            uForward: [0, 0, 1], // world-направление "фронта" панели, заполним в useFrame
             transparent
             depthWrite={false}
             />
