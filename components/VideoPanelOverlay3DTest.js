@@ -87,7 +87,7 @@ const VideoRefractionMaterial = shaderMaterial(
       vec3 rimColor   = textureCube(uEnvMapRim, reflectDir).rgb;
 
       // Fresnel (сила у края)
-      float ndv = max(dot(nrm, viewDir), 0.0);  ы
+      float ndv = max(dot(nrm, viewDir), 0.0);
       float fresnel = pow(1.0 - ndv, 2.8);
       float fresnelStrength = uRimAmount * 0.7;
 
