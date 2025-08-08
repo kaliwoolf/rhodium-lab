@@ -113,25 +113,45 @@ const VideoRefractionMaterial = shaderMaterial(
       float glowRim = pow(1.0 - ndv, 9.0);
       result += glowRim * vec3(1.30, 1.15, 1.25) * 0.18;
 
-      // === Прямоугольная рамка по периметру (устойчива к UV) ===
+      // === Скруглённая рамка по периметру (SDF rounded-rect) ===
+      // Центрируем UV в [-0.5..0.5]
       vec2 uv = clamp(vUv, 0.0, 1.0);
-      vec2 d  = abs(uv - 0.5);            // 0 в центре, ~0.5 у границы
-      float rect = max(d.x, d.y);         // расстояние до прямоугольной границы (0..0.5)
-      float border = 0.010;               // толщина рамки
-      float aa = fwidth(rect) * 1.6;      // сглаживание
+      vec2 p  = uv - 0.5;
 
-      float edgeMask  = smoothstep(0.5 - border - aa, 0.5 - aa*0.5, rect);
+      // Полуразмеры прямоугольника (в UV). 0.5 — до самой границы карты.
+      vec2 halfSize = vec2(0.5);
+
+      // Радиус скругления в UV. Подбери под свой мэш/UV (0.07–0.12 обычно ок).
+      float radius = 0.085;
+
+      // Signed distance до скруглённого прямоугольника
+      // (источник: iq, "rounded box sdf")
+      vec2 q = abs(p) - (halfSize - vec2(radius));
+      float sdf = length(max(q, 0.0)) - radius; // <0 внутри, ~0 на границе, >0 снаружи
+
+      // Толщина контура и сглаживание
+      float border = 0.016;              // толщина рамки (уменьши, если надо тоньше)
+      float aa     = fwidth(sdf) * 1.5;  // антиалиас (мягче край)
+
+      // Маска тонкого "кольца" по границе: внутри между [-border .. 0]
+      float inner = smoothstep(-border - aa, -aa, sdf); // подкрашиваем до границы
+      float outer = 1.0 - smoothstep(0.0, aa, sdf);     // убираем всё дальше от границы
+      float edgeMask = inner * outer;
+
+      // Внешний мягкий glow за краем
+      float glowMask = smoothstep(0.0, border*2.2 + aa*2.0, sdf);
+
+      // Чуть «живости» (как и было)
       float edgeNoise = edgeMask * (0.92 + 0.15 * noise);
 
-      // Рисуем фирменную кайму и немножко подмешиваем контрастный кубмап
-      result += edgeNoise * atEdgeColor * 0.80;
-      result += edgeMask * rimColor * 0.12; // подчёркнуть обводку отражением
+      // Добавляем цвет каймы и лёгкий внешний свет
+      result += edgeNoise * atEdgeColor * 0.90;
+      result += edgeMask  * rimColor    * 0.12;
+      result += glowMask  * atEdgeColor * 0.18;
 
-      // Внешний мягкий glow за краем (деликатно)
-      float glowMask = smoothstep(0.5 - (border*2.1) - aa, 0.5 - (border*1.1) - aa*0.5, rect);
-      result += glowMask * atEdgeColor * 0.14;
-
-      gl_FragColor = vec4(result, uPanelAlpha);
+      // Бока прозрачнее, фронт плотнее
+      float viewAlpha = uPanelAlpha * mix(0.35, 1.0, ndv); // при ndv=0 → 35% от альфы
+      gl_FragColor = vec4(result, viewAlpha);
     }
   `
 )
@@ -296,6 +316,8 @@ function GlassPanelWithOverlay({ videoUrl }) {
             uPanelAlpha={0.68}
             uTint={[0.63, 0.98, 0.86]}
             uTintStrength={0.0}
+            transparent
+            depthWrite={false}
             />
         )}
 
