@@ -56,8 +56,15 @@ const VideoRefractionMaterial = shaderMaterial(
     varying vec2 vUv;
     varying vec3 vWorldNormal;
     varying vec3 vWorldPos;
+    varying vec3 vObjNormal;
 
     void main() {
+
+      vUv = uv;
+      vWorldNormal = normalize(normalMatrix * normal);
+      vWorldPos = (modelMatrix * vec4(position, 1.0)).xyz;
+      vObjNormal = normal;           // ⬅️ нормаль в объектном пространстве (важно!)
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 
       // Фрагмент для классного дисторшна через noise:
       float noise = fract(sin(dot(vUv * 0.87, vec2(12.9898,78.233))) * 43758.5453);
@@ -75,7 +82,29 @@ const VideoRefractionMaterial = shaderMaterial(
       bgColor.g = texture2D(uBackground, refractUv).g;
       bgColor.b = texture2D(uBackground, refractUv - vec2(chroma, 0.0)).b;
 
-      vec3 videoColor = texture2D(uVideo, vUv).rgb;
+      // Масштаб проекции (подгони 0.3..0.8)
+      float s = 0.45;
+
+      // Веса для трипланара по мировым нормалям (куда "смотрит" грань)
+      vec3 n = normalize(vWorldNormal);
+      vec3 w = pow(abs(n), vec3(4.0));
+      w /= (w.x + w.y + w.z + 1e-5);
+
+      // Трипланарные UV (из world-pos), с повторением через fract
+      vec2 uvX = fract(vWorldPos.zy * s);   // для граней, смотрящих по X
+      vec2 uvY = fract(vWorldPos.xz * s);   // для граней, смотрящих по Y
+      vec2 uvZ = fract(vWorldPos.xy * s);   // для граней, смотрящих по Z
+
+      vec3 texX = texture2D(uVideo, uvX).rgb;
+      vec3 texY = texture2D(uVideo, uvY).rgb;
+      vec3 texZ = texture2D(uVideo, uvZ).rgb;
+      vec3 videoTri = texX * w.x + texY * w.y + texZ * w.z;
+
+      // Маска "это фронт?" в ОБЪЕКТНОМ пространстве (осевое: фронт/тыл = ±Z)
+      float frontMask = smoothstep(0.35, 0.65, abs(vObjNormal.z));
+
+      // Гибрид: на фронте берём UV, на гранях — трипланар
+      vec3 videoColor = mix(videoTri, texture2D(uVideo, vUv).rgb, frontMask);
 
 
       vec3 panelColor = mix(bgColor, videoColor, uVideoAlpha);
@@ -151,8 +180,8 @@ function GlassPanelWithOverlay({ videoUrl }) {
   const forceRerender = useRef(false)
   // Стартовая ориентация панели и настройки парения
   const baseRot = useRef(new THREE.Euler(
-    THREE.MathUtils.degToRad(-12), // X — наклон вперёд/назад
-    THREE.MathUtils.degToRad(25),  // Y — поворот вбок
+    THREE.MathUtils.degToRad(0), // X — наклон вперёд/назад
+    THREE.MathUtils.degToRad(5),  // Y — поворот вбок
     THREE.MathUtils.degToRad(0)    // Z — крен
   ))
   // амплитуда и скорости парения (можешь крутить)
@@ -201,6 +230,12 @@ function GlassPanelWithOverlay({ videoUrl }) {
     video.style.display = "none"
     video.play()
     const texture = new THREE.VideoTexture(video)
+    texture.minFilter = THREE.LinearFilter
+    texture.magFilter = THREE.LinearFilter
+    texture.generateMipmaps = false
+    texture.wrapS = THREE.RepeatWrapping   // на всякий случай
+    texture.wrapT = THREE.RepeatWrapping
+    texture.needsUpdate = true
     setVideoTexture(texture)
     return () => {
       texture.dispose()
