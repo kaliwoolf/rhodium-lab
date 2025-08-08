@@ -24,6 +24,7 @@ const VideoRefractionMaterial = shaderMaterial(
     uRimAmount: 0.75,    // Rim-смешивание (0.5–0.85 — кайма по краю)
     uVideoAlpha: 0,   // Прозрачность видео (0.7–1.0)
     uPanelAlpha: 0.32,   // Альфа всей панели
+    uForward: [0, 0, 1], // world-направление "фронта" панели, заполним в useFrame
     time: 0
   },
   // vertex
@@ -329,11 +330,10 @@ function GlassPanelWithOverlay({ videoUrl }) {
             uIntensity={0.22}
             uThickness={2.4}
             uEnvAmount={0.22}    // Прозрачность envMap (0.12…0.22)
-            uRimAmount={0.42}    // Сила rim-каймы
+            uRimAmount={0.30}    // Сила rim-каймы
             uPanelAlpha={0.68}
             uTint={[0.63, 0.98, 0.86]}
             uTintStrength={0.0}
-            uForward: {[0, 0, 1]} // world-направление "фронта" панели, заполним в useFrame
             transparent
             depthWrite={false}
             />
