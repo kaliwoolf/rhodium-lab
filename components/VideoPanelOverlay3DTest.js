@@ -107,10 +107,11 @@ const VideoRefractionMaterial = shaderMaterial(
       vec3 result = mix(rimmed, edgeColor, topGlow * edge);
       */
 
+      vec3 envMix = mix(panelColor, envColor, uEnvAmount);
 
       // Расчёт fresnel rim
-      float fresnel = pow(1.0 - abs(dot(normalize(vWorldNormal), normalize(viewDir))), 2.0);
-      float fresnelStrength = uRimAmount * 1.2; // можно поиграть
+      float fresnel = pow(1.0 - abs(dot(normalize(vWorldNormal), normalize(viewDir))), 2.8);
+      float fresnelStrength = uRimAmount * 1.2;
 
       vec3 edgeColor = vec3(1.1, 1.05, 0.8); // для объемной каймы (fresnel rim)
       vec3 atEdgeColor = vec3(1.12, 0.78, 1.24); // AT фирменная кайма
@@ -126,11 +127,7 @@ const VideoRefractionMaterial = shaderMaterial(
       float edgeNoise = edge * (0.9 + 0.18 * noise);
 
       // Прибавляем живую кайму AT/Notion
-      result += edgeNoise * atEdgeColor * 1.5;
-
-      // (Можно добавить ещё гибридный вариант, если хочешь более сложный контур)
-      // float hybrid = max(fresnel * 0.8, edge * 1.2);
-      // result += hybrid * atEdgeColor * 1.2;
+      result += edgeNoise * atEdgeColor * 1.1;
 
       gl_FragColor = vec4(result, uPanelAlpha);
     }
