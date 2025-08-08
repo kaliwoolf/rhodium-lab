@@ -66,7 +66,7 @@ const VideoRefractionMaterial = shaderMaterial(
            + (noise - 0.5) * 0.055; // добавил шум
 
       // Lens bump + chromatic
-      float chroma = 0.024 * uThickness * uIntensity;
+      float chroma = 0.05 * uThickness * uIntensity;
       vec2 refractUv = vUv + vec2(bump, bump) * uIntensity * uThickness;
       
       // Преломляем фон сцены:
@@ -244,10 +244,10 @@ function GlassPanelWithOverlay({ videoUrl }) {
           uVideo={videoTexture}  
           uEnvMap={envMapNeutral}
           uEnvMapRim={envMapRim}
-          uIntensity={0.12}
-          uThickness={1.4}
-          uEnvAmount={0.20}    // Прозрачность envMap (0.12…0.22)
-          uRimAmount={0.18}    // Сила rim-каймы
+          uIntensity={0.22}
+          uThickness={2.4}
+          uEnvAmount={0.23}    // Прозрачность envMap (0.12…0.22)
+          uRimAmount={0.28}    // Сила rim-каймы
           uTint={[0.63, 0.98, 0.86]}
           uTintStrength={0.18}
           />
