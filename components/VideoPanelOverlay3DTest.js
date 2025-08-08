@@ -138,7 +138,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
   // "Обычное" стекло
   const envMapNeutral = useCubeTexture(
     ['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'],
-    { path: '/hdr/warm02/' }
+    { path: '/hdr/studio/' }
   )
   // Для rimlight — контрастная
   const envMapRim = useCubeTexture(
