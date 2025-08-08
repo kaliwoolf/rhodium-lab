@@ -238,51 +238,52 @@ function GlassPanelWithOverlay({ videoUrl }) {
   })
 
   return (
-    <primitive
-      object={nodes.Panel}
-      scale={[0.46, 0.54, 0.28]} // подбери под свою сцену!
-      rotation={[Math.PI * 0.18, Math.PI * 0.18, 0]}
-      ref={panelRef} 
-      onPointerMove={handlePointerMove}
-      onPointerOut={handlePointerOut}
-      onPointerOver={handlePointerOver} 
-    >
-      {videoTexture && (
-        <videoRefractionMaterial
-          ref={shaderRef}
-          uBackground={bgRenderTarget.current?.texture}
-          uVideo={videoTexture}  
-          uEnvMap={envMapNeutral}
-          uEnvMapRim={envMapRim}
-          uIntensity={0.22}
-          uThickness={2.4}
-          uEnvAmount={0.23}    // Прозрачность envMap (0.12…0.22)
-          uRimAmount={0.28}    // Сила rim-каймы
-          uTint={[0.63, 0.98, 0.86]}
-          uTintStrength={0.0}
-          />
-      )}
-
-      {/* HTML-оверлей */}
-      <Html
-        position={[0, 0, 0.009]} // чуть выше панели (толщина+)
-        center
-        distanceFactor={1.01}
-        transform
-        className={styles.panel}
-        style={{ width: '94vw', maxWidth: 1300, height: 740, pointerEvents: 'auto' }}
+    <group rotation={[Math.PI * 0.18, Math.PI * 0.18, 0]}>
+      <primitive
+        object={nodes.Panel}
+        scale={[0.46, 0.54, 0.28]} // подбери под свою сцену!
+        ref={panelRef} 
+        onPointerMove={handlePointerMove}
+        onPointerOut={handlePointerOut}
+        onPointerOver={handlePointerOver} 
       >
-        {/* Вставляем твою разметку и CSS */}
-        <div className={styles.inner}>
-           <div className={styles.content}>
-            <h3 className="text-white text-xl font-semibold px-6 py-2 rounded-full bg-[rgba(255,255,255,0.1)] backdrop-blur-md border border-white/20 shadow-md mb-6 w-fit mx-auto">
-              Актуальные проекты
-            </h3>
+        {videoTexture && (
+          <videoRefractionMaterial
+            ref={shaderRef}
+            uBackground={bgRenderTarget.current?.texture}
+            uVideo={videoTexture}  
+            uEnvMap={envMapNeutral}
+            uEnvMapRim={envMapRim}
+            uIntensity={0.22}
+            uThickness={2.4}
+            uEnvAmount={0.23}    // Прозрачность envMap (0.12…0.22)
+            uRimAmount={0.28}    // Сила rim-каймы
+            uTint={[0.63, 0.98, 0.86]}
+            uTintStrength={0.0}
+            />
+        )}
+
+        {/* HTML-оверлей */}
+        <Html
+          position={[0, 0, 0.009]} // чуть выше панели (толщина+)
+          center
+          distanceFactor={1.01}
+          transform
+          className={styles.panel}
+          style={{ width: '94vw', maxWidth: 1300, height: 740, pointerEvents: 'auto' }}
+        >
+          {/* Вставляем твою разметку и CSS */}
+          <div className={styles.inner}>
+             <div className={styles.content}>
+              <h3 className="text-white text-xl font-semibold px-6 py-2 rounded-full bg-[rgba(255,255,255,0.1)] backdrop-blur-md border border-white/20 shadow-md mb-6 w-fit mx-auto">
+                Актуальные проекты
+              </h3>
+            </div>
           </div>
-        </div>
-      </Html>
-      
-    </primitive>
+        </Html>
+        
+      </primitive>
+    </group>
   )
 }
 
