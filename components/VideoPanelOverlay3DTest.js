@@ -13,6 +13,7 @@ import { useThree } from "@react-three/fiber"
 const VideoRefractionMaterial = shaderMaterial(
   {
     uVideo: null,
+    uBackground: null
     uEnvMap: null,
     uEnvMapRim: null,    
     uIntensity: 0.15,
@@ -74,13 +75,10 @@ const VideoRefractionMaterial = shaderMaterial(
       bgColor.g = texture2D(uBackground, refractUv).g;
       bgColor.b = texture2D(uBackground, refractUv - vec2(chroma, 0.0)).b;
 
-      vec3 videoColor = vec3(0.0);
-
-      if (uVideoAlpha > 0.01) {
-        videoColor.r = texture2D(uVideo, refractUv + vec2(chroma, 0.0)).r;
-        videoColor.g = texture2D(uVideo, refractUv).g;
-        videoColor.b = texture2D(uVideo, refractUv - vec2(chroma, 0.0)).b;
-      }
+      vec3 videoColor;
+      videoColor.r = texture2D(uVideo, refractUv + vec2(chroma, 0.0)).r;
+      videoColor.g = texture2D(uVideo, refractUv).g;
+      videoColor.b = texture2D(uVideo, refractUv - vec2(chroma, 0.0)).b;
 
       vec3 panelColor = mix(bgColor, videoColor, uVideoAlpha);
 
@@ -243,7 +241,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
         <videoRefractionMaterial
           ref={shaderRef}
           uBackground={bgRenderTarget.current?.texture}
-          uVideo={hovered ? videoTexture : null}
+          uVideo={videoTexture}  
           uEnvMap={envMapNeutral}
           uEnvMapRim={envMapRim}
           uIntensity={0.12}
