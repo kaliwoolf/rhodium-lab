@@ -80,14 +80,14 @@ const VideoRefractionMaterial = shaderMaterial(
       panelColor = mix(panelColor, uTint, uTintStrength);
 
       // Reflection env
-      vec3 viewDir    = normalize(vWorldPos - cameraPosition);
+      vec3 viewDir    = normalize(cameraPosition - vWorldPos);
       vec3 nrm        = normalize(vWorldNormal);
-      vec3 reflectDir = reflect(viewDir, normalize(vWorldNormal));
+      vec3 reflectDir = reflect(-viewDir, nrm);
       vec3 envColor   = textureCube(uEnvMap, reflectDir).rgb;
       vec3 rimColor   = textureCube(uEnvMapRim, reflectDir).rgb;
 
       // Fresnel (сила у края)
-      float ndv = max(dot(nrm, normalize(viewDir)), 0.0);
+      float ndv = max(dot(nrm, viewDir), 0.0);  ы
       float fresnel = pow(1.0 - ndv, 2.8);
       float fresnelStrength = uRimAmount * 0.7;
 
@@ -117,7 +117,7 @@ const VideoRefractionMaterial = shaderMaterial(
       vec2 uv = clamp(vUv, 0.0, 1.0);
       vec2 d  = abs(uv - 0.5);            // 0 в центре, ~0.5 у границы
       float rect = max(d.x, d.y);         // расстояние до прямоугольной границы (0..0.5)
-      float border = 0.030;               // толщина рамки
+      float border = 0.020;               // толщина рамки
       float aa = fwidth(rect) * 1.2;      // сглаживание
 
       float edgeMask  = smoothstep(0.5 - border - aa, 0.5 - aa*0.5, rect);
