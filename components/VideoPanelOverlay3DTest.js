@@ -241,7 +241,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
     <primitive
       object={nodes.Panel}
       scale={[0.46, 0.54, 0.28]} // подбери под свою сцену!
-      rotation={[0, 0.18, 0]}
+      rotation={[Math.PI * 0.18, Math.PI * 0.18, 0]}
       ref={panelRef} 
       onPointerMove={handlePointerMove}
       onPointerOut={handlePointerOut}
@@ -259,7 +259,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
           uEnvAmount={0.23}    // Прозрачность envMap (0.12…0.22)
           uRimAmount={0.28}    // Сила rim-каймы
           uTint={[0.63, 0.98, 0.86]}
-          uTintStrength={0.18}
+          uTintStrength={0.0}
           />
       )}
 
