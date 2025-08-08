@@ -209,6 +209,13 @@ function GlassPanelWithOverlay({ videoUrl }) {
     }
   }, [videoUrl])
 
+  useEffect(() => {
+    if (shaderRef.current) {
+      shaderRef.current.uniforms.uVideoAlpha.value = 0
+    }
+  }, [videoTexture])
+
+
   // Анимация + "парение"
   useFrame((state, delta) => {
     if (!shaderRef.current || !panelRef.current) return
@@ -240,6 +247,32 @@ function GlassPanelWithOverlay({ videoUrl }) {
     shaderRef.current.uniforms.uVideoAlpha.value = THREE.MathUtils.lerp(cur, to, delta * 2.5)
   })
 
+
+  const { gl, scene, camera, size } = useThree()
+  const bgRenderTarget = useRef()  
+  useEffect(() => {
+    bgRenderTarget.current = new THREE.WebGLRenderTarget(size.width, size.height)
+    return () => bgRenderTarget.current?.dispose()
+  }, [size.width, size.height])
+
+  useFrame(() => {
+    if (!bgRenderTarget.current) return
+
+    // Скрываем панель перед рендером фона
+    if (panelRef.current) panelRef.current.visible = false
+
+    gl.setRenderTarget(bgRenderTarget.current)
+    gl.render(scene, camera)
+    gl.setRenderTarget(null)
+
+    if (panelRef.current) panelRef.current.visible = true
+
+    // 🔥 Принудительный микроскопический сдвиг, чтобы фон обновился
+    if (forceRerender.current && panelRef.current) {
+      panelRef.current.rotation.x += 0.0001
+      forceRerender.current = false
+    }
+  })
 
   return (
     <group rotation={[0, 0, 0]}>
