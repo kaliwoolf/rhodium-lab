@@ -65,7 +65,7 @@ function GlassPanel({ videoUrl }) {
   const [videoTexture, setVideoTexture] = useState(null)
   const [hovered, setHovered] = useState(false)
   const [mouse, setMouse] = useState({ x: 0, y: 0 })
-  const { nodes } = useGLTF('/models/p1.glb')
+  const { nodes } = useGLTF('/models/p2.glb')
   console.log('nodes:', nodes)
 
 
