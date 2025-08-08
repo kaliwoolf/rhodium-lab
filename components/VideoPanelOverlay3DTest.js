@@ -89,7 +89,7 @@ const VideoRefractionMaterial = shaderMaterial(
       // Fresnel (сила у края)
       float ndv = max(dot(nrm, viewDir), 0.0);
       float fresnel = pow(1.0 - ndv, 2.8);
-      float fresnelStrength = uRimAmount * 0.7;
+      float fresnelStrength = uRimAmount * 0.55;
 
       // У края берём более контрастный кубмап
       vec3 envCombined = mix(envColor, rimColor, pow(fresnel, 1.25));
@@ -107,29 +107,29 @@ const VideoRefractionMaterial = shaderMaterial(
       float spec    = pow(ndv, 20.0);
       float rimSpec = pow(1.0 - ndv, 8.0);
       result += spec * edgeColor * 0.08;
-      result += rimSpec * edgeColor * 0.42;
+      result += rimSpec * edgeColor * 0.22;
 
       // Мягкий эмиссионный ореол по краям
       float glowRim = pow(1.0 - ndv, 9.0);
-      result += glowRim * vec3(1.30, 1.15, 1.25) * 0.30;
+      result += glowRim * vec3(1.30, 1.15, 1.25) * 0.18;
 
       // === Прямоугольная рамка по периметру (устойчива к UV) ===
       vec2 uv = clamp(vUv, 0.0, 1.0);
       vec2 d  = abs(uv - 0.5);            // 0 в центре, ~0.5 у границы
       float rect = max(d.x, d.y);         // расстояние до прямоугольной границы (0..0.5)
-      float border = 0.020;               // толщина рамки
-      float aa = fwidth(rect) * 1.2;      // сглаживание
+      float border = 0.010;               // толщина рамки
+      float aa = fwidth(rect) * 1.6;      // сглаживание
 
       float edgeMask  = smoothstep(0.5 - border - aa, 0.5 - aa*0.5, rect);
       float edgeNoise = edgeMask * (0.92 + 0.15 * noise);
 
       // Рисуем фирменную кайму и немножко подмешиваем контрастный кубмап
-      result += edgeNoise * atEdgeColor * 1.2;
-      result += edgeMask * rimColor * 0.25; // подчёркнуть обводку отражением
+      result += edgeNoise * atEdgeColor * 0.80;
+      result += edgeMask * rimColor * 0.12; // подчёркнуть обводку отражением
 
       // Внешний мягкий glow за краем (деликатно)
       float glowMask = smoothstep(0.5 - (border*2.1) - aa, 0.5 - (border*1.1) - aa*0.5, rect);
-      result += glowMask * atEdgeColor * 0.25;
+      result += glowMask * atEdgeColor * 0.14;
 
       gl_FragColor = vec4(result, uPanelAlpha);
     }
