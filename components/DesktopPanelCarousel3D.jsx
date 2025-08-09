@@ -278,7 +278,7 @@ function GlassPanelWithOverlay({ title, href, videoUrl }) {
     <group rotation={[0, 0, 0]}>
       <primitive
         object={nodes.Panel}
-        scale={[0.65, 0.65, 0.65]} // подбери под свою сцену!
+        scale={[0.55, 0.55, 0.55]} // подбери под свою сцену!
         ref={panelRef} 
         onPointerMove={handlePointerMove}
         onPointerOut={handlePointerOut}
@@ -330,7 +330,7 @@ const PANELS = [
 
 function Carousel() {
   const group = useRef();
-  const spacing = 4.0;        // расстояние между панелями
+  const spacing = 9.5;        // расстояние между панелями
   const speed = 0.02;         // скорость автопрокрутки (меньше — медленнее)
   const loopW = spacing * PANELS.length;
   const offset = useRef(0);
@@ -341,7 +341,7 @@ function Carousel() {
     group.current.children.forEach((child, i) => {
       let x = i * spacing - offset.current - loopW / 2;
       if (x < -loopW / 2) x += loopW; // wrap
-      child.position.set(x, 0, 0);
+      child.position.set(x, 0, i * 0.002);
     });
   });
 
