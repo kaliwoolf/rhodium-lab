@@ -369,9 +369,9 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
 });
 
 const PANELS = [
-  { title: 'КОД СТЫДА', href: '#p1', video: '/video/ks.mp4' },
-  { title: 'ПРИДВОРНЫЕ КАРТЫ', href: '#p2', video: '/video/p2.mp4' },
-  { title: 'ТАРО БОТ', href: '#p3', video: '/video/bot.mp4' },
+  { title: 'КОД СТЫДА', href: 'https://mysteriumlab.pro/code', video: '/video/ks.mp4' },
+  { title: 'ПРИДВОРНЫЕ КАРТЫ', href: 'https://mysteriumlab.pro/mechanica', video: '/video/p2.mp4' },
+  { title: 'ТАРО БОТ', href: 'https://t.me/portolux', video: '/video/bot.mp4' },
 ];
 
 function Carousel() {
@@ -441,7 +441,7 @@ function Carousel() {
       </group>
 
       {/* Стрелки поверх канваса */}
-      <Html fullscreen>
+       <Html fullscreen zIndexRange={[0, 0]} style={{ pointerEvents: 'none' }}>
         <div className="pointer-events-none absolute inset-0 flex items-center justify-between px-6">
           <button
             onClick={prev}
