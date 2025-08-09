@@ -192,6 +192,12 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
      setMouse({ x: 0, y: 0 });
   };
 
+  // Помечаем объект как «панель»
+  useEffect(() => {
+    if (panelRef.current) panelRef.current.userData.__isGlassPanel = true
+  }, [])
+
+
   useEffect(() => {
     const video = document.createElement("video")
     video.src = videoUrl
@@ -267,27 +273,34 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
   useFrame(() => {
     if (!bgRenderTarget.current) return
 
-    // Скрываем панель перед рендером фона
-    if (panelRef.current) panelRef.current.visible = false
+    // Скрываем все панели в сцене (не только текущую)
+    const hidden = []
+    scene.traverse((obj) => {
+      if (obj.userData?.__isGlassPanel && obj.visible) {
+        obj.visible = false
+        hidden.push(obj)
+      }
+    })
 
     gl.setRenderTarget(bgRenderTarget.current)
     gl.render(scene, camera)
     gl.setRenderTarget(null)
 
-    if (panelRef.current) panelRef.current.visible = true
+    // Возвращаем видимость панелей
+    for (const obj of hidden) obj.visible = true
 
-    // 🔥 Принудительный микроскопический сдвиг, чтобы фон обновился
+    // микросдвиг — как было
     if (forceRerender.current && panelRef.current) {
       panelRef.current.rotation.x += 0.0001
       forceRerender.current = false
     }
   })
 
+
   return (
     <group ref={groupRef}>
       <mesh
         geometry={nodes.Panel.geometry}
-        object={nodes.Panel}
         scale={[0.55, 0.55, 0.55]} // подбери под свою сцену!
         ref={panelRef} 
         onPointerMove={handlePointerMove}
