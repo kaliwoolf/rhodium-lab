@@ -259,10 +259,18 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
 
   const { gl, scene, camera, size } = useThree()
   const bgRenderTarget = useRef()  
+  const bgCamera = useRef(null) 
+
   useEffect(() => {
     bgRenderTarget.current = new THREE.WebGLRenderTarget(size.width, size.height)
+
+    // фоновая камера с теми же параметрами, но только слой 0
+    const c = new THREE.PerspectiveCamera(camera.fov, camera.aspect, camera.near, camera.far)
+    c.layers.set(0)
+    bgCamera.current = c
+
     return () => bgRenderTarget.current?.dispose()
-  }, [size.width, size.height])
+  }, [size.width, size.height, camera.fov, camera.aspect, camera.near, camera.far])
 
   // Панель в слой 1, а камере включаем видимость слоя 1
   useEffect(() => {
@@ -272,20 +280,20 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
 
 
   useFrame(() => {
-    if (!bgRenderTarget.current) return
+    if (!bgRenderTarget.current || !bgCamera.current) return
 
-    // запоминаем текущую маску слоёв камеры
-    const prevMask = camera.layers.mask
+    // синхронизируем позу/оптику фоновой камеры с основной
+    const bc = bgCamera.current
+    bc.position.copy(camera.position)
+    bc.quaternion.copy(camera.quaternion)
+    bc.projectionMatrix.copy(camera.projectionMatrix)
+    bc.projectionMatrixInverse.copy(camera.projectionMatrixInverse)
+    bc.updateMatrixWorld()
 
-    // фон: показываем только слой 0 (там звёзды/бекграунд)
-    camera.layers.set(0)
-
+    // рендерим фон (только слой 0) в RT
     gl.setRenderTarget(bgRenderTarget.current)
-    gl.render(scene, camera)
+    gl.render(scene, bc)
     gl.setRenderTarget(null)
-
-    // возвращаем слои камеры
-    camera.layers.mask = prevMask
 
     if (forceRerender.current && panelRef.current) {
       panelRef.current.rotation.x += 0.0001
