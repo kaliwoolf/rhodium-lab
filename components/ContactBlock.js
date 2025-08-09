@@ -123,7 +123,7 @@ export default function ContactBlock() {
       onMouseMove={handlePointerMove}
       onTouchMove={handlePointerMove}
     >
-      <div className="contact-canvas relative z-20 rounded-3xl overflow-hidden backdrop-blur-sm bg-white/5 shadow-[0_0_80px_rgba(255,255,255,0.05)] ring-1 ring-white/10">
+       <div className="contact-canvas relative z-20 rounded-3xl overflow-hidden">
           <div className="relative w-full h-full">
             <Canvas
               gl={{ alpha: true }}
