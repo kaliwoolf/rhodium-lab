@@ -55,10 +55,10 @@ export default function ContactBlock() {
   function BlenderGlass() {
     const { scene } = useGLTF('/models/ContactFrame.glb')
     const gRef = useRef()
-    
+
     const glassMat = useMemo(() => new THREE.MeshPhysicalMaterial({
       transparent: true,
-      depthWrite: false,       // ← не кладём в depth, убирает мерцания с видео
+      depthWrite: false,
       roughness: 0.02,
       transmission: 0.96,
       thickness: 0.08,
@@ -68,54 +68,51 @@ export default function ContactBlock() {
       envMapIntensity: 1.0,
     }), [])
 
-  useMemo(() => {
-    scene.traverse((o) => {
-      if (o.isMesh) {
-        o.material = glassMat
-        o.renderOrder = 10     // ← рисуем после плоскости с видео
-        o.castShadow = false
-        o.receiveShadow = false
-       }
-     })
-   }, [scene, glassMat])
+    useMemo(() => {
+      scene.traverse((o) => {
+        if (o.isMesh) {
+          o.material = glassMat
+          o.renderOrder = 10
+          o.castShadow = false
+          o.receiveShadow = false
+        }
+      })
+    }, [scene, glassMat])
 
-  // подогнать модель под размер видео 3.2 x 2.4 и сделать на 2% больше
-  useEffect(() => {
-    const box = new THREE.Box3().setFromObject(scene)
-    const size = new THREE.Vector3()
-    box.getSize(size)
-    if (size.x > 0 && size.y > 0) {
-      const targetW = 3.2 * 1.02 // +2% чтобы стекло выступало по краям
-      const targetH = 2.4 * 1.02
-      const sx = targetW / size.x
-      const sy = targetH / size.y
-      const s = Math.min(sx, sy)
-      scene.scale.setScalar(s)
-      // центрируем по bbox
+    // Центруем модель и подгоняем размер под 3.2 x 2.4 (+2%)
+    useEffect(() => {
+      scene.updateMatrixWorld(true)
+      const box = new THREE.Box3().setFromObject(scene)
+      const size = new THREE.Vector3()
       const center = new THREE.Vector3()
+      box.getSize(size)
       box.getCenter(center)
-      scene.position.sub(center.multiplyScalar(s))
-    }
-  }, [scene])
 
+      // перенести центр модели в (0,0,0)
+      scene.position.sub(center)
 
-    scene.position.set(0, 0, 0.005)
-    scene.rotation.set(
-      THREE.MathUtils.degToRad(-2), // X: слегка наклонить назад
-      THREE.MathUtils.degToRad(6),  // Y: чуть довернуть вправо (видны грани)
-      0
-    )
-    scene.scale.set(1, 1, 1)       // подогнать, если надо
+      // целевой масштаб — ставим на group (НЕ на scene!)
+      const targetW = 3.2 * 1.02
+      const targetH = 2.4 * 1.02
+      const s = Math.min(targetW / size.x, targetH / size.y)
+      if (gRef.current) gRef.current.scale.setScalar(s)
+    }, [scene])
+
     return (
-      <group ref={gRef} position={[0, 0, 0.005]} rotation={[
-        THREE.MathUtils.degToRad(-7),  // X: наклон назад
-        THREE.MathUtils.degToRad(9),   // Y: чуть довернуть
-        0
-      ]}>
+      <group
+        ref={gRef}
+        position={[0, 0, 0.005]}                 // стекло чуть ближе к камере
+        rotation={[
+          THREE.MathUtils.degToRad(-7),          // X: наклон назад
+          THREE.MathUtils.degToRad(9),           // Y: небольшой поворот
+          0
+        ]}
+      >
         <primitive object={scene} />
       </group>
     )
   }
+
 
   return (
     <section
