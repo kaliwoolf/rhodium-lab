@@ -259,42 +259,24 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
 
   const { gl, scene, camera, size } = useThree()
   const bgRenderTarget = useRef()  
-  const bgCamera = useRef(null) 
-
   useEffect(() => {
     bgRenderTarget.current = new THREE.WebGLRenderTarget(size.width, size.height)
-
-    // фоновая камера с теми же параметрами, но только слой 0
-    const c = new THREE.PerspectiveCamera(camera.fov, camera.aspect, camera.near, camera.far)
-    c.layers.set(0)
-    bgCamera.current = c
-
     return () => bgRenderTarget.current?.dispose()
-  }, [size.width, size.height, camera.fov, camera.aspect, camera.near, camera.far])
-
-  // Панель в слой 1, а камере включаем видимость слоя 1
-  useEffect(() => {
-    panelRef.current?.layers.set(1)
-    camera.layers.enable(1) // камера теперь видит 0 и 1 слои в основном рендере
-  }, [camera])
-
+  }, [size.width, size.height])
 
   useFrame(() => {
-    if (!bgRenderTarget.current || !bgCamera.current) return
+    if (!bgRenderTarget.current) return
 
-    // синхронизируем позу/оптику фоновой камеры с основной
-    const bc = bgCamera.current
-    bc.position.copy(camera.position)
-    bc.quaternion.copy(camera.quaternion)
-    bc.projectionMatrix.copy(camera.projectionMatrix)
-    bc.projectionMatrixInverse.copy(camera.projectionMatrixInverse)
-    bc.updateMatrixWorld()
+    // Скрываем панель перед рендером фона
+    if (panelRef.current) panelRef.current.visible = false
 
-    // рендерим фон (только слой 0) в RT
     gl.setRenderTarget(bgRenderTarget.current)
-    gl.render(scene, bc)
+    gl.render(scene, camera)
     gl.setRenderTarget(null)
 
+    if (panelRef.current) panelRef.current.visible = true
+
+    // 🔥 Принудительный микроскопический сдвиг, чтобы фон обновился
     if (forceRerender.current && panelRef.current) {
       panelRef.current.rotation.x += 0.0001
       forceRerender.current = false
