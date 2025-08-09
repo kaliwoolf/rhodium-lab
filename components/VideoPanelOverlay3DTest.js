@@ -111,7 +111,7 @@ const VideoRefractionMaterial = shaderMaterial(
       float fresnel = pow(1.0 - ndv, 2.4);
 
       // на гранях чуть "прозрачнее"
-      panelColor = mix(panelColor, bgColor, (1.0 - ndv) * 0.25);
+      panelColor = mix(panelColor, bgColor, (1.0 - ndv) * 0.20);
 
       vec3 envCombined = mix(envColor, rimColor, pow(fresnel, 1.2));
       vec3 result      = mix(panelColor, envCombined, uEnvAmount);
@@ -121,12 +121,12 @@ const VideoRefractionMaterial = shaderMaterial(
       vec3 atEdgeColor = vec3(1.12, 0.78, 1.24);
 
       float spec    = pow(ndv, 20.0);
-      float rimSpec = pow(1.0 - ndv, 8.0);
-      float glowRim = pow(1.0 - ndv, 9.0);
+      float rimSpec = pow(1.0 - ndv, 9.5);
+      float glowRim = pow(1.0 - ndv, 10.0);
 
       result += spec    * edgeColor * 0.06;
-      result += rimSpec * edgeColor * 0.28;
-      result += glowRim * vec3(1.30,1.15,1.25) * 0.18;
+      result += rimSpec * edgeColor * 0.34;
+      result += glowRim * vec3(1.20,1.10,1.20) * 0.12;
 
       // --- твой UV-контур по периметру ---
       float edge = smoothstep(0.95, 1.0, length(vUv - 0.5) * 0.72);
