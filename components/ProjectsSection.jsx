@@ -24,18 +24,6 @@ export default function ProjectsSection() {
       <div className="absolute inset-0 z-[10]">
         <DesktopPanelCarousel3D />
       </div>
-
-      {/* Контент поверх (текст), пусть будет ещё выше, но без кликов */}
-      <div className="relative z-[20] pointer-events-none flex h-full items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-6xl md:text-7xl font-extrabold tracking-tight">
-            Актуальные проекты
-          </h2>
-          <p className="mt-4 text-lg opacity-80">
-            Короткий сабтайтл, если нужен
-          </p>
-        </div>
-      </div>
     </div>
   );
 }

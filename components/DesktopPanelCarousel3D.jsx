@@ -2,7 +2,7 @@
 
 // DesktopPanelCarousel3D.jsx
 import { Canvas, extend, useFrame, useThree } from '@react-three/fiber'
-import { useGLTF, Environment, shaderMaterial, useCubeTexture } from '@react-three/drei'
+import { useGLTF, Environment, shaderMaterial, useCubeTexture, Html } from '@react-three/drei'
 import * as THREE from 'three'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
@@ -302,21 +302,36 @@ function GlassPanelWithOverlay({ videoUrl }) {
             depthWrite={false}
             />
         )}
+
+        <Html
+          position={[0, 0.02, 0.012]}
+          center
+          transform
+          distanceFactor={1.02}
+          style={{ pointerEvents: 'auto' }}
+        >
+          <a
+            href={href}
+            className="px-5 py-2 rounded-full border border-white/30 backdrop-blur-md bg-white/10 text-white text-lg hover:bg-white/15 transition"
+          >
+            {title}
+          </a>
+        </Html>
       </primitive>
     </group>
   )
 }
 
 const PANELS = [
-  { title: 'Проект 1', href: '#p1', video: '/video/ks.mp4' },
-  { title: 'Проект 2', href: '#p2', video: '/video/p2.mp4' },
-  { title: 'Проект 3', href: '#p3', video: '/video/bot.mp4' },
+  { title: 'КОД СТЫДА', href: '#p1', video: '/video/ks.mp4' },
+  { title: 'МЕХАНИКА И ЛОГИКА', href: '#p2', video: '/video/p2.mp4' },
+  { title: 'Rhodium Bot', href: '#p3', video: '/video/bot.mp4' },
 ];
 
 function Carousel() {
   const group = useRef();
-  const spacing = 1.2;        // расстояние между панелями
-  const speed = 0.08;         // скорость автопрокрутки (меньше — медленнее)
+  const spacing = 4.0;        // расстояние между панелями
+  const speed = 0.02;         // скорость автопрокрутки (меньше — медленнее)
   const loopW = spacing * PANELS.length;
   const offset = useRef(0);
 
