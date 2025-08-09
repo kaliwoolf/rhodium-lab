@@ -152,9 +152,9 @@ function GlassPanelWithOverlay({ videoUrl }) {
   const forceRerender = useRef(false)
   // Стартовая ориентация панели и настройки парения
   const baseRot = useRef(new THREE.Euler(
-    THREE.MathUtils.degToRad(5), // X — наклон вперёд/назад
-    THREE.MathUtils.degToRad(9),  // Y — поворот вбок
-    THREE.MathUtils.degToRad(2)    // Z — крен
+    THREE.MathUtils.degToRad(8), // X — наклон вперёд/назад
+    THREE.MathUtils.degToRad(-9),  // Y — поворот вбок
+    THREE.MathUtils.degToRad(1)    // Z — крен
   ))
   // амплитуда и скорости парения (можешь крутить)
   const floatAmp = useRef({ rot: 0.055, rotZ: 0.035, posY: 0.03 })
