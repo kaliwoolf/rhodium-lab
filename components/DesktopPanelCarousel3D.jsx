@@ -245,11 +245,15 @@ function Slider() {
 export default function DesktopPanelCarousel3D() {
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
-      <Canvas camera={{ position:[0,0,10], fov:18 }} gl={{ antialias:true, alpha:true }}>
+      <Canvas camera={{ position:[0,0,10], fov:18 }} gl={{ antialias:true, alpha:true }}>  
         <ambientLight intensity={2.8} />
         <directionalLight position={[3,2,3]} intensity={2.4} />
         <Environment preset="sunset" />
         <Slider />
+        <mesh position={[0,0,0]}>
+          <boxGeometry args={[1,1,1]} />
+          <meshNormalMaterial />
+        </mesh>
       </Canvas>
     </div>
   )

@@ -16,8 +16,6 @@ export default function ProjectsSection() {
 
   if (!isDesktop) return <MobileOverlay />
 
-    if (!isDesktop) return <MobileOverlay />;
-
   return (
     <div className="relative h-screen w-full overflow-hidden">
       {/* 3D-слайдер как фон секции, НО выше глобального бэкграунда */}
