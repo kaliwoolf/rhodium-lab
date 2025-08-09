@@ -214,7 +214,26 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
     video.autoplay = true
     video.preload = "auto"
     video.style.display = "none"
-    video.play()
+
+    const playVideo = () => {
+      video.play().catch(err => {
+        console.warn("[Video] autoplay failed, will retry:", err);
+      });
+    };
+
+    video.addEventListener('ended', () => {
+      video.currentTime = 0;
+      playVideo();
+    });
+
+    // Важный момент — перезапуск при возврате на страницу
+    window.addEventListener("pageshow", playVideo);
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) playVideo();
+    });
+
+    playVideo();
+
     const texture = new THREE.VideoTexture(video)
     texture.flipY = false;
     texture.minFilter = THREE.LinearFilter
@@ -227,7 +246,7 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
     return () => {
       texture.dispose()
       video.pause()
-      video.src = ""
+      window.removeEventListener("pageshow", playVideo);
     }
   }, [videoUrl])
 
