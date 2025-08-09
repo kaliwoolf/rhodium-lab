@@ -383,11 +383,11 @@ function Carousel() {
   // раскладка «по дуге» для пяти слотов: L2, L1, CENTER, R1, R2
   const layout = useMemo(
     () => ([
-      { x: -6.0, z: -3.2, rY:  0.50, s: 0.82 },
-      { x: -3.2, z: -1.6, rY:  0.24, s: 0.92 },
-      { x:  0.0, z:  0.0, rY:  0.00, s: 1.05 },
-      { x:  3.2, z: -1.6, rY: -0.24, s: 0.92 },
-      { x:  6.0, z: -3.2, rY: -0.50, s: 0.82 },
+      { x:-6.0, z:-3.2, rY:  0.50, rZ:  0.08, s:0.82 }, // ~4.6°
+      { x:-3.2, z:-1.6, rY:  0.24, rZ:  0.04, s:0.92 }, // ~2.3°
+      { x: 0.0, z: 0.0, rY:  0.00, rZ:  0.00, s:1.05 },
+      { x: 3.2, z:-1.6, rY: -0.24, rZ: -0.04, s:0.92 },
+      { x: 6.0, z:-3.2, rY: -0.50, rZ: -0.08, s:0.82 },
     ]),
     []
   )
@@ -410,6 +410,7 @@ function Carousel() {
       g.position.x += (t.x - g.position.x) * 0.12
       g.position.z += (t.z - g.position.z) * 0.12
       g.rotation.y += (t.rY - g.rotation.y) * 0.12
+      g.rotation.z += ((t.rZ ?? 0) - g.rotation.z) * 0.
       const curS = g.scale.x
       const nextS = THREE.MathUtils.lerp(curS, t.s, 0.12)
       g.scale.setScalar(nextS)
