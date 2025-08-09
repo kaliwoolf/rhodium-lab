@@ -1,20 +1,20 @@
+// components/ProjectsSection.jsx
 import { useEffect, useState } from "react"
 import dynamic from "next/dynamic"
-import VideoPanelOverlay from "./VideoPanelOverlay" // твой текущий мобильный блок
 
-const DesktopPanelCarousel3D = dynamic(() => import("./DesktopPanelCarousel3D"), {
-  ssr: false,
-})
+// грузим по требованию:
+const DesktopPanelCarousel3D = dynamic(() => import("./DesktopPanelCarousel3D"), { ssr: false })
+const MobileOverlay          = dynamic(() => import("./VideoPanelOverlay"),      { ssr: false })
 
 export default function ProjectsSection() {
-  const [isMobile, setIsMobile] = useState(true)
+  const [isDesktop, setIsDesktop] = useState(false)
+
   useEffect(() => {
-    const onResize = () => setIsMobile(window.innerWidth < 1024) // < lg — мобильный
-    onResize()
-    window.addEventListener("resize", onResize)
-    return () => window.removeEventListener("resize", onResize)
+    const check = () => setIsDesktop(window.matchMedia("(min-width: 1024px)").matches)
+    check()
+    window.addEventListener("resize", check)
+    return () => window.removeEventListener("resize", check)
   }, [])
 
-  if (isMobile) return <VideoPanelOverlay />        // мобильный остаётся как был
-  return <DesktopPanelCarousel3D />                 // десктоп — 3D-слайдер
+  return isDesktop ? <DesktopPanelCarousel3D /> : <MobileOverlay />
 }
