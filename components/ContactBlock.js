@@ -129,15 +129,15 @@ function PanelWithVideo({ texture, mouse }) {
     const bb = frame.geometry.boundingBox
     geoSize.current.subVectors(bb.max, bb.min)
     geoShift.current.addVectors(bb.min, bb.max).multiplyScalar(0.5)
-    const targetW = 3.2
-    const scale = targetW / geoSize.current.x
-    groupRef.current.scale.setScalar(scale)
+    const targetW = 1.8
+    const s = targetH / geoSize.current.y
+    groupRef.current.scale.setScalar(s)
   }, [nodes])
 
   if (!nodes?.Frame) return null
 
   return (
-    <group ref={groupRef} rotation={ROT} position={[0, 0, 0.005]}>
+    <group ref={groupRef} position={[0, 0, 0.005]}>
       {texture && (
         <VideoPlane
           texture={texture}
