@@ -249,7 +249,7 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
 
     // Плавный fade-in/fade-out видео (как было)
     const cur = shaderRef.current.uniforms.uVideoAlpha.value
-    const to = hovered ? 0.8 : 0.15
+    const to = hovered ? 0.8 : 0
     shaderRef.current.uniforms.uVideoAlpha.value = THREE.MathUtils.lerp(cur, to, delta * 2.5)
   })
 
