@@ -65,14 +65,18 @@ const VideoRefractionMaterial = shaderMaterial(
                    + cos(vUv.x * 14. - time * 0.78) * 0.011
                    + (noise - 0.5) * 0.055;
 
-      bump *= 1.4;
-      float chroma = 0.07 * uThickness * uIntensity;
+      bump *= 0.6;
       vec2 refractUv = clamp(vUv + vec2(bump) * uIntensity * uThickness, 0.001, 0.999);
 
+      // равномерное радиальное смещение каналов — уходит «пятнистость»
+      float chroma = 0.028 * uThickness;                 // меньше = аккуратнее
+      vec2  dir    = (vUv - 0.5) * chroma;               // от центра к краям
+
       vec3 bgColor;
-      bgColor.r = texture2D(uBackground, refractUv + vec2(chroma, 0.0)).r;
+      bgColor.r = texture2D(uBackground, refractUv + dir).r;
       bgColor.g = texture2D(uBackground, refractUv).g;
-      bgColor.b = texture2D(uBackground, refractUv - vec2(chroma, 0.0)).b;
+      bgColor.b = texture2D(uBackground, refractUv - dir).b;
+
 
       // === ГИБРИД: фронт по UV, грани — трипланар ===
       float s = 0.45; // масштаб видео на гранях (0.3..0.8)
@@ -314,19 +318,30 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
           position={[0, 0.02, 0.012]}
           center
           transform
-          distanceFactor={1.02}
-          style={{
-            pointerEvents: isActive ? 'auto' : 'none',
-            opacity: isActive ? 1 : 0.35,
-            transition: 'opacity 220ms ease'
-          }}
+          distanceFactor={isActive ? 1 : 1.1}
+          style={{ pointerEvents: isActive ? 'auto' : 'none' }}
         >
-          <a
-            href={href}
-            className="px-6 py-3 rounded-full backdrop-blur-md bg-black/40 text-white text-2xl font-bold drop-shadow-lg hover:bg-black/50 transition"
+          <div
+            className={[
+              'px-6 py-3 rounded-xl backdrop-blur-md',
+              isActive ? 'bg-black/35' : 'bg-black/25',
+              isActive ? 'opacity-100' : 'opacity-40',
+              'transition'
+            ].join(' ')}
+            style={{ boxShadow: '0 6px 24px rgba(0,0,0,.35)' }}
           >
-            {title}
-          </a>
+            <div
+              className={[
+                'uppercase tracking-[0.08em]',
+                'font-extrabold leading-tight text-white',
+                isActive ? 'text-[64px]' : 'text-[28px]',
+                'drop-shadow-lg'
+              ].join(' ')}
+              style={{ textShadow: '0 2px 12px rgba(0,0,0,.55)' }}
+            >
+              {title}
+            </div>
+          </div>
         </Html>
       </mesh>
     </group>
