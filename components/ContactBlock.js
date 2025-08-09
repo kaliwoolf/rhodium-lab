@@ -33,7 +33,6 @@ export default function ContactBlock() {
   }, [bp])
 
   const mouse = useRef(new THREE.Vector2(0.5, 0.5))
-  const explodeRef = useRef(0) // 0..1 — сила взрыва (на ховере 1, вне — 0)
   const [videoTexture, setVideoTexture] = useState(null)
 
   useEffect(() => {
@@ -70,8 +69,6 @@ export default function ContactBlock() {
     <section
       id="contact"
       className="relative text-white min-h-screen flex items-center justify-center px-4 py-24 overflow-hidden"
-      onMouseEnter={() => (explodeRef.current = 1)}
-      onMouseLeave={() => (explodeRef.current = 0)}
       onMouseMove={handlePointerMove}
       onTouchMove={handlePointerMove}
     >
@@ -82,14 +79,11 @@ export default function ContactBlock() {
               <PanelWithVideo
                 texture={videoTexture}
                 mouse={mouse}
-                explodeRef={explodeRef}
-                viewportFit={
-                  bp === 'mobile'
-                    ? { mode: 'height', frac: 0.88 }
-                    : bp === 'tablet'
+                viewportFit={bp === 'mobile'
+                  ? { mode: 'height', frac: 0.88 }
+                  : bp === 'tablet'
                     ? { mode: 'height', frac: 0.78 }
-                    : { mode: 'height', frac: 0.70 }
-                }
+                    : { mode: 'height', frac: 0.70 }}
               />
               <Environment preset="city" />
             </Suspense>
@@ -131,7 +125,7 @@ export default function ContactBlock() {
   )
 }
 
-function PanelWithVideo({ texture, mouse, explodeRef, viewportFit }) {
+function PanelWithVideo({ texture, mouse, viewportFit }) {
   const { nodes } = useGLTF('/models/ContactFrame.glb')
   const groupRef = useRef()
   const geoShift = useRef(new THREE.Vector3())
@@ -139,22 +133,18 @@ function PanelWithVideo({ texture, mouse, explodeRef, viewportFit }) {
   const { camera, size } = useThree()
 
   // стеклянный материал рамки
-  const glassMat = useMemo(
-    () =>
-      new THREE.MeshPhysicalMaterial({
-        transparent: true,
-        color: 0xffffff,
-        transmission: 1.0,
-        thickness: 0.1,
-        roughness: 0.03,
-        ior: 1.52,
-        clearcoat: 0.6,
-        clearcoatRoughness: 0.1,
-        depthWrite: false,
-        envMapIntensity: 0
-      }),
-    []
-  )
+  const glassMat = useMemo(() => new THREE.MeshPhysicalMaterial({
+    transparent: true,
+    color: 0xffffff,
+    transmission: 1.0,
+    thickness: 0.1,
+    roughness: 0.03,
+    ior: 1.52,
+    clearcoat: 0.6,
+    clearcoatRoughness: 0.1,
+    depthWrite: false,
+    envMapIntensity: 0
+  }), [])
 
   useEffect(() => {
     const frame = nodes?.Frame
@@ -188,29 +178,16 @@ function PanelWithVideo({ texture, mouse, explodeRef, viewportFit }) {
       rotation={[0, THREE.MathUtils.degToRad(3), 0]}
     >
       {texture && (
-        <>
-          <TriplanarVideoMesh
-            geometry={nodes.Frame.geometry}
-            position={[-geoShift.current.x, -geoShift.current.y, -0.0015]}
-            texture={texture}
-            mouse={mouse}
-            explodeRef={explodeRef}
-            texScale={[1.0, 1.0]}
-            blendSharpness={4.0}
-            objCenter={[geoShift.current.x, geoShift.current.y, geoShift.current.z || 0]}
-            objSize={[geoSize.current.x, geoSize.current.y, geoSize.current.z || 1]}
-          />
-
-          <ExplosionParticles
-            geometry={nodes.Frame.geometry}
-            position={[-geoShift.current.x, -geoShift.current.y, -0.0015]}
-            texture={texture}
-            mouse={mouse}
-            explodeRef={explodeRef}
-            objCenter={[geoShift.current.x, geoShift.current.y, geoShift.current.z || 0]}
-            objSize={[geoSize.current.x, geoSize.current.y, geoSize.current.z || 1]}
-          />
-        </>
+        <TriplanarVideoMesh
+          geometry={nodes.Frame.geometry}
+          position={[-geoShift.current.x, -geoShift.current.y, -0.0015]}
+          texture={texture}
+          mouse={mouse}
+          texScale={[1.0, 1.0]}
+          blendSharpness={4.0}
+          objCenter={[geoShift.current.x, geoShift.current.y, geoShift.current.z || 0]}
+          objSize={[geoSize.current.x, geoSize.current.y, geoSize.current.z || 1]}
+        />
       )}
 
       <mesh
@@ -223,242 +200,100 @@ function PanelWithVideo({ texture, mouse, explodeRef, viewportFit }) {
   )
 }
 
-/** Трипланар + ripple/линза + растворение от взрыва */
+/** Трипланарная проекция видео + ripple/линза (экранные UV) */
 function TriplanarVideoMesh({
-  geometry,
-  position = [0, 0, 0],
-  texture,
-  mouse,
-  explodeRef,
-  texScale = [1, 1],
-  blendSharpness = 4.0,
-  objCenter = [0, 0, 0],
-  objSize = [1, 1, 1]
+  geometry, position = [0, 0, 0], texture, mouse,
+  texScale = [1, 1], blendSharpness = 4.0,
+  objCenter = [0, 0, 0], objSize = [1, 1, 1]
 }) {
-  const shaderArgs = useMemo(
-    () => ({
-      uniforms: {
-        uTexture: { value: texture },
-        uTime: { value: 0 },
-        uMouse: { value: new THREE.Vector2(0.5, 0.5) },
-        uTexScale: { value: new THREE.Vector2(texScale[0], texScale[1]) },
-        uBlendSharpness: { value: blendSharpness },
-        uCenter: { value: new THREE.Vector3(...objCenter) },
-        uSize: { value: new THREE.Vector3(...objSize) },
-        uExplode: { value: 0.0 },       // 0..1
-        uLensRadius: { value: 0.22 }    // зона взрыва по экрану
-      },
-      vertexShader: `
-        varying vec3 vObjPos;
-        varying vec3 vWorldPos;
-        varying vec3 vWorldNormal;
-        varying vec4 vClip;
-        void main(){
-          vObjPos = position;
-          vec4 worldPos = modelMatrix * vec4(position, 1.0);
-          vWorldPos = worldPos.xyz;
-          vWorldNormal = normalize(normalMatrix * normal);
-          vClip = projectionMatrix * viewMatrix * worldPos;
-          gl_Position = vClip;
+  const shaderArgs = useMemo(() => ({
+    uniforms: {
+      uTexture: { value: texture },
+      uTime: { value: 0 },
+      uMouse: { value: new THREE.Vector2(0.5, 0.5) },
+      uTexScale: { value: new THREE.Vector2(texScale[0], texScale[1]) },
+      uBlendSharpness: { value: blendSharpness },
+      uCenter: { value: new THREE.Vector3(...objCenter) },
+      uSize: { value: new THREE.Vector3(...objSize) }
+    },
+    // без кириллицы внутри GLSL-строк
+    vertexShader: `
+      varying vec3 vObjPos;
+      varying vec3 vWorldPos;
+      varying vec3 vWorldNormal;
+      varying vec4 vClip;
+      void main(){
+        vObjPos = position;
+        vec4 worldPos = modelMatrix * vec4(position, 1.0);
+        vWorldPos = worldPos.xyz;
+        vWorldNormal = normalize(normalMatrix * normal);
+        vClip = projectionMatrix * viewMatrix * worldPos;
+        gl_Position = vClip;
+      }
+    `,
+    fragmentShader: `
+      uniform sampler2D uTexture;
+      uniform vec2  uMouse;
+      uniform float uTime;
+      uniform vec2  uTexScale;
+      uniform float uBlendSharpness;
+      uniform vec3  uCenter;
+      uniform vec3  uSize;
+
+      varying vec3 vObjPos;
+      varying vec3 vWorldPos;
+      varying vec3 vWorldNormal;
+      varying vec4 vClip;
+
+      vec4 sampleTriplanar(vec3 pObj, vec3 nWorld, vec2 ripple){
+        vec3 p = (pObj - uCenter) / uSize + 0.5;
+        vec3 n = normalize(abs(nWorld));
+        n = pow(n, vec3(uBlendSharpness));
+        n /= (n.x + n.y + n.z + 1e-5);
+
+        vec2 uvX = p.zy * uTexScale + ripple;
+        vec2 uvY = p.xz * uTexScale + ripple;
+        vec2 uvZ = p.xy * uTexScale + ripple;
+
+        vec4 cx = texture2D(uTexture, uvX);
+        vec4 cy = texture2D(uTexture, uvY);
+        vec4 cz = texture2D(uTexture, uvZ);
+        return cx*n.x + cy*n.y + cz*n.z;
+      }
+
+      void main(){
+        vec2 uvS = vClip.xy / vClip.w * 0.5 + 0.5;
+
+        float dist = distance(uvS, uMouse);
+        vec2 dir = normalize(uvS - uMouse + 1e-6);
+        vec2 ripple = 0.02 * sin(10.0 * dist - uTime * 3.0) * dir;
+
+        float lensRadius = 0.2;
+        float lensPower = 0.1;
+        if (dist < lensRadius){
+          float k = (lensRadius - dist) / lensRadius;
+          ripple += (uvS - uMouse) * k * lensPower;
         }
-      `,
-      fragmentShader: `
-        uniform sampler2D uTexture;
-        uniform vec2  uMouse;
-        uniform float uTime;
-        uniform vec2  uTexScale;
-        uniform float uBlendSharpness;
-        uniform vec3  uCenter;
-        uniform vec3  uSize;
-        uniform float uExplode;
-        uniform float uLensRadius;
 
-        varying vec3 vObjPos;
-        varying vec3 vWorldPos;
-        varying vec3 vWorldNormal;
-        varying vec4 vClip;
+        vec4 color = sampleTriplanar(vObjPos, vWorldNormal, ripple);
 
-        vec4 sampleTriplanar(vec3 pObj, vec3 nWorld, vec2 ripple){
-          vec3 p = (pObj - uCenter) / uSize + 0.5;
-          vec3 n = normalize(abs(nWorld));
-          n = pow(n, vec3(uBlendSharpness));
-          n /= (n.x + n.y + n.z + 1e-5);
+        float vig = smoothstep(0.4, 0.9, distance(uvS, vec2(0.5)));
+        color.rgb *= (1.0 - vig);
 
-          vec2 uvX = p.zy * uTexScale + ripple;
-          vec2 uvY = p.xz * uTexScale + ripple;
-          vec2 uvZ = p.xy * uTexScale + ripple;
-
-          vec4 cx = texture2D(uTexture, uvX);
-          vec4 cy = texture2D(uTexture, uvY);
-          vec4 cz = texture2D(uTexture, uvZ);
-          return cx*n.x + cy*n.y + cz*n.z;
-        }
-
-        void main(){
-          vec2 uvS = vClip.xy / vClip.w * 0.5 + 0.5;
-
-          float dist = distance(uvS, uMouse);
-          vec2 dir = normalize(uvS - uMouse + 1e-6);
-          vec2 ripple = 0.02 * sin(10.0 * dist - uTime * 3.0) * dir;
-
-          float lensRadius = 0.2;
-          float lensPower = 0.1;
-          if (dist < lensRadius){
-            float k = (lensRadius - dist) / lensRadius;
-            ripple += (uvS - uMouse) * k * lensPower;
-          }
-
-          vec4 color = sampleTriplanar(vObjPos, vWorldNormal, ripple);
-
-          // виньетка
-          float vig = smoothstep(0.4, 0.9, distance(uvS, vec2(0.5)));
-          color.rgb *= (1.0 - vig);
-
-          // растворение панели в зоне взрыва
-          float explodeStrength = uExplode * smoothstep(uLensRadius, 0.0, dist); // ближе к мыши — сильнее
-          color.a = 0.5 * (1.0 - explodeStrength);
-
-          gl_FragColor = color;
-        }
-      `
-    }),
-    [texture, texScale, blendSharpness, objCenter, objSize]
-  )
+        color.a = 0.5;
+        gl_FragColor = color;
+      }
+    `
+  }), [texture, texScale, blendSharpness, objCenter, objSize])
 
   useFrame(({ clock }) => {
     shaderArgs.uniforms.uTime.value = clock.getElapsedTime()
     shaderArgs.uniforms.uMouse.value.lerp(mouse.current, 0.15)
-    // мягко тянем уExplode к 0 или 1
-    shaderArgs.uniforms.uExplode.value += (explodeRef.current - shaderArgs.uniforms.uExplode.value) * 0.15
   })
 
   return (
     <mesh geometry={geometry} position={position} renderOrder={5}>
       <shaderMaterial args={[shaderArgs]} transparent depthWrite={false} side={THREE.DoubleSide} />
     </mesh>
-  )
-}
-
-/** Облако частиц-взрыв из вершин меша */
-function ExplosionParticles({
-  geometry,
-  position = [0, 0, 0],
-  texture,
-  mouse,
-  explodeRef,
-  objCenter = [0, 0, 0],
-  objSize = [1, 1, 1]
-}) {
-  const shaderArgs = useMemo(
-    () => ({
-      uniforms: {
-        uTexture: { value: texture },
-        uTime: { value: 0 },
-        uMouse: { value: new THREE.Vector2(0.5, 0.5) },
-        uCenter: { value: new THREE.Vector3(...objCenter) },
-        uSize: { value: new THREE.Vector3(...objSize) },
-        uExplode: { value: 0.0 },     // 0..1
-        uLensRadius: { value: 0.22 }, // синхронизировано с панелью
-        uSpread: { value: 0.7 }       // насколько разлетаются
-      },
-      vertexShader: `
-        uniform float uTime;
-        uniform vec2  uMouse;
-        uniform float uExplode;
-        uniform float uLensRadius;
-        uniform float uSpread;
-
-        varying vec4 vClip;
-        varying vec3 vObjPos;
-        varying vec3 vWorldNormal;
-
-        float hash(vec3 p){
-          p = fract(p * 0.3183099 + vec3(0.71, 0.113, 0.419));
-          p += dot(p, p.yxz + 19.19);
-          return fract(p.x * p.y * p.z);
-        }
-
-        void main() {
-          vObjPos = position;
-          vWorldNormal = normalize(mat3(modelMatrix) * normal);
-
-          vec4 worldPos = modelMatrix * vec4(position, 1.0);
-          vClip = projectionMatrix * viewMatrix * worldPos;
-
-          vec2 uvS = vClip.xy / vClip.w * 0.5 + 0.5;
-          float dist = distance(uvS, uMouse);
-          float k = uExplode * smoothstep(uLensRadius, 0.0, dist);
-
-          float r1 = hash(position.xyz + 13.37);
-          float r2 = hash(position.zyx + 42.0);
-          float r3 = hash(position.xxz + 7.0);
-          vec3 randDir = normalize(vec3(r1 - 0.5, r2 - 0.5, r3 - 0.5) + 0.35 * vWorldNormal);
-
-          float pulse = 0.6 + 0.4 * sin(uTime * 3.0 + r1 * 6.2831);
-
-          vec3 displaced = position + randDir * (uSpread * k * pulse);
-
-          vec4 mv = modelViewMatrix * vec4(displaced, 1.0);
-          gl_Position = projectionMatrix * mv;
-
-          gl_PointSize = 320.0 * (1.0 / -mv.z);
-        }
-      `,
-      fragmentShader: `
-        uniform sampler2D uTexture;
-        uniform vec3  uCenter;
-        uniform vec3  uSize;
-
-        varying vec3 vObjPos;
-        varying vec3 vWorldNormal;
-
-        vec4 sampleTriplanar(vec3 pObj, vec3 nWorld){
-          vec3 p = (pObj - uCenter) / uSize + 0.5;
-          vec3 n = normalize(abs(nWorld));
-          n = pow(n, vec3(4.0));
-          n /= (n.x + n.y + n.z + 1e-5);
-
-          vec2 uvX = p.zy;
-          vec2 uvY = p.xz;
-          vec2 uvZ = p.xy;
-
-          vec4 cx = texture2D(uTexture, uvX);
-          vec4 cy = texture2D(uTexture, uvY);
-          vec4 cz = texture2D(uTexture, uvZ);
-          return cx*n.x + cy*n.y + cz*n.z;
-        }
-
-        void main(){
-          vec2 p = gl_PointCoord * 2.0 - 1.0;
-          float r = dot(p, p);
-          if (r > 1.0) discard;
-          float soft = smoothstep(1.0, 0.0, r);
-
-          vec4 col = sampleTriplanar(vObjPos, vWorldNormal);
-          col.rgb *= 1.1;
-          col.a = 0.75 * soft;
-
-          gl_FragColor = col;
-        }
-      `
-    }),
-    [texture, objCenter, objSize]
-  )
-
-  useFrame(({ clock }) => {
-    shaderArgs.uniforms.uTime.value = clock.getElapsedTime()
-    shaderArgs.uniforms.uMouse.value.lerp(mouse.current, 0.2)
-    shaderArgs.uniforms.uExplode.value += (explodeRef.current - shaderArgs.uniforms.uExplode.value) * 0.15
-  })
-
-  return (
-    <points geometry={geometry} position={position} renderOrder={8}>
-      <shaderMaterial
-        args={[shaderArgs]}
-        transparent
-        depthWrite={false}
-        blending={THREE.AdditiveBlending}
-      />
-    </points>
   )
 }
