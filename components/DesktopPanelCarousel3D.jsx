@@ -244,6 +244,10 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
     const wobY = Math.cos(t * 0.14) * 0.055
     const wobZ = Math.sin(t * 0.11) * 0.035
 
+    // НОВОЕ: читаем мягко интерполированный наклон из группы
+    const tiltX = groupRef.current?.userData.tiltX || 0
+    const tiltZ = groupRef.current?.userData.tiltZ || 0
+
     // Целевые углы = базовый угол + парение + реакция на hover
     const targetX = baseRot.current.x + wobX + (hovered ? mouse.y * 0.32 : 0)
     const targetY = baseRot.current.y + wobY + (hovered ? mouse.x * 0.30 : 0)
@@ -381,17 +385,14 @@ function Carousel() {
   const refs = useRef([])
 
   // раскладка «по дуге» для пяти слотов: L2, L1, CENTER, R1, R2
-  const layout = useMemo(
-    () => ([
-      //        x      z      rY     rX     rZ     s     y
-      { x: -6.0, z: -3.2, rY:  0.58, rX:  0.12, rZ:  0.08, s: 0.78, y: -0.15 }, // L2: дальше, сильнее завал
-      { x: -3.2, z: -1.6, rY:  0.28, rX:  0.06, rZ:  0.04, s: 0.90, y: -0.06 }, // L1
-      { x:  0.0, z:  0.0, rY:  0.00, rX:  0.00, rZ:  0.00, s: 1.05, y:  0.00 }, // CENTER
-      { x:  3.2, z: -1.6, rY: -0.28, rX:  0.06, rZ: -0.04, s: 0.90, y: -0.06 }, // R1
-      { x:  6.0, z: -3.2, rY: -0.58, rX:  0.12, rZ: -0.08, s: 0.78, y: -0.15 }, // R2
-    ]),
-    []
-  )
+  const layout = useMemo(() => ([
+    //           x      z      rY     rX     rZ     s
+    { x:-6.0, z:-3.2, rY: 0.50, rX: 0.10, rZ: 0.07, s:0.82 }, // L2
+    { x:-3.2, z:-1.6, rY: 0.24, rX: 0.05, rZ: 0.04, s:0.92 }, // L1
+    { x: 0.0, z: 0.0, rY: 0.00, rX: 0.00, rZ: 0.00, s:1.05 }, // CENTER
+    { x: 3.2, z:-1.6, rY:-0.24, rX: 0.05, rZ:-0.04, s:0.92 }, // R1
+    { x: 6.0, z:-3.2, rY:-0.50, rX: 0.10, rZ:-0.07, s:0.82 }, // R2
+  ]), [])
 
 
   // куда поставить i-ю карточку относительно active
@@ -409,18 +410,17 @@ function Carousel() {
     refs.current.forEach((g, i) => {
       if (!g) return
       const t = targetFor(i)
-
       g.position.x += (t.x - g.position.x) * 0.12
       g.position.z += (t.z - g.position.z) * 0.12
-      g.position.y += (t.y - g.position.y) * 0.12  
-
       g.rotation.y += (t.rY - g.rotation.y) * 0.12
-      g.rotation.x += (t.rX - g.rotation.x) * 0.12        // ← НОВОЕ
-      g.rotation.z += (t.rZ - g.rotation.z) * 0.12  
-
       const curS = g.scale.x
       const nextS = THREE.MathUtils.lerp(curS, t.s, 0.12)
       g.scale.setScalar(nextS)
+
+      // НОВОЕ: передаём плавный наклон X/Z через userData
+      if (g.userData.tiltX === undefined) { g.userData.tiltX = 0; g.userData.tiltZ = 0 }
+      g.userData.tiltX += ((t.rX ?? 0) - g.userData.tiltX) * 0.12
+      g.userData.tiltZ += ((t.rZ ?? 0) - g.userData.tiltZ) * 0.12
     })
   })
 
