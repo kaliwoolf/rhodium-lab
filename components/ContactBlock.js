@@ -32,7 +32,6 @@ export default function ContactBlock() {
     return { position: [0, 0, 2.5], fov: 50 }
   }, [bp])
 
-
   const mouse = useRef(new THREE.Vector2(0.5, 0.5))
   const [videoTexture, setVideoTexture] = useState(null)
 
@@ -75,14 +74,16 @@ export default function ContactBlock() {
     >
       <div className="contact-canvas relative z-20">
         <div className="relative w-full h-full">
-          <Canvas  key={bp} gl={{ alpha: true }} camera={cameraProps}>
+          <Canvas key={bp} gl={{ alpha: true }} camera={cameraProps}>
             <Suspense fallback={null}>
-              <PanelWithVideo 
+              <PanelWithVideo
                 texture={videoTexture}
                 mouse={mouse}
-                viewportFit={bp === 'mobile' ? {mode:'height', frac:0.88}
-                     : bp === 'tablet' ? {mode:'height', frac:0.78}
-                     : {mode:'height', frac:0.70}}  
+                viewportFit={bp === 'mobile'
+                  ? { mode: 'height', frac: 0.88 }
+                  : bp === 'tablet'
+                    ? { mode: 'height', frac: 0.78 }
+                    : { mode: 'height', frac: 0.70 }}
               />
               <Environment preset="city" />
             </Suspense>
@@ -103,7 +104,7 @@ export default function ContactBlock() {
               <span className="absolute left-0 -bottom-1 h-[1px] w-full bg-fuchsia-300 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500 ease-out" />
             </a>
 
-            <div className="relative w=[160px] sm:w-[180px] h-[200px] sm:h-[220px] rounded-xl overflow-hidden border border-white/20 shadow-xl pointer-events-auto">
+            <div className="relative w-[160px] sm:w-[180px] h-[200px] sm:h-[220px] rounded-xl overflow-hidden border border-white/20 shadow-xl pointer-events-auto">
               <video
                 autoPlay
                 loop
@@ -128,8 +129,22 @@ function PanelWithVideo({ texture, mouse, viewportFit }) {
   const { nodes } = useGLTF('/models/ContactFrame.glb')
   const groupRef = useRef()
   const geoShift = useRef(new THREE.Vector3())
-  const geoSize  = useRef(new THREE.Vector3())
+  const geoSize = useRef(new THREE.Vector3())
   const { camera, size } = useThree()
+
+  // стеклянный материал рамки
+  const glassMat = useMemo(() => new THREE.MeshPhysicalMaterial({
+    transparent: true,
+    color: 0xffffff,
+    transmission: 1.0,
+    thickness: 0.1,
+    roughness: 0.03,
+    ior: 1.52,
+    clearcoat: 0.6,
+    clearcoatRoughness: 0.1,
+    depthWrite: false,
+    envMapIntensity: 0
+  }), [])
 
   useEffect(() => {
     const frame = nodes?.Frame
@@ -141,17 +156,14 @@ function PanelWithVideo({ texture, mouse, viewportFit }) {
     geoShift.current.addVectors(bb.min, bb.max).multiplyScalar(0.5)
 
     const applyScale = () => {
-      // видимая высота мира при текущей камере
       const vh = 2 * camera.position.z * Math.tan((camera.fov * Math.PI) / 360)
       const vw = vh * (size.width / size.height)
-      const target = viewportFit?.mode === 'width' ? viewportFit.frac * vw
-                                                   : viewportFit.frac * vh
+      const target = viewportFit?.mode === 'width' ? viewportFit.frac * vw : viewportFit.frac * vh
       const s = target / geoSize.current.y
       groupRef.current.scale.setScalar(s)
     }
 
     applyScale()
-    // пересчитывать при ресайзе/повороте/смене DPR
     const ro = new ResizeObserver(applyScale)
     ro.observe(document.body)
     return () => ro.disconnect()
@@ -188,11 +200,11 @@ function PanelWithVideo({ texture, mouse, viewportFit }) {
   )
 }
 
-/** Трипланарная проекция видео на весь меш + ripple/линза */
+/** Трипланарная проекция видео + ripple/линза (экранные UV) */
 function TriplanarVideoMesh({
-  geometry, position=[0,0,0], texture, mouse,
-  texScale=[1,1], blendSharpness=4.0,
-  objCenter=[0,0,0], objSize=[1,1,1]
+  geometry, position = [0, 0, 0], texture, mouse,
+  texScale = [1, 1], blendSharpness = 4.0,
+  objCenter = [0, 0, 0], objSize = [1, 1, 1]
 }) {
   const shaderArgs = useMemo(() => ({
     uniforms: {
@@ -202,56 +214,43 @@ function TriplanarVideoMesh({
       uTexScale: { value: new THREE.Vector2(texScale[0], texScale[1]) },
       uBlendSharpness: { value: blendSharpness },
       uCenter: { value: new THREE.Vector3(...objCenter) },
-      uSize:   { value: new THREE.Vector3(...objSize) }
+      uSize: { value: new THREE.Vector3(...objSize) }
     },
+    // без кириллицы внутри GLSL-строк
     vertexShader: `
-      varying vec3 vObjPos;       // локальные координаты вершины (для bbox трипланара)
-      varying vec3 vWorldPos;     // мировые координаты (для экранных UV)
-      varying vec3 vWorldNormal;  // нормаль в мировом (для трипланара)
-      varying vec4 vClip;         // clip-space (для экранных UV)
-
+      varying vec3 vObjPos;
+      varying vec3 vWorldPos;
+      varying vec3 vWorldNormal;
+      varying vec4 vClip;
       void main(){
-        // локальные координаты — из атрибутов
         vObjPos = position;
-
-        // мировая позиция
         vec4 worldPos = modelMatrix * vec4(position, 1.0);
         vWorldPos = worldPos.xyz;
-
-        // нормаль в мировых (масштаб у тебя равномерный — inverse-transpose не критичен)
-        vWorldNormal = normalize(mat3(modelMatrix) * normal);
-
-        // clip-space из мировой позиции (важно для стабильных экранных uv)
+        vWorldNormal = normalize(normalMatrix * normal);
         vClip = projectionMatrix * viewMatrix * worldPos;
-
         gl_Position = vClip;
       }
     `,
     fragmentShader: `
       uniform sampler2D uTexture;
-      uniform vec2  uMouse;            // экранные 0..1
+      uniform vec2  uMouse;
       uniform float uTime;
       uniform vec2  uTexScale;
       uniform float uBlendSharpness;
-      uniform vec3  uCenter;           // bbox центра в локале
-      uniform vec3  uSize;             // bbox размера в локале
+      uniform vec3  uCenter;
+      uniform vec3  uSize;
 
-      varying vec3 vObjPos;            // локалка
-      varying vec3 vWorldPos;          // мир (на будущее, если понадобится)
-      varying vec3 vWorldNormal;       // для трипланара
-      varying vec4 vClip;              // для экранных UV
+      varying vec3 vObjPos;
+      varying vec3 vWorldPos;
+      varying vec3 vWorldNormal;
+      varying vec4 vClip;
 
-      // семплинг с трипланарным блендом
       vec4 sampleTriplanar(vec3 pObj, vec3 nWorld, vec2 ripple){
-        // нормализуем локальные координаты в 0..1 по bbox
         vec3 p = (pObj - uCenter) / uSize + 0.5;
-
-        // веса по нормали
         vec3 n = normalize(abs(nWorld));
         n = pow(n, vec3(uBlendSharpness));
         n /= (n.x + n.y + n.z + 1e-5);
 
-        // три проекции из локальных координат
         vec2 uvX = p.zy * uTexScale + ripple;
         vec2 uvY = p.xz * uTexScale + ripple;
         vec2 uvZ = p.xy * uTexScale + ripple;
@@ -263,15 +262,12 @@ function TriplanarVideoMesh({
       }
 
       void main(){
-        // экранные uv из clip-space
         vec2 uvS = vClip.xy / vClip.w * 0.5 + 0.5;
 
-        // Ripple
         float dist = distance(uvS, uMouse);
         vec2 dir = normalize(uvS - uMouse + 1e-6);
         vec2 ripple = 0.02 * sin(10.0 * dist - uTime * 3.0) * dir;
 
-        // Линза
         float lensRadius = 0.2;
         float lensPower = 0.1;
         if (dist < lensRadius){
@@ -279,10 +275,8 @@ function TriplanarVideoMesh({
           ripple += (uvS - uMouse) * k * lensPower;
         }
 
-        // Видео с трипланаром
         vec4 color = sampleTriplanar(vObjPos, vWorldNormal, ripple);
 
-        // Виньетка по экрану
         float vig = smoothstep(0.4, 0.9, distance(uvS, vec2(0.5)));
         color.rgb *= (1.0 - vig);
 
