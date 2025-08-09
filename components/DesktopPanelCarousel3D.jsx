@@ -332,35 +332,40 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
           center
           transform
           distanceFactor={isActive ? 1.0 : 1.06}
-          style={{ pointerEvents: isActive ? 'auto' : 'none' }} // ← было 'none'
+          style={{ pointerEvents: 'auto' }}   // ← всегда ловим события
         >
-          <a
-            href={href}
-            rel="noreferrer"
+          <div
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
-            className="block select-none"
-            style={{ cursor: isActive ? 'pointer' : 'default' }} // ← чтобы был курсор
+            className="select-none"
           >
-            <h2
-              style={{
-                fontFamily: 'var(--titleFont)',
-                WebkitTextStroke: isActive ? '1px rgba(255,255,255,0.06)' : '1px rgba(255,255,255,0.04)',
-                textShadow: isActive
-                  ? '0 0 16px rgba(255,255,255,.04), 0 0 48px rgba(255,255,255,.06)'
-                  : '0 0 10px rgba(255,255,255,.03)',
-                opacity: isActive ? 0.9 : 0.55,
-                mixBlendMode: 'screen'
-              }}
-              className={[
-                'uppercase tracking-[0.18em] font-extrabold',
-                isActive ? 'text-[112px] leading-[0.9]' : 'text-[42px] leading-[1]',
-                'text-white'
-              ].join(' ')}
+            <a
+              href={href}
+              target="_blank"
+              rel="noreferrer"
+              // клик только на активной, но hover сверху всё ещё работает
+              style={{ pointerEvents: isActive ? 'auto' : 'none', cursor: isActive ? 'pointer' : 'default' }}
+              className="block"
             >
-              {title}
-            </h2>
-          </a>
+              <h2
+                className={[
+                  'font-title uppercase tracking-[0.18em] font-extrabold',
+                  isActive ? 'text-[112px] leading-[0.9]' : 'text-[42px] leading-[1]',
+                  'text-white'
+                ].join(' ')}
+                style={{
+                  WebkitTextStroke: isActive ? '1px rgba(255,255,255,0.06)' : '1px rgba(255,255,255,0.04)',
+                  textShadow: isActive
+                    ? '0 0 16px rgba(255,255,255,.04), 0 0 48px rgba(255,255,255,.06)'
+                    : '0 0 10px rgba(255,255,255,.03)',
+                  opacity: isActive ? 0.9 : 0.55,
+                  mixBlendMode: 'screen',
+                }}
+              >
+                {title}
+              </h2>
+            </a>
+          </div>
         </Html>
       </mesh>
     </group>
