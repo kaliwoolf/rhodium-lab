@@ -332,7 +332,7 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
           center
           transform
           distanceFactor={isActive ? 1.0 : 1.06}
-          style={{ pointerEvents: isActive ? 'auto' : 'none' }} // ← было 'none'
+          style={{ pointerEvents: 'none' }} // ← было 'none'
         >
           <a
             href={href}
