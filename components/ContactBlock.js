@@ -21,7 +21,7 @@ export default function ContactBlock() {
 
   useEffect(() => {
     const video = document.createElement('video')
-    video.src = '/video/0004.mp4'
+    video.src = '/video/00004.mp4'
     video.crossOrigin = 'anonymous'
     video.loop = true
     video.muted = true
