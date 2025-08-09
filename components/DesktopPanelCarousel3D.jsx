@@ -383,14 +383,16 @@ function Carousel() {
   // раскладка «по дуге» для пяти слотов: L2, L1, CENTER, R1, R2
   const layout = useMemo(
     () => ([
-      { x: -6.0, z: -3.2, rY:  0.50, s: 0.82 },
-      { x: -3.2, z: -1.6, rY:  0.24, s: 0.92 },
-      { x:  0.0, z:  0.0, rY:  0.00, s: 1.05 },
-      { x:  3.2, z: -1.6, rY: -0.24, s: 0.92 },
-      { x:  6.0, z: -3.2, rY: -0.50, s: 0.82 },
+      //        x      z      rY     rX     rZ     s     y
+      { x: -6.0, z: -3.2, rY:  0.58, rX:  0.12, rZ:  0.08, s: 0.78, y: -0.15 }, // L2: дальше, сильнее завал
+      { x: -3.2, z: -1.6, rY:  0.28, rX:  0.06, rZ:  0.04, s: 0.90, y: -0.06 }, // L1
+      { x:  0.0, z:  0.0, rY:  0.00, rX:  0.00, rZ:  0.00, s: 1.05, y:  0.00 }, // CENTER
+      { x:  3.2, z: -1.6, rY: -0.28, rX:  0.06, rZ: -0.04, s: 0.90, y: -0.06 }, // R1
+      { x:  6.0, z: -3.2, rY: -0.58, rX:  0.12, rZ: -0.08, s: 0.78, y: -0.15 }, // R2
     ]),
     []
   )
+
 
   // куда поставить i-ю карточку относительно active
   function targetFor(i) {
@@ -407,9 +409,15 @@ function Carousel() {
     refs.current.forEach((g, i) => {
       if (!g) return
       const t = targetFor(i)
+
       g.position.x += (t.x - g.position.x) * 0.12
       g.position.z += (t.z - g.position.z) * 0.12
+      g.position.y += (t.y - g.position.y) * 0.12  
+
       g.rotation.y += (t.rY - g.rotation.y) * 0.12
+      g.rotation.x += (t.rX - g.rotation.x) * 0.12        // ← НОВОЕ
+      g.rotation.z += (t.rZ - g.rotation.z) * 0.12  
+
       const curS = g.scale.x
       const nextS = THREE.MathUtils.lerp(curS, t.s, 0.12)
       g.scale.setScalar(nextS)
