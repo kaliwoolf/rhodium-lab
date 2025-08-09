@@ -137,7 +137,7 @@ const VideoRefractionMaterial = shaderMaterial(
 
 extend({ VideoRefractionMaterial })
 
-  const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
+const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
     { title, href, videoUrl, isActive = false },
     outerRef
   ) {
@@ -330,7 +330,7 @@ extend({ VideoRefractionMaterial })
       </primitive>
     </group>
   )
-}
+});
 
 const PANELS = [
   { title: 'КОД СТЫДА', href: '#p1', video: '/video/ks.mp4' },
