@@ -9,12 +9,6 @@ import { VideoTexture } from 'three'
 
 useGLTF.preload('/models/ContactFrame.glb')
 
-const ROT = [
-  THREE.MathUtils.degToRad(-8),
-  THREE.MathUtils.degToRad(10),
-  0
-]
-
 export default function ContactBlock() {
   const mouse = useRef(new THREE.Vector2(0.5, 0.5))
   const [videoTexture, setVideoTexture] = useState(null)
@@ -39,10 +33,7 @@ export default function ContactBlock() {
 
     video.addEventListener('canplay', handleCanPlay)
     video.load()
-
-    return () => {
-      video.removeEventListener('canplay', handleCanPlay)
-    }
+    return () => video.removeEventListener('canplay', handleCanPlay)
   }, [])
 
   const handlePointerMove = (e) => {
@@ -83,7 +74,7 @@ export default function ContactBlock() {
               <span className="absolute left-0 -bottom-1 h-[1px] w-full bg-fuchsia-300 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500 ease-out" />
             </a>
 
-            <div className="relative w-[160px] sm:w-[180px] h-[200px] sm:h-[220px] rounded-xl overflow-hidden border border-white/20 shadow-xl pointer-events-auto">
+            <div className="relative w=[160px] sm:w-[180px] h-[200px] sm:h-[220px] rounded-xl overflow-hidden border border-white/20 shadow-xl pointer-events-auto">
               <video
                 autoPlay
                 loop
@@ -110,6 +101,7 @@ function PanelWithVideo({ texture, mouse }) {
   const geoShift = useRef(new THREE.Vector3())
   const geoSize = useRef(new THREE.Vector3())
 
+  // чистое стекло без затемнения
   const glassMat = useMemo(() => new THREE.MeshPhysicalMaterial({
     transparent: true,
     color: 0xffffff,
@@ -130,6 +122,8 @@ function PanelWithVideo({ texture, mouse }) {
     const bb = frame.geometry.boundingBox
     geoSize.current.subVectors(bb.max, bb.min)
     geoShift.current.addVectors(bb.min, bb.max).multiplyScalar(0.5)
+
+    // масштаб — чтобы целиком влазило по высоте
     const targetH = 1.8
     const s = targetH / geoSize.current.y
     groupRef.current.scale.setScalar(s)
@@ -141,16 +135,19 @@ function PanelWithVideo({ texture, mouse }) {
     <group
       ref={groupRef}
       position={[0, 0, 0.005]}
-      rotation={[0, THREE.MathUtils.degToRad(3), 0]}
+      rotation={[0, THREE.MathUtils.degToRad(3), 0]} // лёгкий поворот для видимой правой грани
     >
       {texture && (
-        <VideoPlane
+        <TriplanarVideoMesh
+          geometry={nodes.Frame.geometry}                                 // весь куб
+          position={[-geoShift.current.x, -geoShift.current.y, -0.0015]}  // под стеклом
           texture={texture}
           mouse={mouse}
-          geometry={nodes.Frame.geometry} // ← передаём форму панели
-          position={[-geoShift.current.x, -geoShift.current.y, -0.002]}
+          texScale={[1.0, 1.0]}                                           // масштаб UV (под видео 16:9 можно поставить [1.0, 9.0/16.0])
+          blendSharpness={4.0}                                            // резкость смешивания граней
         />
       )}
+
       <mesh
         geometry={nodes.Frame.geometry}
         position={[-geoShift.current.x, -geoShift.current.y, 0]}
@@ -161,33 +158,93 @@ function PanelWithVideo({ texture, mouse }) {
   )
 }
 
-function VideoPlane({ texture, mouse, geometry, position = [0, 0, -0.006] }) {
+/** Трипланарная проекция видео на весь меш + ripple/линза */
+function TriplanarVideoMesh({ geometry, position = [0,0,0], texture, mouse, texScale = [1,1], blendSharpness = 4.0 }) {
   const shaderArgs = useMemo(() => ({
-    uniforms: { uTexture: { value: texture }, uTime: { value: 0 }, uMouse: { value: new THREE.Vector2(0.5, 0.5) } },
-    vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
+    uniforms: {
+      uTexture: { value: texture },
+      uTime: { value: 0 },
+      uMouse: { value: new THREE.Vector2(0.5, 0.5) },  // в экранных координатах [0..1]
+      uTexScale: { value: new THREE.Vector2(texScale[0], texScale[1]) },
+      uBlendSharpness: { value: blendSharpness }
+    },
+    vertexShader: `
+      varying vec3 vWorldPos;
+      varying vec3 vWorldNormal;
+      varying vec4 vClip;
+
+      void main() {
+        vec4 worldPos = modelMatrix * vec4(position, 1.0);
+        vWorldPos = worldPos.xyz;
+
+        // нормаль в мировом
+        vWorldNormal = normalize(mat3(modelMatrix) * normal);
+
+        // для экранных эффектов
+        vClip = projectionMatrix * viewMatrix * worldPos;
+
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
     fragmentShader: `
       uniform sampler2D uTexture;
       uniform vec2 uMouse;
       uniform float uTime;
-      varying vec2 vUv;
+      uniform vec2 uTexScale;
+      uniform float uBlendSharpness;
+
+      varying vec3 vWorldPos;
+      varying vec3 vWorldNormal;
+      varying vec4 vClip;
+
+      // трипланарное семплирование с мягким блендингом
+      vec4 sampleTriplanar(vec3 wp, vec3 wn, vec2 rippleOffset) {
+        vec3 n = normalize(abs(wn));
+        n = pow(n, vec3(uBlendSharpness)); // контролируем резкость смешивания
+        float sum = n.x + n.y + n.z + 1e-5;
+        n /= sum;
+
+        // проекции на три плоскости
+        vec2 uvX = wp.zy * uTexScale + rippleOffset; // проекция по X => плоскость YZ
+        vec2 uvY = wp.xz * uTexScale + rippleOffset; // по Y => XZ
+        vec2 uvZ = wp.xy * uTexScale + rippleOffset; // по Z => XY
+
+        vec4 cx = texture2D(uTexture, uvX);
+        vec4 cy = texture2D(uTexture, uvY);
+        vec4 cz = texture2D(uTexture, uvZ);
+
+        return cx * n.x + cy * n.y + cz * n.z;
+      }
+
       void main() {
-        vec2 uv = vUv;
-        float dist = distance(uv, uMouse);
-        uv += 0.02 * sin(10.0 * dist - uTime * 3.0) * normalize(uv - uMouse);
+        // экранные UV для ripple/линзы
+        vec2 uvScreen = vClip.xy / vClip.w * 0.5 + 0.5;
+
+        // ripple в экранных координатах
+        float dist = distance(uvScreen, uMouse);
+        vec2 dir = normalize(uvScreen - uMouse + 1e-6);
+        vec2 ripple = 0.02 * sin(10.0 * dist - uTime * 3.0) * dir;
+
+        // линза
         float lensRadius = 0.2;
         float lensPower = 0.1;
         if (dist < lensRadius) {
           float strength = (lensRadius - dist) / lensRadius;
-          uv += (uv - uMouse) * strength * lensPower;
+          ripple += (uvScreen - uMouse) * strength * lensPower;
         }
-        vec4 color = texture2D(uTexture, uv);
-        float vignette = smoothstep(0.4, 0.9, distance(uv, vec2(0.5)));
-        color.rgb *= 1.0 - vignette;
-        color.a = 0.5;  
+
+        // трипланарное видео
+        vec4 color = sampleTriplanar(vWorldPos, vWorldNormal, ripple);
+
+        // мягкая экранная виньетка
+        float vig = smoothstep(0.4, 0.9, distance(uvScreen, vec2(0.5)));
+        color.rgb *= (1.0 - vig);
+
+        color.a = 0.5; // прозрачность панели
         gl_FragColor = color;
       }
     `
-  }), [texture])
+  }), [texture, texScale, blendSharpness])
 
   useFrame(({ clock }) => {
     shaderArgs.uniforms.uTime.value = clock.getElapsedTime()
@@ -200,4 +257,3 @@ function VideoPlane({ texture, mouse, geometry, position = [0, 0, -0.006] }) {
     </mesh>
   )
 }
-
