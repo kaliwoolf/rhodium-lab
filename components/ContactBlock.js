@@ -9,6 +9,13 @@ import { VideoTexture } from 'three'
 
 useGLTF.preload('/models/ContactFrame.glb')
 
+// наверху файла
+const ROT = [
+  THREE.MathUtils.degToRad(-8),
+  THREE.MathUtils.degToRad(10),
+  0
+]
+
 
 export default function ContactBlock() {
   const mouse = useRef(new THREE.Vector2(0.5, 0.5))
@@ -53,61 +60,31 @@ export default function ContactBlock() {
   }
 
   function BlenderGlass() {
-    const { scene } = useGLTF('/models/ContactFrame.glb')
-    const gRef = useRef()
+  const { scene } = useGLTF('/models/ContactFrame.glb')
+  const gRef = useRef()
 
-    const glassMat = useMemo(() => new THREE.MeshPhysicalMaterial({
-      transparent: true,
-      depthWrite: false,
-      roughness: 0.03,
-      transmission: 0.96,
-      thickness: 0.10,
-      ior: 1.52,
-      clearcoat: 0.6,
-      clearcoatRoughness: 0.1,
-      envMapIntensity: 1.4,
-    }), [])
+  // ... материалы как было
 
-    useMemo(() => {
-      scene.traverse(o => {
-        if (o.isMesh) {
-          o.material = glassMat
-          o.renderOrder = 10
-          o.castShadow = o.receiveShadow = false
-        }
-      })
-    }, [scene, glassMat])
+  useEffect(() => {
+    scene.updateMatrixWorld(true)
+    const box = new THREE.Box3().setFromObject(scene)
+    const size = new THREE.Vector3()
+    const center = new THREE.Vector3()
+    box.getSize(size); box.getCenter(center)
 
-    // Центр + масштаб — на группу, не на scene
-    useEffect(() => {
-      scene.updateMatrixWorld(true)
-      const box = new THREE.Box3().setFromObject(scene)
-      const size = new THREE.Vector3()
-      const center = new THREE.Vector3()
-      box.getSize(size); box.getCenter(center)
+    scene.position.sub(center) // центрируем
+    const targetW = 3.2 * 1.02
+    const targetH = 2.4 * 1.02
+    const s = Math.min(targetW / size.x, targetH / size.y)
+    gRef.current?.scale.setScalar(s)
+  }, [scene])
 
-      scene.position.sub(center) // центрируем сцену в (0,0,0)
-
-      const targetW = 3.2 * 1.02
-      const targetH = 2.4 * 1.02
-      const s = Math.min(targetW / size.x, targetH / size.y)
-      if (gRef.current) gRef.current.scale.setScalar(s)
-    }, [scene])
-
-    return (
-      <group
-        ref={gRef}
-        position={[0, 0, 0.005]}
-        rotation={[
-          THREE.MathUtils.degToRad(-8),
-          THREE.MathUtils.degToRad(10),
-          0
-        ]}
-      >
-        <primitive object={scene} />
-      </group>
-    )
-  }
+  return (
+    <group ref={gRef} position={[0, 0, 0.005]} /* rotation УБРАН */>
+      <primitive object={scene} />
+    </group>
+  )
+}
 
   return (
     <section
@@ -118,15 +95,21 @@ export default function ContactBlock() {
     >
        <div className="contact-canvas relative z-20">
           <div className="relative w-full h-full">
-            <Canvas
-              gl={{ alpha: true }}
-              camera={{ position: [0, 0, 2.5], fov: 50 }}
-              className="absolute inset-0 z-0 pointer-events-none"
-            >
+            <Canvas gl={{ alpha: true }} camera={{ position: [0, 0, 2.5], fov: 50 }}>
               <Suspense fallback={null}>
-                <BlenderGlass />
+                <group rotation={ROT} position={[0,0,0]}>
+                  <BlenderGlass />
+                  {videoTexture && (
+                    <VideoPlane
+                      texture={videoTexture}
+                      mouse={mouse}
+                      // Плоскость чуть ниже стекла в той же группе
+                      position={[0, 0, 0.0048]}
+                      size={[3.2 * 1.02, 2.4 * 1.02]}
+                    />
+                  )}
+                </group>
                 <Environment preset="city" />
-                {videoTexture && <VideoPlane texture={videoTexture} mouse={mouse} />}
               </Suspense>
             </Canvas>
 
@@ -167,20 +150,11 @@ export default function ContactBlock() {
 }
 
 // 🎥 Ripple Plane
-function VideoPlane({ texture, mouse }) {
+function VideoPlane({ texture, mouse, size = [3.2, 2.4], position = [0,0,-0.006] }) {
   const shaderArgs = useMemo(() => ({
-    uniforms: {
-      uTexture: { value: texture },
-      uTime: { value: 0 },
-      uMouse: { value: new THREE.Vector2(0.5, 0.5) },
-    },
-    vertexShader: `
-      varying vec2 vUv;
-      void main() {
-        vUv = uv;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-      }
-    `,
+    uniforms: { uTexture: { value: texture }, uTime: { value: 0 }, uMouse: { value: new THREE.Vector2(0.5, 0.5) } },
+    vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
+    
     fragmentShader: `
       uniform sampler2D uTexture;
       uniform vec2 uMouse;
@@ -227,9 +201,9 @@ function VideoPlane({ texture, mouse }) {
   })
 
   return (
-    <mesh position={[0, 0, -0.006]}>
-      <planeGeometry args={[3.2, 2.4]} />
-      <shaderMaterial args={[shaderArgs]} transparent depthWrite={false}/>
+    <mesh position={position}>
+      <planeGeometry args={size} />
+      <shaderMaterial args={[shaderArgs]} transparent depthWrite={false} />
     </mesh>
   )
 }
