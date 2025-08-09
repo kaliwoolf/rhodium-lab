@@ -214,9 +214,12 @@ function TriplanarVideoMesh({
       uTexScale: { value: new THREE.Vector2(texScale[0], texScale[1]) },
       uBlendSharpness: { value: blendSharpness },
       uCenter: { value: new THREE.Vector3(...objCenter) },
-      uSize: { value: new THREE.Vector3(...objSize) }
+      uSize: { value: new THREE.Vector3(...objSize) },
+      uExplode: { value: 1.0 },   // просто коэффициент эффекта, можно ослабить
+      uShardScale: { value: 18.0 } // размер «осколков» (чем больше — тем крупнее)
+
     },
-    // без кириллицы внутри GLSL-строк
+
     vertexShader: `
       varying vec3 vObjPos;
       varying vec3 vWorldPos;
@@ -239,6 +242,9 @@ function TriplanarVideoMesh({
       uniform float uBlendSharpness;
       uniform vec3  uCenter;
       uniform vec3  uSize;
+      uniform float uExplode;
+      uniform float uShardScale;
+
 
       varying vec3 vObjPos;
       varying vec3 vWorldPos;
@@ -275,7 +281,34 @@ function TriplanarVideoMesh({
           ripple += (uvS - uMouse) * k * lensPower;
         }
 
+        // --- псевдошум по локальным координатам, чтобы выглядело как «осколки»
+        float hash21(vec2 p){
+        p = fract(p*vec2(123.34, 456.21));
+        p += dot(p, p+45.32);
+        return fract(p.x*p.y);
+        }
+
+        // разбиваем панель на «плитки» в локальных координатах (xy)
+        vec2 cellUv = floor( ( (vObjPos.xy - uCenter.xy) / uSize.xy + 0.5 ) * uShardScale );
+        float cellRand = hash21(cellUv);
+
+        // сила разрушения от курсора (ближе к курсору — сильнее)
+        float boom = uExplode * smoothstep(0.25, 0.0, dist); // радиус ~0.25 экрана
+        // порог растворения в ячейках: случайные осколки «выпадают» раньше других
+        float threshold = boom;                  // общий уровень
+        float edgeWidth = 0.08;                  // ширина «светящейся кромки»
+        float shard = smoothstep(threshold - edgeWidth, threshold + edgeWidth, cellRand);
+
+
         vec4 color = sampleTriplanar(vObjPos, vWorldNormal, ripple);
+
+        // подсветка кромки «осколков»
+        float edge = smoothstep(threshold, threshold - edgeWidth, cellRand) * boom;
+        color.rgb += edge * vec3(0.9, 0.2, 1.0) * 0.25;  // фиолетовый отблеск
+
+        // уменьшаем альфу по мере «крошения»
+        color.a *= shard;  // shard → 0 близко к курсору, создаёт «дыры»
+  
 
         float vig = smoothstep(0.4, 0.9, distance(uvS, vec2(0.5)));
         color.rgb *= (1.0 - vig);
