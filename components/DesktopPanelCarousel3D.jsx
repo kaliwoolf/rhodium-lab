@@ -385,6 +385,8 @@ function Carousel() {
   const [active, setActive] = useState(0)
   const group = useRef()
   const refs = useRef([])
+  const canPrev = active > 0
+  const canNext = active < n - 1
 
   // раскладка «по дуге» для пяти слотов: L2, L1, CENTER, R1, R2
   const layout = useMemo(
@@ -400,12 +402,11 @@ function Carousel() {
 
   // куда поставить i-ю карточку относительно active
   function targetFor(i) {
-    let rel = i - active
-    // заворачиваем в диапазон [-2..2]
-    while (rel < -2) rel += n
-    while (rel >  2) rel -= n
-    const slot = rel + 2
-    return layout[slot] ?? { x: 0, z: -6, rY: 0, s: 0.7 }
+   const rel = i - active
+   // если карточка вне «окна» из 5 слотов — уводим далеко назад
+   if (rel < -2 || rel > 2) return { x: 0, z: -8, rY: 0, s: 0.7 }
+   const slot = rel + 2
+   return layout[slot]
   }
 
   // плавная интерполяция трансформов — без автоскролла
@@ -413,18 +414,18 @@ function Carousel() {
     refs.current.forEach((g, i) => {
       if (!g) return
       const t = targetFor(i)
-      g.position.x += (t.x - g.position.x) * 0.12
-      g.position.z += (t.z - g.position.z) * 0.12
-      g.rotation.y += (t.rY - g.rotation.y) * 0.12
+      g.position.x += (t.x - g.position.x) * 0.08
+      g.position.z += (t.z - g.position.z) * 0.08
+      g.rotation.y += (t.rY - g.rotation.y) * 0.08
       const curS = g.scale.x
-      const nextS = THREE.MathUtils.lerp(curS, t.s, 0.12)
+      const nextS = THREE.MathUtils.lerp(curS, t.s, 0.10)
       g.scale.setScalar(nextS)
     })
   })
 
   // кнопки навигации
-  const prev = () => setActive((a) => (a - 1 + n) % n)
-  const next = () => setActive((a) => (a + 1) % n)
+  const prev = () => setActive((a) => (a > 0 ? a - 1 : a))
+  const next = () => setActive((a) => (a < n - 1 ? a + 1 : a))
 
   return (
     <>
@@ -439,7 +440,7 @@ function Carousel() {
             isActive={i === active}
             initialRotation={[
               1,             // X: чуть разный наклон вперёд
-              -9 + i * 2,    // Y: разный поворот вбок
+              -4 + i * 2,    // Y: разный поворот вбок
               1              // Z: крен пока одинаковый
             ]}
           />
@@ -450,16 +451,20 @@ function Carousel() {
        <Html fullscreen zIndexRange={[0, 0]} style={{ pointerEvents: 'none' }}>
         <div className="pointer-events-none absolute inset-0 flex items-center justify-between px-6">
           <button
-            onClick={prev}
-            className="pointer-events-auto h-12 w-12 rounded-full bg-white/10 border border-white/25 backdrop-blur-md hover:bg-white/15 transition grid place-items-center"
-            aria-label="Previous"
+             onClick={prev}
+             disabled={!canPrev}
+             className={`pointer-events-auto h-12 w-12 rounded-full bg-white/10 border border-white/25 backdrop-blur-md transition grid place-items-center
+               ${!canPrev ? 'opacity-0 pointer-events-none' : 'hover:bg-white/15'}`}
+             aria-label="Previous"
           >
-            ‹
+            ‹ 
           </button>
           <button
-            onClick={next}
-            className="pointer-events-auto h-12 w-12 rounded-full bg-white/10 border border-white/25 backdrop-blur-md hover:bg-white/15 transition grid place-items-center"
-            aria-label="Next"
+             onClick={next}
+             disabled={!canNext}
+             className={`pointer-events-auto h-12 w-12 rounded-full bg-white/10 border border-white/25 backdrop-blur-md transition grid place-items-center
+               ${!canNext ? 'opacity-0 pointer-events-none' : 'hover:bg-white/15'}`}
+             aria-label="Next"
           >
             ›
           </button>
