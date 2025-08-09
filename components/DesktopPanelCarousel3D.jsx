@@ -2,7 +2,6 @@ import { Canvas, useFrame, extend, useThree } from "@react-three/fiber"
 import { Html, Environment, useGLTF, useCubeTexture, shaderMaterial } from "@react-three/drei"
 import * as THREE from "three"
 import { useEffect, useMemo, useRef, useState } from "react"
-import { useGLTF } from '@react-three/drei'
 
 // ======== ТЕ ЖЕ ШЕЙДЕРЫ (вырезка из твоего тестового, без правок по логике) ========
 const VideoRefractionMaterial = shaderMaterial(
