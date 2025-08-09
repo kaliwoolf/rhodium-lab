@@ -259,7 +259,7 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
 
     // Плавный fade-in/fade-out видео (как было)
     const cur = shaderRef.current.uniforms.uVideoAlpha.value
-    const to = hovered ? 0.8 : 0
+    const to = isActive ? (hovered ? 0.9 : 0.6) : 0.0
     shaderRef.current.uniforms.uVideoAlpha.value = THREE.MathUtils.lerp(cur, to, delta * 2.5)
   })
 
@@ -337,6 +337,8 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
           <a
             href={href}
             rel="noreferrer"
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
             className="block select-none"
             style={{ cursor: isActive ? 'pointer' : 'default' }} // ← чтобы был курсор
           >
