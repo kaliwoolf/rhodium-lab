@@ -166,11 +166,11 @@ function Panel({ videoUrl, position = [0,0,0], baseRotation=[-0.05, 0.22, 0.0] }
 
 // ======== Карусель с автопрокруткой (max 5 карточек) ========
 const ITEMS = [
-  { videoUrl: "/video/00001.mp4" },
-  { videoUrl: "/video/00002.mp4" },
-  { videoUrl: "/video/00003.mp4" },
+  { videoUrl: "/video/ks.mp4" },
+  { videoUrl: "/video/p2.mp4" },
+  { videoUrl: "/video/bot.mp4" },
   { videoUrl: "/video/00004.mp4" },
-  { videoUrl: "/video/00005.mp4" },
+  { videoUrl: "/video/00002.mp4" },
 ].slice(0,5)
 
 function Slider() {
