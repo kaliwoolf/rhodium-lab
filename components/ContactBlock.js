@@ -4,12 +4,35 @@ import { useState, useEffect, useRef, Suspense, useMemo } from 'react'
 import Image from 'next/image'
 import { useGLTF, Environment } from '@react-three/drei'
 import * as THREE from 'three'
-import { Canvas, useFrame } from '@react-three/fiber'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { VideoTexture } from 'three'
 
 useGLTF.preload('/models/ContactFrame.glb')
 
+function useBreakpoint() {
+  const [bp, setBp] = useState('desktop')
+  useEffect(() => {
+    const m1 = matchMedia('(max-width: 640px)')
+    const m2 = matchMedia('(max-width: 1024px)')
+    const upd = () => setBp(m1.matches ? 'mobile' : (m2.matches ? 'tablet' : 'desktop'))
+    upd()
+    m1.addEventListener('change', upd)
+    m2.addEventListener('change', upd)
+    return () => { m1.removeEventListener('change', upd); m2.removeEventListener('change', upd) }
+  }, [])
+  return bp
+}
+
 export default function ContactBlock() {
+  const bp = useBreakpoint()
+
+  const cameraProps = useMemo(() => {
+    if (bp === 'mobile') return { position: [0, 0, 1.7], fov: 45 }
+    if (bp === 'tablet') return { position: [0, 0, 2.1], fov: 48 }
+    return { position: [0, 0, 2.5], fov: 50 }
+  }, [bp])
+
+
   const mouse = useRef(new THREE.Vector2(0.5, 0.5))
   const [videoTexture, setVideoTexture] = useState(null)
 
@@ -52,9 +75,15 @@ export default function ContactBlock() {
     >
       <div className="contact-canvas relative z-20">
         <div className="relative w-full h-full">
-          <Canvas gl={{ alpha: true }} camera={{ position: [0, 0, 2.5], fov: 50 }}>
+          <Canvas  key={bp} gl={{ alpha: true }} camera={cameraProps}>
             <Suspense fallback={null}>
-              <PanelWithVideo texture={videoTexture} mouse={mouse} />
+              <PanelWithVideo 
+                texture={videoTexture}
+                mouse={mouse}
+                viewportFit={bp === 'mobile' ? {mode:'height', frac:0.88}
+                     : bp === 'tablet' ? {mode:'height', frac:0.78}
+                     : {mode:'height', frac:0.70}}  
+              />
               <Environment preset="city" />
             </Suspense>
           </Canvas>
@@ -95,39 +124,38 @@ export default function ContactBlock() {
   )
 }
 
-function PanelWithVideo({ texture, mouse }) {
+function PanelWithVideo({ texture, mouse, viewportFit }) {
   const { nodes } = useGLTF('/models/ContactFrame.glb')
   const groupRef = useRef()
   const geoShift = useRef(new THREE.Vector3())
-  const geoSize = useRef(new THREE.Vector3())
-
-  // чистое стекло без затемнения
-  const glassMat = useMemo(() => new THREE.MeshPhysicalMaterial({
-    transparent: true,
-    color: 0xffffff,
-    transmission: 1.0,
-    thickness: 0.1,
-    roughness: 0.03,
-    ior: 1.52,
-    clearcoat: 0.6,
-    clearcoatRoughness: 0.1,
-    depthWrite: false,
-    envMapIntensity: 0
-  }), [])
+  const geoSize  = useRef(new THREE.Vector3())
+  const { camera, size } = useThree()
 
   useEffect(() => {
     const frame = nodes?.Frame
     if (!frame?.geometry) return
+
     frame.geometry.computeBoundingBox()
     const bb = frame.geometry.boundingBox
     geoSize.current.subVectors(bb.max, bb.min)
     geoShift.current.addVectors(bb.min, bb.max).multiplyScalar(0.5)
 
-    // масштаб — чтобы целиком влазило по высоте
-    const targetH = 1.8
-    const s = targetH / geoSize.current.y
-    groupRef.current.scale.setScalar(s)
-  }, [nodes])
+    const applyScale = () => {
+      // видимая высота мира при текущей камере
+      const vh = 2 * camera.position.z * Math.tan((camera.fov * Math.PI) / 360)
+      const vw = vh * (size.width / size.height)
+      const target = viewportFit?.mode === 'width' ? viewportFit.frac * vw
+                                                   : viewportFit.frac * vh
+      const s = target / geoSize.current.y
+      groupRef.current.scale.setScalar(s)
+    }
+
+    applyScale()
+    // пересчитывать при ресайзе/повороте/смене DPR
+    const ro = new ResizeObserver(applyScale)
+    ro.observe(document.body)
+    return () => ro.disconnect()
+  }, [nodes, camera, size, viewportFit])
 
   if (!nodes?.Frame) return null
 
@@ -135,7 +163,7 @@ function PanelWithVideo({ texture, mouse }) {
     <group
       ref={groupRef}
       position={[0, 0, 0.005]}
-      rotation={[0, THREE.MathUtils.degToRad(3), 0]} // лёгкий поворот для видимой правой грани
+      rotation={[0, THREE.MathUtils.degToRad(3), 0]}
     >
       {texture && (
         <TriplanarVideoMesh
@@ -274,4 +302,4 @@ function TriplanarVideoMesh({
       <shaderMaterial args={[shaderArgs]} transparent depthWrite={false} side={THREE.DoubleSide} />
     </mesh>
   )
-}ы
+}
