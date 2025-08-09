@@ -139,12 +139,14 @@ function PanelWithVideo({ texture, mouse }) {
     >
       {texture && (
         <TriplanarVideoMesh
-          geometry={nodes.Frame.geometry}                                 // весь куб
-          position={[-geoShift.current.x, -geoShift.current.y, -0.0015]}  // под стеклом
+          geometry={nodes.Frame.geometry}
+          position={[-geoShift.current.x, -geoShift.current.y, -0.0015]}
           texture={texture}
           mouse={mouse}
-          texScale={[1.0, 1.0]}                                           // масштаб UV (под видео 16:9 можно поставить [1.0, 9.0/16.0])
-          blendSharpness={4.0}                                            // резкость смешивания граней
+          texScale={[1.0, 1.0]}
+          blendSharpness={4.0}
+          objCenter={[geoShift.current.x, geoShift.current.y, geoShift.current.z || 0]}
+          objSize={[geoSize.current.x, geoSize.current.y, geoSize.current.z || 1]}
         />
       )}
 
@@ -159,92 +161,89 @@ function PanelWithVideo({ texture, mouse }) {
 }
 
 /** Трипланарная проекция видео на весь меш + ripple/линза */
-function TriplanarVideoMesh({ geometry, position = [0,0,0], texture, mouse, texScale = [1,1], blendSharpness = 4.0 }) {
+function TriplanarVideoMesh({
+  geometry, position=[0,0,0], texture, mouse,
+  texScale=[1,1], blendSharpness=4.0,
+  objCenter=[0,0,0], objSize=[1,1,1]
+}) {
   const shaderArgs = useMemo(() => ({
     uniforms: {
       uTexture: { value: texture },
       uTime: { value: 0 },
-      uMouse: { value: new THREE.Vector2(0.5, 0.5) },  // в экранных координатах [0..1]
+      uMouse: { value: new THREE.Vector2(0.5, 0.5) },
       uTexScale: { value: new THREE.Vector2(texScale[0], texScale[1]) },
-      uBlendSharpness: { value: blendSharpness }
+      uBlendSharpness: { value: blendSharpness },
+      uCenter: { value: new THREE.Vector3(...objCenter) },
+      uSize:   { value: new THREE.Vector3(...objSize) }
     },
     vertexShader: `
-      varying vec3 vWorldPos;
+      varying vec3 vObjPos;
       varying vec3 vWorldNormal;
       varying vec4 vClip;
-
-      void main() {
-        vec4 worldPos = modelMatrix * vec4(position, 1.0);
-        vWorldPos = worldPos.xyz;
-
-        // нормаль в мировом
+      void main(){
+        vObjPos = position;                       // локальные координаты вершины
         vWorldNormal = normalize(mat3(modelMatrix) * normal);
-
-        // для экранных эффектов
+        vec4 worldPos = modelMatrix * vec4(position, 1.0);
         vClip = projectionMatrix * viewMatrix * worldPos;
-
         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
       }
     `,
     fragmentShader: `
       uniform sampler2D uTexture;
-      uniform vec2 uMouse;
+      uniform vec2  uMouse;
       uniform float uTime;
-      uniform vec2 uTexScale;
+      uniform vec2  uTexScale;
       uniform float uBlendSharpness;
+      uniform vec3  uCenter;
+      uniform vec3  uSize;
 
-      varying vec3 vWorldPos;
+      varying vec3 vObjPos;
       varying vec3 vWorldNormal;
       varying vec4 vClip;
 
-      // трипланарное семплирование с мягким блендингом
-      vec4 sampleTriplanar(vec3 wp, vec3 wn, vec2 rippleOffset) {
-        vec3 n = normalize(abs(wn));
-        n = pow(n, vec3(uBlendSharpness)); // контролируем резкость смешивания
-        float sum = n.x + n.y + n.z + 1e-5;
-        n /= sum;
+      vec4 sampleTriplanar(vec3 pObj, vec3 nWorld, vec2 ripple){
+        // нормализуем локальные координаты в диапазон 0..1 по bbox
+        vec3 p = (pObj - uCenter) / uSize + 0.5;
 
-        // проекции на три плоскости
-        vec2 uvX = wp.zy * uTexScale + rippleOffset; // проекция по X => плоскость YZ
-        vec2 uvY = wp.xz * uTexScale + rippleOffset; // по Y => XZ
-        vec2 uvZ = wp.xy * uTexScale + rippleOffset; // по Z => XY
+        vec3 n = normalize(abs(nWorld));
+        n = pow(n, vec3(uBlendSharpness));
+        n /= (n.x + n.y + n.z + 1e-5);
+
+        vec2 uvX = p.zy * uTexScale + ripple; // проекции из локальных координат
+        vec2 uvY = p.xz * uTexScale + ripple;
+        vec2 uvZ = p.xy * uTexScale + ripple;
 
         vec4 cx = texture2D(uTexture, uvX);
         vec4 cy = texture2D(uTexture, uvY);
         vec4 cz = texture2D(uTexture, uvZ);
-
-        return cx * n.x + cy * n.y + cz * n.z;
+        return cx*n.x + cy*n.y + cz*n.z;
       }
 
-      void main() {
-        // экранные UV для ripple/линзы
-        vec2 uvScreen = vClip.xy / vClip.w * 0.5 + 0.5;
+      void main(){
+        // экранные UV для эффектов
+        vec2 uvS = vClip.xy / vClip.w * 0.5 + 0.5;
 
-        // ripple в экранных координатах
-        float dist = distance(uvScreen, uMouse);
-        vec2 dir = normalize(uvScreen - uMouse + 1e-6);
+        float dist = distance(uvS, uMouse);
+        vec2 dir = normalize(uvS - uMouse + 1e-6);
         vec2 ripple = 0.02 * sin(10.0 * dist - uTime * 3.0) * dir;
 
-        // линза
         float lensRadius = 0.2;
         float lensPower = 0.1;
-        if (dist < lensRadius) {
-          float strength = (lensRadius - dist) / lensRadius;
-          ripple += (uvScreen - uMouse) * strength * lensPower;
+        if (dist < lensRadius){
+          float k = (lensRadius - dist) / lensRadius;
+          ripple += (uvS - uMouse) * k * lensPower;
         }
 
-        // трипланарное видео
-        vec4 color = sampleTriplanar(vWorldPos, vWorldNormal, ripple);
+        vec4 color = sampleTriplanar(vObjPos, vWorldNormal, ripple);
 
-        // мягкая экранная виньетка
-        float vig = smoothstep(0.4, 0.9, distance(uvScreen, vec2(0.5)));
+        float vig = smoothstep(0.4, 0.9, distance(uvS, vec2(0.5)));
         color.rgb *= (1.0 - vig);
 
-        color.a = 0.5; // прозрачность панели
+        color.a = 0.5;
         gl_FragColor = color;
       }
     `
-  }), [texture, texScale, blendSharpness])
+  }), [texture, texScale, blendSharpness, objCenter, objSize])
 
   useFrame(({ clock }) => {
     shaderArgs.uniforms.uTime.value = clock.getElapsedTime()
