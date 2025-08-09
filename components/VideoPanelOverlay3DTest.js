@@ -151,8 +151,8 @@ function GlassPanelWithOverlay({ videoUrl }) {
   const forceRerender = useRef(false)
   // Стартовая ориентация панели и настройки парения
   const baseRot = useRef(new THREE.Euler(
-    THREE.MathUtils.degToRad(0), // X — наклон вперёд/назад
-    THREE.MathUtils.degToRad(5),  // Y — поворот вбок
+    THREE.MathUtils.degToRad(1), // X — наклон вперёд/назад
+    THREE.MathUtils.degToRad(9),  // Y — поворот вбок
     THREE.MathUtils.degToRad(0)    // Z — крен
   ))
   // амплитуда и скорости парения (можешь крутить)
@@ -299,7 +299,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
             uEnvMapRim={envMapRim}
             uIntensity={0.22}
             uThickness={2.4}
-            uEnvAmount={0.22}    // Прозрачность envMap (0.12…0.22)
+            uEnvAmount={0.20}    // Прозрачность envMap (0.12…0.22)
             uRimAmount={0.32}    // Сила rim-каймы
             uPanelAlpha={0.68}
             uTint={[0.63, 0.98, 0.86]}
@@ -344,7 +344,7 @@ export default function VideoPanelOverlay3DTest() {
         <directionalLight position={[3, 2, 3]} intensity={2.4} />
         <Environment preset="sunset" />
         <GlassPanelWithOverlay videoUrl="/video/00004.mp4" />
-        <OrbitControls enablePan={false} enableZoom={false} />
+        <OrbitControls enablePan={false} enableZoom={false} enableRotate={false} />
       </Canvas>
     </div>
   )
