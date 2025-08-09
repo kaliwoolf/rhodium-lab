@@ -177,6 +177,8 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
     { path: '/hdr/hi01/' }
   )
 
+  const hoverLock = useRef(false);
+
   const handlePointerOver = (e) => {
    setHovered(true);
    // НЕ трогать mouse тут — пусть он остаётся в (0,0), если не двигается
@@ -358,8 +360,8 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
                 mixBlendMode: 'screen'
               }}
               className={[
-                'uppercase tracking-[0.18em] font-bold',
-                isActive ? 'text-[132px] leading-[0.9]' : 'text-[42px] leading-[1]',
+                'uppercase tracking-[0.1em] font-bold',
+                isActive ? 'text-[12px] leading-[0.9]' : 'text-[42px] leading-[1]',
                 'text-white'
               ].join(' ')}
             >
