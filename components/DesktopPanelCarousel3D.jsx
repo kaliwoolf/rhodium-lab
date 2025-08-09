@@ -315,8 +315,8 @@ const PANELS = [
 
 function Carousel() {
   const group = useRef();
-  const spacing = 3.2;        // расстояние между панелями
-  const speed = 0.18;         // скорость автопрокрутки (меньше — медленнее)
+  const spacing = 1.2;        // расстояние между панелями
+  const speed = 0.08;         // скорость автопрокрутки (меньше — медленнее)
   const loopW = spacing * PANELS.length;
   const offset = useRef(0);
 
