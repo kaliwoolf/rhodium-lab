@@ -332,26 +332,33 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
           center
           transform
           distanceFactor={isActive ? 1.0 : 1.06}
-          style={{ pointerEvents: 'none' }}   // текст не ловит клики
+          style={{ pointerEvents: isActive ? 'auto' : 'none' }} // ← было 'none'
         >
-          <h2
-            style={{
-              fontFamily: 'var(--titleFont)',
-              WebkitTextStroke: isActive ? '1px rgba(255,255,255,0.06)' : '1px rgba(255,255,255,0.04)',
-              textShadow: isActive
-                ? '0 0 16px rgba(255,255,255,.04), 0 0 48px rgba(255,255,255,.06)'
-                : '0 0 10px rgba(255,255,255,.03)',
-              opacity: isActive ? 0.9 : 0.55,      // лёгкая «прозрачность»
-              mixBlendMode: 'screen'               // «просвет» через фон, как у AT
-            }}
-            className={[
-              'uppercase tracking-[0.18em] font-extrabold select-none',
-              isActive ? 'text-[112px] leading-[0.9]' : 'text-[42px] leading-[1]',
-              'text-white' // базовый белый; «просвет» делает mix-blend + opacity
-            ].join(' ')}
+          <a
+            href={href}
+            rel="noreferrer"
+            className="block select-none"
+            style={{ cursor: isActive ? 'pointer' : 'default' }} // ← чтобы был курсор
           >
-            {title}
-          </h2>
+            <h2
+              style={{
+                fontFamily: 'var(--titleFont)',
+                WebkitTextStroke: isActive ? '1px rgba(255,255,255,0.06)' : '1px rgba(255,255,255,0.04)',
+                textShadow: isActive
+                  ? '0 0 16px rgba(255,255,255,.04), 0 0 48px rgba(255,255,255,.06)'
+                  : '0 0 10px rgba(255,255,255,.03)',
+                opacity: isActive ? 0.9 : 0.55,
+                mixBlendMode: 'screen'
+              }}
+              className={[
+                'uppercase tracking-[0.18em] font-extrabold',
+                isActive ? 'text-[112px] leading-[0.9]' : 'text-[42px] leading-[1]',
+                'text-white'
+              ].join(' ')}
+            >
+              {title}
+            </h2>
+          </a>
         </Html>
       </mesh>
     </group>
