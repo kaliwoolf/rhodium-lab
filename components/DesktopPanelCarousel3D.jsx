@@ -282,7 +282,8 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
 
   return (
     <group ref={groupRef}>
-      <primitive
+      <mesh
+        geometry={nodes.Panel.geometry}
         object={nodes.Panel}
         scale={[0.55, 0.55, 0.55]} // подбери под свою сцену!
         ref={panelRef} 
@@ -293,6 +294,7 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
         {videoTexture && (
           <videoRefractionMaterial
             ref={shaderRef}
+            attach="material"   
             uBackground={bgRenderTarget.current?.texture}
             uVideo={videoTexture}  
             uEnvMap={envMapNeutral}
@@ -327,7 +329,7 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
             {title}
           </a>
         </Html>
-      </primitive>
+      </mesh>
     </group>
   )
 });
