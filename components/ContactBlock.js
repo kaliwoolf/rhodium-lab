@@ -112,14 +112,15 @@ function PanelWithVideo({ texture, mouse }) {
 
   const glassMat = useMemo(() => new THREE.MeshPhysicalMaterial({
     transparent: true,
-    transmission: 0.96,
+    color: 0xffffff,     
+    transmission: 1.0,
     thickness: 0.1,
     roughness: 0.03,
     ior: 1.52,
     clearcoat: 0.6,
     clearcoatRoughness: 0.1,
     depthWrite: false,
-    envMapIntensity: 1.2
+    envMapIntensity: 0
   }), [])
 
   useEffect(() => {
