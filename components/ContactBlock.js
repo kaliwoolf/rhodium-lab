@@ -177,39 +177,54 @@ function TriplanarVideoMesh({
       uSize:   { value: new THREE.Vector3(...objSize) }
     },
     vertexShader: `
-      varying vec3 vObjPos;
-      varying vec3 vWorldNormal;
-      varying vec4 vClip;
+      varying vec3 vObjPos;       // локальные координаты вершины (для bbox трипланара)
+      varying vec3 vWorldPos;     // мировые координаты (для экранных UV)
+      varying vec3 vWorldNormal;  // нормаль в мировом (для трипланара)
+      varying vec4 vClip;         // clip-space (для экранных UV)
+
       void main(){
-        vObjPos = position;                       // локальные координаты вершины
-        vWorldNormal = normalize(mat3(modelMatrix) * normal);
+        // локальные координаты — из атрибутов
+        vObjPos = position;
+
+        // мировая позиция
         vec4 worldPos = modelMatrix * vec4(position, 1.0);
+        vWorldPos = worldPos.xyz;
+
+        // нормаль в мировых (масштаб у тебя равномерный — inverse-transpose не критичен)
+        vWorldNormal = normalize(mat3(modelMatrix) * normal);
+
+        // clip-space из мировой позиции (важно для стабильных экранных uv)
         vClip = projectionMatrix * viewMatrix * worldPos;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+
+        gl_Position = vClip;
       }
     `,
     fragmentShader: `
       uniform sampler2D uTexture;
-      uniform vec2  uMouse;
+      uniform vec2  uMouse;            // экранные 0..1
       uniform float uTime;
       uniform vec2  uTexScale;
       uniform float uBlendSharpness;
-      uniform vec3  uCenter;
-      uniform vec3  uSize;
+      uniform vec3  uCenter;           // bbox центра в локале
+      uniform vec3  uSize;             // bbox размера в локале
 
-      varying vec3 vObjPos;
-      varying vec3 vWorldNormal;
-      varying vec4 vClip;
+      varying vec3 vObjPos;            // локалка
+      varying vec3 vWorldPos;          // мир (на будущее, если понадобится)
+      varying vec3 vWorldNormal;       // для трипланара
+      varying vec4 vClip;              // для экранных UV
 
+      // семплинг с трипланарным блендом
       vec4 sampleTriplanar(vec3 pObj, vec3 nWorld, vec2 ripple){
-        // нормализуем локальные координаты в диапазон 0..1 по bbox
+        // нормализуем локальные координаты в 0..1 по bbox
         vec3 p = (pObj - uCenter) / uSize + 0.5;
 
+        // веса по нормали
         vec3 n = normalize(abs(nWorld));
         n = pow(n, vec3(uBlendSharpness));
         n /= (n.x + n.y + n.z + 1e-5);
 
-        vec2 uvX = p.zy * uTexScale + ripple; // проекции из локальных координат
+        // три проекции из локальных координат
+        vec2 uvX = p.zy * uTexScale + ripple;
         vec2 uvY = p.xz * uTexScale + ripple;
         vec2 uvZ = p.xy * uTexScale + ripple;
 
@@ -220,13 +235,15 @@ function TriplanarVideoMesh({
       }
 
       void main(){
-        // экранные UV для эффектов
+        // экранные uv из clip-space
         vec2 uvS = vClip.xy / vClip.w * 0.5 + 0.5;
 
+        // Ripple
         float dist = distance(uvS, uMouse);
         vec2 dir = normalize(uvS - uMouse + 1e-6);
         vec2 ripple = 0.02 * sin(10.0 * dist - uTime * 3.0) * dir;
 
+        // Линза
         float lensRadius = 0.2;
         float lensPower = 0.1;
         if (dist < lensRadius){
@@ -234,8 +251,10 @@ function TriplanarVideoMesh({
           ripple += (uvS - uMouse) * k * lensPower;
         }
 
+        // Видео с трипланаром
         vec4 color = sampleTriplanar(vObjPos, vWorldNormal, ripple);
 
+        // Виньетка по экрану
         float vig = smoothstep(0.4, 0.9, distance(uvS, vec2(0.5)));
         color.rgb *= (1.0 - vig);
 
@@ -255,4 +274,4 @@ function TriplanarVideoMesh({
       <shaderMaterial args={[shaderArgs]} transparent depthWrite={false} side={THREE.DoubleSide} />
     </mesh>
   )
-}
+}ы
