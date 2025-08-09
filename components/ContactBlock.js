@@ -196,7 +196,7 @@ function VideoPlane({ texture, mouse, geometry, position = [0, 0, -0.006] }) {
 
   return (
     <mesh geometry={geometry} position={position} renderOrder={5}>
-      <shaderMaterial args={[shaderArgs]} transparent depthWrite={false} />
+      <shaderMaterial args={[shaderArgs]} transparent depthWrite={false} side={THREE.DoubleSide} />
     </mesh>
   )
 }
