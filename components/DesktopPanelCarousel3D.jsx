@@ -332,7 +332,7 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
           center
           transform
           distanceFactor={isActive ? 1.0 : 1.06}
-          style={{ pointerEvents: 'none' }} // ← было 'none'
+          style={{ pointerEvents: 'none' }}
         >
           <a
             href={href}
@@ -349,7 +349,7 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
               style={{
                 fontFamily: 'var(--titleFont)',
                 WebkitTextFillColor: 'transparent',
-                WebkitTextStroke: isActive ? '1px rgba(255,255,255,0.06)' : '1px rgba(255,255,255,0.04)',
+                WebkitTextStroke: isActive ? '2px rgba(197,173,173,1)' : '2px rgba(197,173,173,0.8)',
                 textShadow: isActive
                   ? '0 0 16px rgba(255,255,255,.04), 0 0 48px rgba(255,255,255,.06)'
                   : '0 0 10px rgba(255,255,255,.03)',
