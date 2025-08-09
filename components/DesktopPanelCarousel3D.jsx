@@ -181,15 +181,19 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
    setHovered(true);
    // НЕ трогать mouse тут — пусть он остаётся в (0,0), если не двигается
   };
+  
   const handlePointerMove = (e) => {
      setMouse({
        x: (e.uv.x - 0.5) * 2,
        y: -(e.uv.y - 0.5) * 2
      });
   };
+  
   const handlePointerOut = () => {
+    if (!hoverLock.current) {    
      setHovered(false);
      setMouse({ x: 0, y: 0 });
+    } 
   };
 
   // Помечаем объект как «панель»
@@ -332,19 +336,15 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
           center
           transform
           distanceFactor={isActive ? 1.0 : 1.06}
-          style={{ pointerEvents: 'none' }}
+         // style={{ pointerEvents: 'none' }}
         >
           <a
             href={href}
             rel="noreferrer"
             className="block select-none"
-            style={{ 
-              pointerEvents: 'auto', 
-              cursor: isActive ? 'pointer' : 'default' 
-            }} // ← чтобы был курсор
-            onMouseEnter={() => setHovered(true)}   // ← добавить
-            onMouseLeave={() => setHovered(false)}  // ← добавить
-         >
+            style={{ cursor: isActive ? 'pointer' : 'default' }} // ← чтобы был курсор
+              onMouseEnter={() => { hoverLock.current = true;  setHovered(true);  }}
+              onMouseLeave={() => { hoverLock.current = false; setHovered(false); }}
             <h2
               style={{
                 fontFamily: 'var(--titleFont)',
