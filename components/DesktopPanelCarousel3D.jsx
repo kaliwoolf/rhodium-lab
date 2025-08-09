@@ -142,7 +142,7 @@ const VideoRefractionMaterial = shaderMaterial(
 extend({ VideoRefractionMaterial })
 
 const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
-    { title, href, videoUrl, isActive={i === active}, isSide={i !== active}, initialRotation = [8, -9, 1] },
+    { title, href, videoUrl, isActive = false, initialRotation = [8, -9, 1] },
     outerRef
   ) {
   const localGroup = useRef()
