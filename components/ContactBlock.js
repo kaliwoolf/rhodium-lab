@@ -59,39 +59,35 @@ export default function ContactBlock() {
     const glassMat = useMemo(() => new THREE.MeshPhysicalMaterial({
       transparent: true,
       depthWrite: false,
-      roughness: 0.02,
+      roughness: 0.03,
       transmission: 0.96,
-      thickness: 0.08,
+      thickness: 0.10,
       ior: 1.52,
       clearcoat: 0.6,
       clearcoatRoughness: 0.1,
-      envMapIntensity: 1.0,
+      envMapIntensity: 1.4,
     }), [])
 
     useMemo(() => {
-      scene.traverse((o) => {
+      scene.traverse(o => {
         if (o.isMesh) {
           o.material = glassMat
           o.renderOrder = 10
-          o.castShadow = false
-          o.receiveShadow = false
+          o.castShadow = o.receiveShadow = false
         }
       })
     }, [scene, glassMat])
 
-    // Центруем модель и подгоняем размер под 3.2 x 2.4 (+2%)
+    // Центр + масштаб — на группу, не на scene
     useEffect(() => {
       scene.updateMatrixWorld(true)
       const box = new THREE.Box3().setFromObject(scene)
       const size = new THREE.Vector3()
       const center = new THREE.Vector3()
-      box.getSize(size)
-      box.getCenter(center)
+      box.getSize(size); box.getCenter(center)
 
-      // перенести центр модели в (0,0,0)
-      scene.position.sub(center)
+      scene.position.sub(center) // центрируем сцену в (0,0,0)
 
-      // целевой масштаб — ставим на group (НЕ на scene!)
       const targetW = 3.2 * 1.02
       const targetH = 2.4 * 1.02
       const s = Math.min(targetW / size.x, targetH / size.y)
@@ -101,10 +97,10 @@ export default function ContactBlock() {
     return (
       <group
         ref={gRef}
-        position={[0, 0, 0.005]}                 // стекло чуть ближе к камере
+        position={[0, 0, 0.005]}
         rotation={[
-          THREE.MathUtils.degToRad(-7),          // X: наклон назад
-          THREE.MathUtils.degToRad(9),           // Y: небольшой поворот
+          THREE.MathUtils.degToRad(-8),
+          THREE.MathUtils.degToRad(10),
           0
         ]}
       >
@@ -113,7 +109,6 @@ export default function ContactBlock() {
     )
   }
 
-
   return (
     <section
       id="contact"
@@ -121,7 +116,7 @@ export default function ContactBlock() {
       onMouseMove={handlePointerMove}
       onTouchMove={handlePointerMove}
     >
-       <div className="contact-canvas relative z-20 rounded-3xl overflow-hidden">
+       <div className="contact-canvas relative z-20">
           <div className="relative w-full h-full">
             <Canvas
               gl={{ alpha: true }}
