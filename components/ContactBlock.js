@@ -141,7 +141,7 @@ function PanelWithVideo({ texture, mouse }) {
     <group
       ref={groupRef}
       position={[0, 0, 0.005]}
-      rotation={[0, THREE.MathUtils.degToRad(6), 0]}
+      rotation={[0, THREE.MathUtils.degToRad(3), 0]}
     >
       {texture && (
         <VideoPlane
