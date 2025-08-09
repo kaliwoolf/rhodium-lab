@@ -348,6 +348,7 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
             <h2
               style={{
                 fontFamily: 'var(--titleFont)',
+                WebkitTextFillColor: 'transparent',
                 WebkitTextStroke: isActive ? '1px rgba(255,255,255,0.06)' : '1px rgba(255,255,255,0.04)',
                 textShadow: isActive
                   ? '0 0 16px rgba(255,255,255,.04), 0 0 48px rgba(255,255,255,.06)'
