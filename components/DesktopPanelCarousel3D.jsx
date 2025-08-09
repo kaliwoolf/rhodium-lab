@@ -264,19 +264,29 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
     return () => bgRenderTarget.current?.dispose()
   }, [size.width, size.height])
 
+  // Панель в слой 1, а камере включаем видимость слоя 1
+  useEffect(() => {
+    panelRef.current?.layers.set(1)
+    camera.layers.enable(1) // камера теперь видит 0 и 1 слои в основном рендере
+  }, [camera])
+
+
   useFrame(() => {
     if (!bgRenderTarget.current) return
 
-    // Скрываем панель перед рендером фона
-    if (panelRef.current) panelRef.current.visible = false
+    // запоминаем текущую маску слоёв камеры
+    const prevMask = camera.layers.mask
+
+    // фон: показываем только слой 0 (там звёзды/бекграунд)
+    camera.layers.set(0)
 
     gl.setRenderTarget(bgRenderTarget.current)
     gl.render(scene, camera)
     gl.setRenderTarget(null)
 
-    if (panelRef.current) panelRef.current.visible = true
+    // возвращаем слои камеры
+    camera.layers.mask = prevMask
 
-    // 🔥 Принудительный микроскопический сдвиг, чтобы фон обновился
     if (forceRerender.current && panelRef.current) {
       panelRef.current.rotation.x += 0.0001
       forceRerender.current = false
@@ -318,26 +328,33 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
           position={[0, 0.02, 0.012]}
           center
           transform
-          distanceFactor={isActive ? 1 : 1.1}
+          distanceFactor={isActive ? 1.0 : 1.06}
           style={{ pointerEvents: isActive ? 'auto' : 'none' }}
         >
           <div
             className={[
               'px-6 py-3 rounded-xl backdrop-blur-md',
-              isActive ? 'bg-black/35' : 'bg-black/25',
-              isActive ? 'opacity-100' : 'opacity-40',
-              'transition'
+              isActive ? 'bg-black/30' : 'bg-black/20',
+              isActive ? 'opacity-100' : 'opacity-45',
+              'transition-shadow'
             ].join(' ')}
-            style={{ boxShadow: '0 6px 24px rgba(0,0,0,.35)' }}
+            style={{
+              boxShadow: isActive
+                ? '0 10px 30px rgba(0,0,0,.35), inset 0 1px 8px rgba(255,255,255,.06)'
+                : '0 6px 16px rgba(0,0,0,.25), inset 0 1px 6px rgba(255,255,255,.04)'
+            }}
           >
             <div
+              style={{ fontFamily: 'var(--titleFont)' }}
               className={[
-                'uppercase tracking-[0.08em]',
-                'font-extrabold leading-tight text-white',
-                isActive ? 'text-[64px]' : 'text-[28px]',
-                'drop-shadow-lg'
+                'uppercase tracking-[0.12em] font-extrabold leading-tight',
+                // градиент по буквам
+                'bg-gradient-to-r from-indigo-100 via-sky-100 to-fuchsia-100',
+                'bg-clip-text text-transparent',
+                // свечение для читаемости
+                'drop-shadow-[0_2px_10px_rgba(0,0,0,.55)]',
+                isActive ? 'text-[60px]' : 'text-[28px]'
               ].join(' ')}
-              style={{ textShadow: '0 2px 12px rgba(0,0,0,.55)' }}
             >
               {title}
             </div>

@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Michroma&display=swap');
+:root { --titleFont: "Michroma", system-ui, sans-serif; }
+
 html, body {
   margin: 0;
   padding: 0;
