@@ -305,26 +305,6 @@ function GlassPanelWithOverlay({ videoUrl }) {
             depthWrite={false}
             />
         )}
-
-        {/* HTML-оверлей */}
-        <Html
-          position={[0, 0, 0.009]} // чуть выше панели (толщина+)
-          center
-          distanceFactor={1.01}
-          transform
-          className={styles.panel}
-          style={{ width: '94vw', maxWidth: 1300, height: 740, pointerEvents: 'auto' }}
-        >
-          {/* Вставляем твою разметку и CSS */}
-          <div className={styles.inner}>
-             <div className={styles.content}>
-              <h3 className="text-white text-xl font-semibold px-6 py-2 rounded-full bg-[rgba(255,255,255,0.1)] backdrop-blur-md border border-white/20 shadow-md mb-6 w-fit mx-auto">
-                Актуальные проекты
-              </h3>
-            </div>
-          </div>
-        </Html>
-        
       </primitive>
     </group>
   )
