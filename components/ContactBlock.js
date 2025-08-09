@@ -54,17 +54,19 @@ export default function ContactBlock() {
 
   function BlenderGlass() {
     const { scene } = useGLTF('/models/ContactFrame.glb')
+    const gRef = useRef()
+    
     const glassMat = useMemo(() => new THREE.MeshPhysicalMaterial({
-    transparent: true,
-    depthWrite: false,       // ← не кладём в depth, убирает мерцания с видео
-    roughness: 0.02,
-    transmission: 0.96,
-    thickness: 0.06,
-    ior: 1.52,
-    clearcoat: 0.6,
-    clearcoatRoughness: 0.1,
-    envMapIntensity: 1.0,
-  }), [])
+      transparent: true,
+      depthWrite: false,       // ← не кладём в depth, убирает мерцания с видео
+      roughness: 0.02,
+      transmission: 0.96,
+      thickness: 0.08,
+      ior: 1.52,
+      clearcoat: 0.6,
+      clearcoatRoughness: 0.1,
+      envMapIntensity: 1.0,
+    }), [])
 
   useMemo(() => {
     scene.traverse((o) => {
@@ -72,10 +74,30 @@ export default function ContactBlock() {
         o.material = glassMat
         o.renderOrder = 10     // ← рисуем после плоскости с видео
         o.castShadow = false
-         o.receiveShadow = false
+        o.receiveShadow = false
        }
      })
    }, [scene, glassMat])
+
+  // подогнать модель под размер видео 3.2 x 2.4 и сделать на 2% больше
+  useEffect(() => {
+    const box = new THREE.Box3().setFromObject(scene)
+    const size = new THREE.Vector3()
+    box.getSize(size)
+    if (size.x > 0 && size.y > 0) {
+      const targetW = 3.2 * 1.02 // +2% чтобы стекло выступало по краям
+      const targetH = 2.4 * 1.02
+      const sx = targetW / size.x
+      const sy = targetH / size.y
+      const s = Math.min(sx, sy)
+      scene.scale.setScalar(s)
+      // центрируем по bbox
+      const center = new THREE.Vector3()
+      box.getCenter(center)
+      scene.position.sub(center.multiplyScalar(s))
+    }
+  }, [scene])
+
 
     scene.position.set(0, 0, 0.005)
     scene.rotation.set(
@@ -84,7 +106,14 @@ export default function ContactBlock() {
       0
     )
     scene.scale.set(1, 1, 1)       // подогнать, если надо
-    return <primitive object={scene} />
+    return 
+      <group ref={gRef} position={[0, 0, 0.005]} rotation={[
+        THREE.MathUtils.degToRad(-7),  // X: наклон назад
+        THREE.MathUtils.degToRad(9),   // Y: чуть довернуть
+        0
+      ]}>
+        <primitive object={scene} />
+      </group>
   }
 
   return (
@@ -205,7 +234,7 @@ function VideoPlane({ texture, mouse }) {
   })
 
   return (
-    <mesh position={[0, 0, -0.005]}>
+    <mesh position={[0, 0, -0.006]}>
       <planeGeometry args={[3.2, 2.4]} />
       <shaderMaterial args={[shaderArgs]} transparent depthWrite={false}/>
     </mesh>
