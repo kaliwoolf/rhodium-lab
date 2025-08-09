@@ -259,7 +259,7 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
 
     // Плавный fade-in/fade-out видео (как было)
     const cur = shaderRef.current.uniforms.uVideoAlpha.value
-    const to = isActive ? (hovered ? 0.9 : 0.6) : 0.0
+    const to = hovered ? 0.8 : 0
     shaderRef.current.uniforms.uVideoAlpha.value = THREE.MathUtils.lerp(cur, to, delta * 2.5)
   })
 
@@ -332,40 +332,33 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
           center
           transform
           distanceFactor={isActive ? 1.0 : 1.06}
-          style={{ pointerEvents: 'auto' }}   // ← всегда ловим события
+          style={{ pointerEvents: isActive ? 'auto' : 'none' }} // ← было 'none'
         >
-          <div
-            onMouseEnter={() => setHovered(true)}
-            onMouseLeave={() => setHovered(false)}
-            className="select-none"
+          <a
+            href={href}
+            rel="noreferrer"
+            className="block select-none"
+            style={{ cursor: isActive ? 'pointer' : 'default' }} // ← чтобы был курсор
           >
-            <a
-              href={href}
-              target="_blank"
-              rel="noreferrer"
-              // клик только на активной, но hover сверху всё ещё работает
-              style={{ pointerEvents: isActive ? 'auto' : 'none', cursor: isActive ? 'pointer' : 'default' }}
-              className="block"
+            <h2
+              style={{
+                fontFamily: 'var(--titleFont)',
+                WebkitTextStroke: isActive ? '1px rgba(255,255,255,0.06)' : '1px rgba(255,255,255,0.04)',
+                textShadow: isActive
+                  ? '0 0 16px rgba(255,255,255,.04), 0 0 48px rgba(255,255,255,.06)'
+                  : '0 0 10px rgba(255,255,255,.03)',
+                opacity: isActive ? 0.9 : 0.55,
+                mixBlendMode: 'screen'
+              }}
+              className={[
+                'uppercase tracking-[0.18em] font-extrabold',
+                isActive ? 'text-[112px] leading-[0.9]' : 'text-[42px] leading-[1]',
+                'text-white'
+              ].join(' ')}
             >
-              <h2
-                className={[
-                  'font-title uppercase tracking-[0.18em] font-extrabold',
-                  isActive ? 'text-[112px] leading-[0.9]' : 'text-[42px] leading-[1]',
-                  'text-white'
-                ].join(' ')}
-                style={{
-                  WebkitTextStroke: isActive ? '1px rgba(255,255,255,0.06)' : '1px rgba(255,255,255,0.04)',
-                  textShadow: isActive
-                    ? '0 0 16px rgba(255,255,255,.04), 0 0 48px rgba(255,255,255,.06)'
-                    : '0 0 10px rgba(255,255,255,.03)',
-                  opacity: isActive ? 0.9 : 0.55,
-                  mixBlendMode: 'screen',
-                }}
-              >
-                {title}
-              </h2>
-            </a>
-          </div>
+              {title}
+            </h2>
+          </a>
         </Html>
       </mesh>
     </group>
