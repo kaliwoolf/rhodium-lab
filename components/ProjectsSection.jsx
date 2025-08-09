@@ -2,13 +2,11 @@
 import { useEffect, useState } from "react"
 import dynamic from "next/dynamic"
 
-// грузим по требованию:
-const DesktopPanelCarousel3D = dynamic(() => import("./DesktopPanelCarousel3D"), { ssr: false })
-const MobileOverlay          = dynamic(() => import("./VideoPanelOverlay"),      { ssr: false })
+const DesktopPanelCarousel3D = dynamic(() => import("../components/DesktopPanelCarousel3D"), { ssr: false })
+const MobileOverlay = dynamic(() => import("../components/VideoPanelOverlay"), { ssr: false })
 
 export default function ProjectsSection() {
   const [isDesktop, setIsDesktop] = useState(false)
-
   useEffect(() => {
     const check = () => setIsDesktop(window.matchMedia("(min-width: 1024px)").matches)
     check()
@@ -16,5 +14,27 @@ export default function ProjectsSection() {
     return () => window.removeEventListener("resize", check)
   }, [])
 
-  return isDesktop ? <DesktopPanelCarousel3D /> : <MobileOverlay />
+  if (!isDesktop) return <MobileOverlay />
+
+  // это твоя "секция", только без тега <section>, т.к. он уже есть в index.js
+  return (
+    <div className="relative h-screen w-full overflow-hidden">
+      {/* 3D-слайдер как фон */}
+      <div className="absolute inset-0">
+        <DesktopPanelCarousel3D />
+      </div>
+
+      {/* Контент поверх */}
+      <div className="relative z-10 flex h-full items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-6xl md:text-7xl font-extrabold tracking-tight">
+            Актуальные проекты
+          </h2>
+          <p className="mt-4 text-lg opacity-80">
+            Короткий сабтайтл, если нужен
+          </p>
+        </div>
+      </div>
+    </div>
+  )
 }
