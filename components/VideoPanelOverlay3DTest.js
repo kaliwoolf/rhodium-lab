@@ -16,11 +16,11 @@ const VideoRefractionMaterial = shaderMaterial(
     uBackground: null,
     uEnvMap: null,
     uEnvMapRim: null,    
-    uIntensity: 0.15,
-    uThickness: 1.25, // добавили толщину!
+    uIntensity: 0.25,
+    uThickness: 2.25, // добавили толщину!
     uTint: [0.85, 0.95, 1.0], // зелёный tint, как в референсе
-    uTintStrength: 0.12,
-    uEnvAmount: 0.20,    // Сила envMap по всей панели (0.15–0.23 — "стеклянность")
+    uTintStrength: 0.09,
+    uEnvAmount: 0.18,    // Сила envMap по всей панели (0.15–0.23 — "стеклянность")
     uRimAmount: 0.75,    // Rim-смешивание (0.5–0.85 — кайма по краю)
     uVideoAlpha: 0,   // Прозрачность видео (0.7–1.0)
     uPanelAlpha: 0.32,   // Альфа всей панели
@@ -65,12 +65,13 @@ const VideoRefractionMaterial = shaderMaterial(
     void main() {
       // --- рефракция фона с лёгким шумом ---
       float noise = fract(sin(dot(vUv * 0.87, vec2(12.9898,78.233))) * 43758.5453);
-      float bump  =  sin(vUv.y * 18. + time * 0.8) * 0.012
-                   + cos(vUv.x * 14. - time * 0.54) * 0.011
+      float bump  =  sin(vUv.y * 18. + time * 1.2) * 0.012
+                   + cos(vUv.x * 14. - time * 0.78) * 0.011
                    + (noise - 0.5) * 0.055;
 
-      float chroma = 0.05 * uThickness * uIntensity;
-      vec2  refractUv = vUv + vec2(bump, bump) * uIntensity * uThickness;
+      bump *= 1.4;
+      float chroma = 0.07 * uThickness * uIntensity;
+      vec2 refractUv = clamp(vUv + vec2(bump) * uIntensity * uThickness, 0.001, 0.999);
 
       vec3 bgColor;
       bgColor.r = texture2D(uBackground, refractUv + vec2(chroma, 0.0)).r;
@@ -171,7 +172,6 @@ function GlassPanelWithOverlay({ videoUrl }) {
     { path: '/hdr/hi01/' }
   )
 
-
   const handlePointerOver = (e) => {
    setHovered(true);
    // НЕ трогать mouse тут — пусть он остаётся в (0,0), если не двигается
@@ -186,8 +186,6 @@ function GlassPanelWithOverlay({ videoUrl }) {
      setHovered(false);
      setMouse({ x: 0, y: 0 });
   };
-
-
 
   useEffect(() => {
     const video = document.createElement("video")
@@ -249,10 +247,9 @@ function GlassPanelWithOverlay({ videoUrl }) {
 
     // Плавный fade-in/fade-out видео (как было)
     const cur = shaderRef.current.uniforms.uVideoAlpha.value
-    const to = hovered ? 1 : 0
+    const to = hovered ? 0.8 : 0
     shaderRef.current.uniforms.uVideoAlpha.value = THREE.MathUtils.lerp(cur, to, delta * 2.5)
   })
-
 
   const { gl, scene, camera, size } = useThree()
   const bgRenderTarget = useRef()  
