@@ -2,9 +2,12 @@
 
 import { useState, useEffect, useRef, Suspense, useMemo } from 'react'
 import Image from 'next/image'
+import { useGLTF, Environment } from '@react-three/drei'
 import * as THREE from 'three'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { VideoTexture } from 'three'
+
+useGLTF.preload('/models/ContactFrame.glb')
 
 
 export default function ContactBlock() {
@@ -49,6 +52,36 @@ export default function ContactBlock() {
     mouse.current.set(x / rect.width, 1 - y / rect.height)
   }
 
+  function BlenderGlass() {
+    const { scene } = useGLTF('/models/ContactFrame.glb')
+    const glassMat = useMemo(() => new THREE.MeshPhysicalMaterial({
+    transparent: true,
+    depthWrite: false,       // ← не кладём в depth, убирает мерцания с видео
+    roughness: 0.02,
+    transmission: 0.96,
+    thickness: 0.06,
+    ior: 1.52,
+    clearcoat: 0.6,
+    clearcoatRoughness: 0.1,
+    envMapIntensity: 1.0,
+  }), [])
+
+  useMemo(() => {
+    scene.traverse((o) => {
+      if (o.isMesh) {
+        o.material = glassMat
+        o.renderOrder = 10     // ← рисуем после плоскости с видео
+        o.castShadow = false
+         o.receiveShadow = false
+       }
+     })
+   }, [scene, glassMat])
+
+    scene.position.set(0, 0, 0.005) // слегка над видео
+    scene.scale.set(1, 1, 1)       // подогнать, если надо
+    return <primitive object={scene} />
+  }
+
   return (
     <section
       id="contact"
@@ -64,6 +97,8 @@ export default function ContactBlock() {
               className="absolute inset-0 z-0 pointer-events-none"
             >
               <Suspense fallback={null}>
+                <BlenderGlass />
+                <Environment preset="city" />
                 {videoTexture && <VideoPlane texture={videoTexture} mouse={mouse} />}
               </Suspense>
             </Canvas>
@@ -165,7 +200,7 @@ function VideoPlane({ texture, mouse }) {
   })
 
   return (
-    <mesh>
+    <mesh position={[0, 0, -0.005]}>
       <planeGeometry args={[3.2, 2.4]} />
       <shaderMaterial args={[shaderArgs]} transparent depthWrite={false}/>
     </mesh>
