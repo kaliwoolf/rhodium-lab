@@ -129,7 +129,7 @@ function PanelWithVideo({ texture, mouse }) {
     const bb = frame.geometry.boundingBox
     geoSize.current.subVectors(bb.max, bb.min)
     geoShift.current.addVectors(bb.min, bb.max).multiplyScalar(0.5)
-    const targetW = 1.8
+    const targetH = 1.8 // или 90% высоты экрана
     const s = targetH / geoSize.current.y
     groupRef.current.scale.setScalar(s)
   }, [nodes])
