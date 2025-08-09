@@ -142,7 +142,7 @@ const VideoRefractionMaterial = shaderMaterial(
 extend({ VideoRefractionMaterial })
 
 const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
-    { title, href, videoUrl, isActive = false, initialRotation = [8, -9, 1] },
+    { title, href, videoUrl, isActive={i === active}, isSide={i !== active}, initialRotation = [8, -9, 1] },
     outerRef
   ) {
   const localGroup = useRef()
@@ -317,9 +317,9 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
             uEnvMapRim={envMapRim}
             uIntensity={0.22}
             uThickness={2.4}
-            uEnvAmount={0.20}    // Прозрачность envMap (0.12…0.22)
+            uEnvAmount={isActive ? 0.20 : 0.24}   // Прозрачность envMap (0.12…0.22)
             uRimAmount={0.32}    // Сила rim-каймы
-            uPanelAlpha={0.68}
+            uPanelAlpha={isActive ? 0.68 : 0.54}
             uTint={[0.63, 0.98, 0.86]}
             uTintStrength={0.0}
             transparent
@@ -382,12 +382,12 @@ function Carousel() {
 
   // раскладка «по дуге» для пяти слотов: L2, L1, CENTER, R1, R2
   const layout = useMemo(() => ([
-    //           x      z      rY     rX     rZ     s     y
-    { x:-6.0, z:-3.2, rY: 0.50, rX: 0.08, rZ: 0.06, s:0.82, y:-0.06 }, // L2
-    { x:-3.2, z:-1.6, rY: 0.24, rX: 0.04, rZ: 0.03, s:0.92, y:-0.03 }, // L1
-    { x: 0.0, z: 0.0, rY: 0.00, rX: 0.00, rZ: 0.00, s:1.05, y: 0.00 }, // CENTER
-    { x: 3.2, z:-1.6, rY:-0.24, rX: 0.04, rZ:-0.03, s:0.92, y:-0.03 }, // R1
-    { x: 6.0, z:-3.2, rY:-0.50, rX: 0.08, rZ:-0.06, s:0.82, y:-0.06 }, // R2
+    //           x      z       rY     rX     rZ     s     y
+    { x:-6.6, z:-10.0, rY: 0.95, rX: 0.10, rZ: 0.06, s:0.78, y:-0.10 }, // L2
+    { x:-3.8, z: -5.2, rY: 0.60, rX: 0.06, rZ: 0.03, s:0.88, y:-0.05 }, // L1
+    { x: 0.0, z:  0.0, rY: 0.00, rX: 0.00, rZ: 0.00, s:1.05, y: 0.00 }, // CENTER
+    { x: 3.8, z: -5.2, rY:-0.60, rX: 0.06, rZ:-0.03, s:0.88, y:-0.05 }, // R1
+    { x: 6.6, z:-10.0, rY:-0.95, rX: 0.10, rZ:-0.06, s:0.78, y:-0.10 }, // R2
   ]), [])
 
   // куда поставить i-ю карточку относительно active
@@ -471,7 +471,7 @@ function Carousel() {
 export default function DesktopPanelCarousel3D() {
 
   return (
-    <Canvas camera={{ position: [0, 0, 8], fov: 25 }} gl={{ antialias: true, alpha: true }}>
+    <Canvas camera={{ position: [0, 0, 11.5], fov: 35 }} gl={{ antialias: true, alpha: true }}>
       <ambientLight intensity={2.8} />
       <directionalLight position={[3, 2, 3]} intensity={2.4} />
       <Environment preset="sunset" />
