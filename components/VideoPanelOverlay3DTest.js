@@ -31,12 +31,16 @@ const VideoRefractionMaterial = shaderMaterial(
     varying vec2 vUv;
     varying vec3 vWorldNormal;
     varying vec3 vWorldPos;
+    varying vec3 vObjNormal;
+
     void main() {
       vUv = uv;
       vWorldNormal = normalize(normalMatrix * normal);
       vWorldPos = (modelMatrix * vec4(position, 1.0)).xyz;
+      vObjNormal = normal; // локальная нормаль для маски фронта
       gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
     }
+
   `,
   // fragment
   `
@@ -59,108 +63,75 @@ const VideoRefractionMaterial = shaderMaterial(
     varying vec3 vObjNormal;
 
     void main() {
-
-      vUv = uv;
-      vWorldNormal = normalize(normalMatrix * normal);
-      vWorldPos = (modelMatrix * vec4(position, 1.0)).xyz;
-      vObjNormal = normal;           // ⬅️ нормаль в объектном пространстве (важно!)
-      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-
-      // Фрагмент для классного дисторшна через noise:
+      // --- рефракция фона с лёгким шумом ---
       float noise = fract(sin(dot(vUv * 0.87, vec2(12.9898,78.233))) * 43758.5453);
-      float bump = sin(vUv.y * 18. + time * 0.8) * 0.012
-           + cos(vUv.x * 14. - time * 0.54) * 0.011
-           + (noise - 0.5) * 0.055; // добавил шум
+      float bump  =  sin(vUv.y * 18. + time * 0.8) * 0.012
+                   + cos(vUv.x * 14. - time * 0.54) * 0.011
+                   + (noise - 0.5) * 0.055;
 
-      // Lens bump + chromatic
       float chroma = 0.05 * uThickness * uIntensity;
-      vec2 refractUv = vUv + vec2(bump, bump) * uIntensity * uThickness;
-      
-      // Преломляем фон сцены:
+      vec2  refractUv = vUv + vec2(bump, bump) * uIntensity * uThickness;
+
       vec3 bgColor;
       bgColor.r = texture2D(uBackground, refractUv + vec2(chroma, 0.0)).r;
       bgColor.g = texture2D(uBackground, refractUv).g;
       bgColor.b = texture2D(uBackground, refractUv - vec2(chroma, 0.0)).b;
 
-      // Масштаб проекции (подгони 0.3..0.8)
-      float s = 0.45;
-
-      // Веса для трипланара по мировым нормалям (куда "смотрит" грань)
+      // === ГИБРИД: фронт по UV, грани — трипланар ===
+      float s = 0.45; // масштаб видео на гранях (0.3..0.8)
       vec3 n = normalize(vWorldNormal);
-      vec3 w = pow(abs(n), vec3(4.0));
+      vec3 w = pow(abs(n), vec3(4.0));                 // веса проекций
       w /= (w.x + w.y + w.z + 1e-5);
 
-      // Трипланарные UV (из world-pos), с повторением через fract
-      vec2 uvX = fract(vWorldPos.zy * s);   // для граней, смотрящих по X
-      vec2 uvY = fract(vWorldPos.xz * s);   // для граней, смотрящих по Y
-      vec2 uvZ = fract(vWorldPos.xy * s);   // для граней, смотрящих по Z
+      vec2 uvX = fract(vWorldPos.zy * s);
+      vec2 uvY = fract(vWorldPos.xz * s);
+      vec2 uvZ = fract(vWorldPos.xy * s);
 
       vec3 texX = texture2D(uVideo, uvX).rgb;
       vec3 texY = texture2D(uVideo, uvY).rgb;
       vec3 texZ = texture2D(uVideo, uvZ).rgb;
       vec3 videoTri = texX * w.x + texY * w.y + texZ * w.z;
 
-      // Маска "это фронт?" в ОБЪЕКТНОМ пространстве (осевое: фронт/тыл = ±Z)
-      float frontMask = smoothstep(0.35, 0.65, abs(vObjNormal.z));
+      float frontMask = smoothstep(0.35, 0.65, abs(vObjNormal.z)); // локальный фронт ±Z
+      vec3 videoUV = texture2D(uVideo, vUv).rgb;
+      vec3 videoColor = mix(videoTri, videoUV, frontMask);
 
-      // Гибрид: на фронте берём UV, на гранях — трипланар
-      vec3 videoColor = mix(videoTri, texture2D(uVideo, vUv).rgb, frontMask);
-
-
+      // База: фон+видео+tint
       vec3 panelColor = mix(bgColor, videoColor, uVideoAlpha);
+      panelColor      = mix(panelColor, uTint, uTintStrength);
 
-      // Tint
-      panelColor = mix(panelColor, uTint, uTintStrength);
+      // --- отражения (исправленное направление!) ---
+      vec3 nrm      = normalize(vWorldNormal);
+      vec3 viewDir  = normalize(cameraPosition - vWorldPos); // от фрагмента к камере
+      vec3 reflectDir = reflect(-viewDir, nrm);
+      vec3 envColor   = textureCube(uEnvMap,    reflectDir).rgb;
+      vec3 rimColor   = textureCube(uEnvMapRim, reflectDir).rgb;
 
-      // Reflection env
-      vec3 viewDir = normalize(vWorldPos - cameraPosition);
-      vec3 reflectDir = reflect(viewDir, normalize(vWorldNormal));
-      vec3 envColor = textureCube(uEnvMap, reflectDir).rgb;
-      vec3 rimColor = textureCube(uEnvMapRim, reflectDir).rgb;
+      float ndv     = max(dot(nrm, viewDir), 0.0);
+      float fresnel = pow(1.0 - ndv, 2.4);
 
-      /*
-      float rim = smoothstep(0.88, 0.98, length(vUv - 0.5) * 1.13);
-      float hardRim = smoothstep(0.93, 0.98, length(vUv - 0.5));
-      vec3 finalEnv = mix(envColor, rimColor, pow(rim, 1.4));
+      // на гранях чуть "прозрачнее"
+      panelColor = mix(panelColor, bgColor, (1.0 - ndv) * 0.25);
 
-      finalEnv += (rimColor - envColor) * hardRim * 0.9; 
-      vec3 baseMix = mix(panelColor, envColor, uEnvAmount);
-      vec3 rimMix = mix(baseMix, finalEnv, rim * uRimAmount);
-      float spec = pow(max(dot(viewDir, vWorldNormal), 0.0), 22.0);
-      rimMix += rim * 0.16 + hardRim * 0.25 + spec * 0.12;
-      float edge = smoothstep(0.94, 1.0, length(vUv - 0.5) * 1.13);
-      vec3 edgeColor = vec3(0.86, 0.97, 1.0);
-      float edgeGlow = edge * 0.82 + pow(edge, 6.0) * 0.45;
-      vec3 rimmed = mix(rimMix, edgeColor, edgeGlow);
-      float topGlow = smoothstep(0.85, 1.01, vUv.y) * 0.16;
-      vec3 result = mix(rimmed, edgeColor, topGlow * edge);
-      */
+      vec3 envCombined = mix(envColor, rimColor, pow(fresnel, 1.2));
+      vec3 result      = mix(panelColor, envCombined, uEnvAmount);
 
-      vec3 envMix = mix(panelColor, envColor, uEnvAmount);
+      // --- мягкие блики ---
+      vec3 edgeColor   = vec3(1.10, 1.05, 0.80);
+      vec3 atEdgeColor = vec3(1.12, 0.78, 1.24);
 
-      // Расчёт fresnel rim
-      float fresnel = pow(1.0 - abs(dot(normalize(vWorldNormal), normalize(viewDir))), 2.8);
-      float fresnelStrength = uRimAmount * 1.1;
+      float spec    = pow(ndv, 20.0);
+      float rimSpec = pow(1.0 - ndv, 8.0);
+      float glowRim = pow(1.0 - ndv, 9.0);
 
-      vec3 edgeColor = vec3(1.1, 1.05, 0.8); // для объемной каймы (fresnel rim)
-      vec3 atEdgeColor = vec3(1.12, 0.78, 1.24); // AT фирменная кайма
+      result += spec    * edgeColor * 0.06;
+      result += rimSpec * edgeColor * 0.28;
+      result += glowRim * vec3(1.30,1.15,1.25) * 0.18;
 
-      vec3 result = envMix + fresnel * edgeColor * fresnelStrength;
-
-      // Спекуляр
-      float spec = pow(max(dot(viewDir, vWorldNormal), 0.0), 20.0);
-      result += spec * edgeColor * 0.08;
-
-      float rimSpec = pow(1.0 - max(dot(normalize(vWorldNormal), normalize(viewDir)), 0.0), 8.0);
-      result += rimSpec * edgeColor * 0.35;  // ↑ сделай 0.35–0.8 под вкус
-
-      float glowRim = pow(1.0 - abs(dot(normalize(vWorldNormal), normalize(viewDir))), 9.0);
-      result += glowRim * vec3(1.30, 1.15, 1.25) * 0.2; // цвет/силу можно крутить
-
-      // Прибавляем живую кайму AT/Notion
-      float edge = smoothstep(0.95, 1.0, length(vUv - 0.5) * 0.72); // было 0.85/1.08
+      // --- твой UV-контур по периметру ---
+      float edge = smoothstep(0.95, 1.0, length(vUv - 0.5) * 0.72);
       float edgeNoise = edge * (0.92 + 0.15 * noise);
-      result += edgeNoise * atEdgeColor * 1.2; // 1.1–2.0
+      result += edgeNoise * atEdgeColor * 1.2;
 
       gl_FragColor = vec4(result, uPanelAlpha);
     }
