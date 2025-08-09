@@ -245,7 +245,7 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
     const wobZ = Math.sin(t * 0.11) * 0.035
 
     // Целевые углы = базовый угол + парение + реакция на hover
-    const targetX = baseRot.current.x + wobX + (hovered ? mouse.y * 0.32 : 0)
+    const targetX = baseRot.current.x + (hovered ? mouse.y * 0.32 : 0)
     const targetY = baseRot.current.y + wobY + (hovered ? mouse.x * 0.30 : 0)
     const targetZ = baseRot.current.z + wobZ
 
@@ -383,11 +383,11 @@ function Carousel() {
   // раскладка «по дуге» для пяти слотов: L2, L1, CENTER, R1, R2
   const layout = useMemo(
     () => ([
-      { x:  0.0, z: -3.2, rY:  -1.047, s: 0.82 },
-      { x:  0.0, z: -1.6, rY:  -0.785, s: 0.92 },
+      { x: -6.0, z: -3.2, rY:  -1.047, s: 0.82 },
+      { x: -3.2, z: -1.6, rY:  -0.785, s: 0.92 },
       { x:  0.0, z:  0.0, rY:  0.00, s: 1.05 },
-      { x:  0.0, z: -1.6, rY:  0.785, s: 0.92 },
-      { x:  0.0, z: -3.2, rY:  1.047, s: 0.82 },
+      { x:  3.2, z: -1.6, rY:  0.785, s: 0.92 },
+      { x:  6.0, z: -3.2, rY:  1.047, s: 0.82 },
     ]),
     []
   )
