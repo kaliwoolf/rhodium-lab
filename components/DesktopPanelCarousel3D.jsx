@@ -332,36 +332,26 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
           center
           transform
           distanceFactor={isActive ? 1.0 : 1.06}
-          style={{ pointerEvents: isActive ? 'auto' : 'none' }}
+          style={{ pointerEvents: 'none' }}   // текст не ловит клики
         >
-          <div
-            className={[
-              'px-6 py-3 rounded-xl backdrop-blur-md',
-              isActive ? 'bg-black/30' : 'bg-black/20',
-              isActive ? 'opacity-100' : 'opacity-45',
-              'transition-shadow'
-            ].join(' ')}
+          <h2
             style={{
-              boxShadow: isActive
-                ? '0 10px 30px rgba(0,0,0,.35), inset 0 1px 8px rgba(255,255,255,.06)'
-                : '0 6px 16px rgba(0,0,0,.25), inset 0 1px 6px rgba(255,255,255,.04)'
+              fontFamily: 'var(--titleFont)',
+              WebkitTextStroke: isActive ? '1px rgba(255,255,255,0.06)' : '1px rgba(255,255,255,0.04)',
+              textShadow: isActive
+                ? '0 0 16px rgba(255,255,255,.04), 0 0 48px rgba(255,255,255,.06)'
+                : '0 0 10px rgba(255,255,255,.03)',
+              opacity: isActive ? 0.9 : 0.55,      // лёгкая «прозрачность»
+              mixBlendMode: 'screen'               // «просвет» через фон, как у AT
             }}
+            className={[
+              'uppercase tracking-[0.18em] font-extrabold select-none',
+              isActive ? 'text-[112px] leading-[0.9]' : 'text-[42px] leading-[1]',
+              'text-white' // базовый белый; «просвет» делает mix-blend + opacity
+            ].join(' ')}
           >
-            <div
-              style={{ fontFamily: 'var(--titleFont)' }}
-              className={[
-                'uppercase tracking-[0.12em] font-extrabold leading-tight',
-                // градиент по буквам
-                'bg-gradient-to-r from-indigo-100 via-sky-100 to-fuchsia-100',
-                'bg-clip-text text-transparent',
-                // свечение для читаемости
-                'drop-shadow-[0_2px_10px_rgba(0,0,0,.55)]',
-                isActive ? 'text-[60px]' : 'text-[28px]'
-              ].join(' ')}
-            >
-              {title}
-            </div>
-          </div>
+            {title}
+          </h2>
         </Html>
       </mesh>
     </group>
