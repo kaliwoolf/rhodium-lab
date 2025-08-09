@@ -138,10 +138,9 @@ const VideoRefractionMaterial = shaderMaterial(
 extend({ VideoRefractionMaterial })
 
 const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
-    { title, href, videoUrl, isActive = false },
+    { title, href, videoUrl, isActive = false, initialRotation = [8, -9, 1] },
     outerRef
   ) {
-  // если ref не передали — создаём свой
   const localGroup = useRef()
   const groupRef = outerRef ?? localGroup
   const mesh = useRef()
@@ -154,9 +153,9 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
   const forceRerender = useRef(false)
   // Стартовая ориентация панели и настройки парения
   const baseRot = useRef(new THREE.Euler(
-    THREE.MathUtils.degToRad(8), // X — наклон вперёд/назад
-    THREE.MathUtils.degToRad(-9),  // Y — поворот вбок
-    THREE.MathUtils.degToRad(1)    // Z — крен
+    THREE.MathUtils.degToRad(initialRotation[0]), // X — наклон вперёд/назад
+    THREE.MathUtils.degToRad(initialRotation[1]), // Y — поворот вбок
+    THREE.MathUtils.degToRad(initialRotation[2])  // Z — крен
   ))
   // амплитуда и скорости парения (можешь крутить)
   const floatAmp = useRef({ rot: 0.055, rotZ: 0.035, posY: 0.03 })
@@ -324,7 +323,7 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
         >
           <a
             href={href}
-            className="px-5 py-2 rounded-full border border-white/30 backdrop-blur-md bg-white/10 text-white text-lg hover:bg-white/15 transition"
+            className="px-6 py-3 rounded-full backdrop-blur-md bg-black/40 text-white text-2xl font-bold drop-shadow-lg hover:bg-black/50 transition"
           >
             {title}
           </a>
@@ -397,6 +396,11 @@ function Carousel() {
             title={p.title}
             href={p.href}
             isActive={i === active}
+            initialRotation={[
+              8 + i * 1.5,   // X: чуть разный наклон вперёд
+              -9 + i * 2,    // Y: разный поворот вбок
+              1              // Z: крен пока одинаковый
+            ]}
           />
         ))}
       </group>
