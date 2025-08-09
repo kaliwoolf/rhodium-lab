@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef, Suspense, useMemo } from 'react'
 import Image from 'next/image'
-import Tilt from 'react-parallax-tilt'
 import * as THREE from 'three'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { VideoTexture } from 'three'
@@ -58,15 +57,6 @@ export default function ContactBlock() {
       onTouchMove={handlePointerMove}
     >
       <div className="contact-canvas relative z-20 rounded-3xl overflow-hidden backdrop-blur-sm bg-white/5 shadow-[0_0_80px_rgba(255,255,255,0.05)] ring-1 ring-white/10">
-        <Tilt
-          glareEnable
-          glareMaxOpacity={0.15}
-          scale={1.02}
-          transitionSpeed={2500}
-          tiltMaxAngleX={6}
-          tiltMaxAngleY={6}
-          className="w-full h-full"
-        >
           <div className="relative w-full h-full">
             <Canvas
               gl={{ alpha: true }}
@@ -109,7 +99,6 @@ export default function ContactBlock() {
               </div>
             </div>
           </div>
-        </Tilt>
       </div>
     </section>
   )
