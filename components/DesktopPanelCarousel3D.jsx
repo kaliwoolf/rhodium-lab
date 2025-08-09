@@ -338,7 +338,10 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
             href={href}
             rel="noreferrer"
             className="block select-none"
-            style={{ cursor: isActive ? 'pointer' : 'default' }} // ← чтобы был курсор
+            style={{ 
+              pointerEvents: 'auto', 
+              cursor: isActive ? 'pointer' : 'default' 
+            }} // ← чтобы был курсор
             onMouseEnter={() => setHovered(true)}   // ← добавить
             onMouseLeave={() => setHovered(false)}  // ← добавить
          >
