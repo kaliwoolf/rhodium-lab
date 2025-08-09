@@ -1,3 +1,5 @@
+'use client'
+
 // components/ProjectsSection.jsx
 import { useEffect, useState } from "react"
 import dynamic from "next/dynamic"

@@ -1,3 +1,5 @@
+'use client'
+
 // DesktopPanelCarousel3D.jsx
 import { Canvas, extend, useFrame, useThree } from '@react-three/fiber'
 import { useGLTF, Environment, shaderMaterial, useCubeTexture } from '@react-three/drei'
@@ -266,59 +268,54 @@ function GlassPanel({ videoUrl, initialRotation = [0.06, -0.28, -0.03], scale = 
   )
 }
 
-// ======== карусель из 3–5 панелей (автопрокрутка) ========
-function Carousel({ videos, speed = 0.6, spacing = 3.2 }) {
-  const group = useRef()
-  const count = Math.min(5, videos.length)
-  const total = spacing * count
-  const start = Array.from({ length: count }, (_, i) => (i - (count - 1) / 2) * spacing)
+const PANELS = [
+  { title: 'Проект 1', href: '#p1', video: '/video/ks.mp4' },
+  { title: 'Проект 2', href: '#p2', video: '/video/p2.mp4' },
+  { title: 'Проект 3', href: '#p3', video: '/video/bot.mp4' },
+];
 
-  // расставим стартовые позиции
-  const items = useMemo(
-    () => start.map((x, i) => ({ x, i })),
-    [count, spacing]
-  )
+function Carousel() {
+  const group = useRef();
+  const spacing = 3.2;        // расстояние между панелями
+  const speed = 0.18;         // скорость автопрокрутки (меньше — медленнее)
+  const loopW = spacing * PANELS.length;
+  const offset = useRef(0);
 
-  useFrame((_, delta) => {
-    if (!group.current) return
-    for (let i = 0; i < group.current.children.length; i++) {
-      const g = group.current.children[i]
-      g.position.x -= speed * delta
-      if (g.position.x < -total / 2 - spacing * 0.5) {
-        g.position.x += total
-      }
-    }
-  })
+  useFrame((_, dt) => {
+    offset.current = (offset.current + speed * dt) % loopW;
+    // перекладываем панели по X с зацикливанием
+    group.current.children.forEach((child, i) => {
+      let x = i * spacing - offset.current - loopW / 2;
+      if (x < -loopW / 2) x += loopW; // wrap
+      child.position.set(x, 0, 0);
+    });
+  });
 
   return (
     <group ref={group}>
-      {items.map(({ x }, idx) => (
-        <group key={idx} position={[x, 0, 0]}>
-          <GlassPanel videoUrl={videos[idx % videos.length]} />
-        </group>
+      {PANELS.map((p, i) => (
+        <GlassPanelWithOverlay
+          key={i}
+          videoUrl={p.video}
+          title={p.title}
+          href={p.href}
+          // базовый поворот каждой панели чуть разный — живее
+          baseRotation={[0.02, -0.12 + i * 0.02, 0.0]}
+        />
       ))}
     </group>
-  )
+  );
 }
 
 // ======== корневой Canvas-виджет ========
 export default function DesktopPanelCarousel3D() {
-  // твои видео (до 5 штук)
-  const videos = useMemo(
-    () => [
-      '/video/ks.mp4',
-      '/video/p2.mp4',
-      '/video/bot.mp4',
-    ],
-    []
-  )
 
   return (
     <Canvas camera={{ position: [0, 0, 8], fov: 25 }} gl={{ antialias: true, alpha: true }}>
       <ambientLight intensity={2.8} />
       <directionalLight position={[3, 2, 3]} intensity={2.4} />
       <Environment preset="sunset" />
-      <Carousel videos={videos} />
+      <Carousel />
     </Canvas>
   )
 }
