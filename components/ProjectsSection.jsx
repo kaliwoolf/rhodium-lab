@@ -16,16 +16,17 @@ export default function ProjectsSection() {
 
   if (!isDesktop) return <MobileOverlay />
 
-  // это твоя "секция", только без тега <section>, т.к. он уже есть в index.js
+    if (!isDesktop) return <MobileOverlay />;
+
   return (
     <div className="relative h-screen w-full overflow-hidden">
-      {/* 3D-слайдер как фон */}
-      <div className="absolute inset-0">
+      {/* 3D-слайдер как фон секции, НО выше глобального бэкграунда */}
+      <div className="absolute inset-0 z-[10]">
         <DesktopPanelCarousel3D />
       </div>
 
-      {/* Контент поверх */}
-      <div className="relative z-10 flex h-full items-center justify-center">
+      {/* Контент поверх (текст), пусть будет ещё выше, но без кликов */}
+      <div className="relative z-[20] pointer-events-none flex h-full items-center justify-center">
         <div className="text-center">
           <h2 className="text-6xl md:text-7xl font-extrabold tracking-tight">
             Актуальные проекты
@@ -36,5 +37,5 @@ export default function ProjectsSection() {
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -2,6 +2,7 @@ import { Canvas, useFrame, extend, useThree } from "@react-three/fiber"
 import { Html, Environment, useGLTF, useCubeTexture, shaderMaterial } from "@react-three/drei"
 import * as THREE from "three"
 import { useEffect, useMemo, useRef, useState } from "react"
+import { useGLTF } from '@react-three/drei'
 
 // ======== ТЕ ЖЕ ШЕЙДЕРЫ (вырезка из твоего тестового, без правок по логике) ========
 const VideoRefractionMaterial = shaderMaterial(
@@ -23,7 +24,7 @@ const VideoRefractionMaterial = shaderMaterial(
       vObjNormal=normal;
       gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);
     }`,
-  /* glsl */`
+  /* glsl */`ss
     uniform sampler2D uVideo, uBackground;
     uniform samplerCube uEnvMap, uEnvMapRim;
     uniform float uIntensity,uThickness,uEnvAmount,uRimAmount,uVideoAlpha,uPanelAlpha,time;
@@ -208,7 +209,10 @@ function Slider() {
 export default function DesktopPanelCarousel3D() {
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
-      <Canvas camera={{ position:[0,0,8], fov:25 }} gl={{ antialias:true }}>
+      <Canvas camera={{ position:[0,0,8], fov:25 }} 
+              gl={{ antialias:true, alpha:true }}
+              style={{ width:'100%', height:'100%' }} 
+      >
         <ambientLight intensity={2.2} />
         <directionalLight position={[3,2,3]} intensity={2.0} />
         <Environment preset="sunset" />
