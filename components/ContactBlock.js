@@ -77,7 +77,12 @@ export default function ContactBlock() {
      })
    }, [scene, glassMat])
 
-    scene.position.set(0, 0, 0.005) // слегка над видео
+    scene.position.set(0, 0, 0.005)
+    scene.rotation.set(
+      THREE.MathUtils.degToRad(-2), // X: слегка наклонить назад
+      THREE.MathUtils.degToRad(6),  // Y: чуть довернуть вправо (видны грани)
+      0
+    )
     scene.scale.set(1, 1, 1)       // подогнать, если надо
     return <primitive object={scene} />
   }
