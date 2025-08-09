@@ -7,6 +7,7 @@ import { useInView } from 'react-intersection-observer'
 import VideoPanelOverlay from '../components/VideoPanelOverlay'
 import ScrambleLinkMenu from '../components/ScrambleLinkMenu'
 import ContactBlock from '../components/ContactBlock'
+import ProjectsSection from '../components/ProjectsSection'
 
 export default function Home() {
   const { ref: projectsRef, inView: isProjectsInView } = useInView({
@@ -32,7 +33,7 @@ export default function Home() {
           transition={{ duration: 1.2, ease: 'easeOut' }}
           viewport={{ once: true }}
         >
-          <VideoPanelOverlay />  
+          <ProjectsSection />
         
         </motion.section>
         
