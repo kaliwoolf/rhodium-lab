@@ -106,7 +106,7 @@ export default function ContactBlock() {
       0
     )
     scene.scale.set(1, 1, 1)       // подогнать, если надо
-    return 
+    return (
       <group ref={gRef} position={[0, 0, 0.005]} rotation={[
         THREE.MathUtils.degToRad(-7),  // X: наклон назад
         THREE.MathUtils.degToRad(9),   // Y: чуть довернуть
@@ -114,6 +114,7 @@ export default function ContactBlock() {
       ]}>
         <primitive object={scene} />
       </group>
+    )
   }
 
   return (
