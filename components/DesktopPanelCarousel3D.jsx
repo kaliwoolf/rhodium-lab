@@ -137,7 +137,7 @@ const VideoRefractionMaterial = shaderMaterial(
 
 extend({ VideoRefractionMaterial })
 
-function GlassPanelWithOverlay({ videoUrl }) {
+function GlassPanelWithOverlay({ title, href, ыvideoUrl }) {
   const mesh = useRef()
   const panelRef = useRef()     
   const shaderRef = useRef()
