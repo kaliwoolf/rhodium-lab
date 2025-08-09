@@ -354,7 +354,7 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
               }}
               className={[
                 'uppercase tracking-[0.18em] font-bold',
-                isActive ? 'text-[112px] leading-[0.9]' : 'text-[42px] leading-[1]',
+                isActive ? 'text-[132px] leading-[0.9]' : 'text-[42px] leading-[1]',
                 'text-white'
               ].join(' ')}
             >
