@@ -345,6 +345,7 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
             style={{ cursor: isActive ? 'pointer' : 'default' }} // ← чтобы был курсор
               onMouseEnter={() => { hoverLock.current = true;  setHovered(true);  }}
               onMouseLeave={() => { hoverLock.current = false; setHovered(false); }}
+          >
             <h2
               style={{
                 fontFamily: 'var(--titleFont)',
