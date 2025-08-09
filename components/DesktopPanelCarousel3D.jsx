@@ -195,6 +195,7 @@ function GlassPanelWithOverlay({ videoUrl }) {
     video.style.display = "none"
     video.play()
     const texture = new THREE.VideoTexture(video)
+    texture.flipY = false;
     texture.minFilter = THREE.LinearFilter
     texture.magFilter = THREE.LinearFilter
     texture.generateMipmaps = false
