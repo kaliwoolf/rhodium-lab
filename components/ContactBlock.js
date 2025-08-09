@@ -138,7 +138,10 @@ function PanelWithVideo({ texture, mouse }) {
   if (!nodes?.Frame) return null
 
   return (
-    <group ref={groupRef} position={[0, 0, 0.005]}>
+    <group
+      ref={groupRef}
+      position={[0, 0, 0.005]}>
+      rotation={[0, THREE.MathUtils.degToRad(3), 0]}
       {texture && (
         <VideoPlane
           texture={texture}
