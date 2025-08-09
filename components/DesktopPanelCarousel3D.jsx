@@ -397,6 +397,7 @@ const PANELS = [
   { title: 'КОД СТЫДА', href: 'https://mysteriumlab.pro/code', video: '/video/ks.mp4' },
   { title: 'ПРИДВОРНЫЕ КАРТЫ', href: 'https://mysteriumlab.pro/mechanica', video: '/video/ml1.mp4' },
   { title: 'ТАРО БОТ', href: 'https://t.me/portolux', video: '/video/bot.mp4' },
+  { title: 'КАРТА ЛИЧНОЙ ВЛАСТИ', href: 'https://t.me/portolux/1799', video: '/video/fc.mp4' },  
 ];
 
 function Carousel() {
