@@ -370,8 +370,8 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
 
 const PANELS = [
   { title: 'КОД СТЫДА', href: '#p1', video: '/video/ks.mp4' },
-  { title: 'МЕХАНИКА И ЛОГИКА', href: '#p2', video: '/video/p2.mp4' },
-  { title: 'Rhodium Bot', href: '#p3', video: '/video/bot.mp4' },
+  { title: 'ПРИДВОРНЫЕ КАРТЫ', href: '#p2', video: '/video/p2.mp4' },
+  { title: 'ТАРО БОТ', href: '#p3', video: '/video/bot.mp4' },
 ];
 
 function Carousel() {

@@ -106,7 +106,7 @@ export default function HeroSection() {
           top: pinned ? '24px' : 'auto',
           left: pinned ? '50%' : 'auto',
           transform: pinned ? 'translateX(-50%)' : 'none',
-          zIndex: 100,
+          zIndex: 9999,
           width: '100%',
           display: 'flex',
           justifyContent: 'center',
