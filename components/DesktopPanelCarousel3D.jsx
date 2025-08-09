@@ -4,7 +4,7 @@
 import { Canvas, extend, useFrame, useThree } from '@react-three/fiber'
 import { useGLTF, Environment, shaderMaterial, useCubeTexture, Html } from '@react-three/drei'
 import * as THREE from 'three'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { forwardRef, useEffect, useMemo, useRef, useState } from 'react'
 
 const VideoRefractionMaterial = shaderMaterial(
   {
@@ -137,7 +137,13 @@ const VideoRefractionMaterial = shaderMaterial(
 
 extend({ VideoRefractionMaterial })
 
-function GlassPanelWithOverlay({ title, href, videoUrl }) {
+  const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
+    { title, href, videoUrl, isActive = false },
+    outerRef
+  ) {
+  // если ref не передали — создаём свой
+  const localGroup = useRef()
+  const groupRef = outerRef ?? localGroup
   const mesh = useRef()
   const panelRef = useRef()     
   const shaderRef = useRef()
@@ -244,7 +250,7 @@ function GlassPanelWithOverlay({ title, href, videoUrl }) {
 
     // Плавный fade-in/fade-out видео (как было)
     const cur = shaderRef.current.uniforms.uVideoAlpha.value
-    const to = hovered ? 0.8 : 0
+    const to = hovered ? 0.8 : 0.15
     shaderRef.current.uniforms.uVideoAlpha.value = THREE.MathUtils.lerp(cur, to, delta * 2.5)
   })
 
@@ -275,7 +281,7 @@ function GlassPanelWithOverlay({ title, href, videoUrl }) {
   })
 
   return (
-    <group rotation={[0, 0, 0]}>
+    <group ref={groupRef}>
       <primitive
         object={nodes.Panel}
         scale={[0.55, 0.55, 0.55]} // подбери под свою сцену!
@@ -308,7 +314,11 @@ function GlassPanelWithOverlay({ title, href, videoUrl }) {
           center
           transform
           distanceFactor={1.02}
-          style={{ pointerEvents: 'auto' }}
+          style={{
+            pointerEvents: isActive ? 'auto' : 'none',
+            opacity: isActive ? 1 : 0.35,
+            transition: 'opacity 220ms ease'
+          }}
         >
           <a
             href={href}
@@ -329,37 +339,89 @@ const PANELS = [
 ];
 
 function Carousel() {
-  const group = useRef();
-  const spacing = 9.5;        // расстояние между панелями
-  const speed = 0.02;         // скорость автопрокрутки (меньше — медленнее)
-  const loopW = spacing * PANELS.length;
-  const offset = useRef(0);
+  const n = PANELS.length
+  const [active, setActive] = useState(0)
+  const group = useRef()
+  const refs = useRef([])
 
-  useFrame((_, dt) => {
-    offset.current = (offset.current + speed * dt) % loopW;
-    // перекладываем панели по X с зацикливанием
-    group.current.children.forEach((child, i) => {
-      let x = i * spacing - offset.current - loopW / 2;
-      if (x < -loopW / 2) x += loopW; // wrap
-      child.position.set(x, 0, i * 0.002);
-    });
-  });
+  // раскладка «по дуге» для пяти слотов: L2, L1, CENTER, R1, R2
+  const layout = useMemo(
+    () => ([
+      { x: -6.0, z: -3.2, rY:  0.50, s: 0.82 },
+      { x: -3.2, z: -1.6, rY:  0.24, s: 0.92 },
+      { x:  0.0, z:  0.0, rY:  0.00, s: 1.05 },
+      { x:  3.2, z: -1.6, rY: -0.24, s: 0.92 },
+      { x:  6.0, z: -3.2, rY: -0.50, s: 0.82 },
+    ]),
+    []
+  )
+
+  // куда поставить i-ю карточку относительно active
+  function targetFor(i) {
+    let rel = i - active
+    // заворачиваем в диапазон [-2..2]
+    while (rel < -2) rel += n
+    while (rel >  2) rel -= n
+    const slot = rel + 2
+    return layout[slot] ?? { x: 0, z: -6, rY: 0, s: 0.7 }
+  }
+
+  // плавная интерполяция трансформов — без автоскролла
+  useFrame(() => {
+    refs.current.forEach((g, i) => {
+      if (!g) return
+      const t = targetFor(i)
+      g.position.x += (t.x - g.position.x) * 0.12
+      g.position.z += (t.z - g.position.z) * 0.12
+      g.rotation.y += (t.rY - g.rotation.y) * 0.12
+      const curS = g.scale.x
+      const nextS = THREE.MathUtils.lerp(curS, t.s, 0.12)
+      g.scale.setScalar(nextS)
+    })
+  })
+
+  // кнопки навигации
+  const prev = () => setActive((a) => (a - 1 + n) % n)
+  const next = () => setActive((a) => (a + 1) % n)
 
   return (
-    <group ref={group}>
-      {PANELS.map((p, i) => (
-        <GlassPanelWithOverlay
-          key={i}
-          videoUrl={p.video}
-          title={p.title}
-          href={p.href}
-          // базовый поворот каждой панели чуть разный — живее
-          baseRotation={[0.02, -0.12 + i * 0.02, 0.0]}
-        />
-      ))}
-    </group>
-  );
+    <>
+      <group ref={group}>
+        {PANELS.map((p, i) => (
+          <GlassPanelWithOverlay
+            key={i}
+            ref={(el) => (refs.current[i] = el)}
+            videoUrl={p.video}
+            title={p.title}
+            href={p.href}
+            isActive={i === active}
+          />
+        ))}
+      </group>
+
+      {/* Стрелки поверх канваса */}
+      <Html fullscreen>
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-between px-6">
+          <button
+            onClick={prev}
+            className="pointer-events-auto h-12 w-12 rounded-full bg-white/10 border border-white/25 backdrop-blur-md hover:bg-white/15 transition grid place-items-center"
+            aria-label="Previous"
+          >
+            ‹
+          </button>
+          <button
+            onClick={next}
+            className="pointer-events-auto h-12 w-12 rounded-full bg-white/10 border border-white/25 backdrop-blur-md hover:bg-white/15 transition grid place-items-center"
+            aria-label="Next"
+          >
+            ›
+          </button>
+        </div>
+      </Html>
+    </>
+  )
 }
+
 
 // ======== корневой Canvas-виджет ========
 export default function DesktopPanelCarousel3D() {
