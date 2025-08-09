@@ -339,7 +339,9 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
             rel="noreferrer"
             className="block select-none"
             style={{ cursor: isActive ? 'pointer' : 'default' }} // ← чтобы был курсор
-          >
+            onMouseEnter={() => setHovered(true)}   // ← добавить
+            onMouseLeave={() => setHovered(false)}  // ← добавить
+         >
             <h2
               style={{
                 fontFamily: 'var(--titleFont)',
@@ -351,7 +353,7 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
                 mixBlendMode: 'screen'
               }}
               className={[
-                'uppercase tracking-[0.18em] font-extrabold',
+                'uppercase tracking-[0.18em] font-bold',
                 isActive ? 'text-[112px] leading-[0.9]' : 'text-[42px] leading-[1]',
                 'text-white'
               ].join(' ')}
