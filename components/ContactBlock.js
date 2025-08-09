@@ -112,7 +112,7 @@ function PanelWithVideo({ texture, mouse }) {
 
   const glassMat = useMemo(() => new THREE.MeshPhysicalMaterial({
     transparent: true,
-    color: 0xffffff,     
+    color: 0xffffff,
     transmission: 1.0,
     thickness: 0.1,
     roughness: 0.03,
@@ -130,7 +130,7 @@ function PanelWithVideo({ texture, mouse }) {
     const bb = frame.geometry.boundingBox
     geoSize.current.subVectors(bb.max, bb.min)
     geoShift.current.addVectors(bb.min, bb.max).multiplyScalar(0.5)
-    const targetH = 1.8 // или 90% высоты экрана
+    const targetH = 1.8
     const s = targetH / geoSize.current.y
     groupRef.current.scale.setScalar(s)
   }, [nodes])
@@ -143,7 +143,7 @@ function PanelWithVideo({ texture, mouse }) {
         <VideoPlane
           texture={texture}
           mouse={mouse}
-          size={[geoSize.current.x, geoSize.current.y]}
+          geometry={nodes.Frame.geometry} // ← передаём форму панели
           position={[-geoShift.current.x, -geoShift.current.y, -0.002]}
         />
       )}
@@ -157,7 +157,7 @@ function PanelWithVideo({ texture, mouse }) {
   )
 }
 
-function VideoPlane({ texture, mouse, size = [3.2, 2.4], position = [0, 0, -0.006] }) {
+function VideoPlane({ texture, mouse, geometry, position = [0, 0, -0.006] }) {
   const shaderArgs = useMemo(() => ({
     uniforms: { uTexture: { value: texture }, uTime: { value: 0 }, uMouse: { value: new THREE.Vector2(0.5, 0.5) } },
     vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
@@ -191,9 +191,9 @@ function VideoPlane({ texture, mouse, size = [3.2, 2.4], position = [0, 0, -0.00
   })
 
   return (
-    <mesh position={position} renderOrder={5}>
-      <planeGeometry args={size} />
+    <mesh geometry={geometry} position={position} renderOrder={5}>
       <shaderMaterial args={[shaderArgs]} transparent depthWrite={false} />
     </mesh>
   )
 }
+
