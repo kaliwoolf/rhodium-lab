@@ -497,9 +497,27 @@ function Carousel() {
 
 // ======== корневой Canvas-виджет ========
 export default function DesktopPanelCarousel3D() {
+  const isSafari =
+    typeof navigator !== 'undefined' &&
+    /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
   return (
-    <Canvas camera={{ position: [0, 0, 8], fov: 25 }} gl={{ antialias: true, alpha: true }}>
+    <Canvas
+      camera={{ position: [0, 0, 8], fov: 25 }}
+      dpr={isSafari ? [1, 1.25] : [1, 2]}
+      gl={{
+        powerPreference: 'high-performance',
+        antialias: !isSafari,       // Safari — без MSAA
+        alpha: isSafari ? false : true, // Safari — непрозрачный канвас (дешевле)
+        stencil: false,
+        depth: true,
+        preserveDrawingBuffer: false,
+      }}
+      onCreated={({ gl }) => {
+        // корректная гамма
+        try { gl.outputColorSpace = THREE.SRGBColorSpace } catch {}
+      }}
+    >
       <ambientLight intensity={2.8} />
       <directionalLight position={[3, 2, 3]} intensity={2.4} />
       <Environment preset="sunset" />
