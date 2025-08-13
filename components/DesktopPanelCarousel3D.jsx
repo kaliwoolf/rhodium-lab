@@ -520,7 +520,7 @@ export default function DesktopPanelCarousel3D() {
     >
       <ambientLight intensity={2.8} />
       <directionalLight position={[3, 2, 3]} intensity={2.4} />
-      <Environment preset="sunset" />
+     {/* <Environment preset="sunset" /> */}
       <Carousel />
     </Canvas>
   )
