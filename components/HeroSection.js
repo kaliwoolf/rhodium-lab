@@ -135,6 +135,7 @@ export default function HeroSection() {
             <AdaptiveScrambleLink
               text="ПРОЕКТЫ"
               onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
+              preventDefaultOnClick
               className={`hover:scale-105 transition-transform ${activeSection === 'projects' ? 'opacity-60 pointer-events-none cursor-default' : ''}`}
               disabled={activeSection === 'projects'}
             />
@@ -171,6 +172,7 @@ export default function HeroSection() {
             <AdaptiveScrambleLink
               text="СВЯЗАТЬСЯ"
               onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+              preventDefaultOnClick
               className={`hover:scale-105 transition-transform ${activeSection === 'contact' ? 'opacity-60 pointer-events-none cursor-default' : ''}`}
               disabled={activeSection === 'contact'}
             />

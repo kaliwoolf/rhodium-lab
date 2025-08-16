@@ -394,7 +394,7 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
               }}
               className={[
                 'uppercase tracking-[0.1em] font-bold',
-                isActive ? 'text-[152px] leading-[0.9]' : 'text-[42px] leading-[1]',
+                isActive ? 'text-[142px] leading-[0.9]' : 'text-[42px] leading-[1]',
                 'text-white'
               ].join(' ')}
             >
@@ -489,7 +489,7 @@ function Carousel() {
           <button
              onClick={prev}
              disabled={!canPrev}
-             className={`pointer-events-auto h-12 w-12 rounded-full bg-white/10 border border-white/25 ${blurClass}transition grid place-items-center
+             className={`pointer-events-auto h-12 w-12 rounded-full bg-white/10 border border-white/25 ${blurClass} transition grid place-items-center
                ${!canPrev ? 'opacity-0 pointer-events-none' : 'hover:bg-white/15'}`}
              aria-label="Previous"
           >
