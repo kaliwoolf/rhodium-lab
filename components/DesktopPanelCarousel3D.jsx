@@ -6,6 +6,11 @@ import { useGLTF, Environment, shaderMaterial, useCubeTexture, Html } from '@rea
 import * as THREE from 'three'
 import { forwardRef, useEffect, useMemo, useRef, useState } from 'react'
 
+const isSafariUA = () =>
+  typeof navigator !== 'undefined' &&
+  /safari/i.test(navigator.userAgent) &&
+  !/chrome|crios|fxios|edg/i.test(navigator.userAgent);
+
 const VideoRefractionMaterial = shaderMaterial(
   {
     uVideo: null,
@@ -242,6 +247,11 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
     texture.wrapS = THREE.RepeatWrapping   // на всякий случай
     texture.wrapT = THREE.RepeatWrapping
     texture.needsUpdate = true
+
+    if (isSafariUA()) {
+      texture.format = THREE.RGBFormat // RGBA → RGB в Safari заметно дешевле
+    }
+
     setVideoTexture(texture)
     return () => {
       texture.dispose()
@@ -284,16 +294,20 @@ const GlassPanelWithOverlay = forwardRef(function GlassPanelWithOverlay(
 
     // Плавный fade-in/fade-out видео (как было)
     const cur = shaderRef.current.uniforms.uVideoAlpha.value
-    const to = hovered ? 0.8 : 0
+    const to = hovered ? (isSafariUA() ? 0.55 : 0.8) : 0
     shaderRef.current.uniforms.uVideoAlpha.value = THREE.MathUtils.lerp(cur, to, delta * 2.5)
   })
 
   const { gl, scene, camera, size } = useThree()
-  const bgRenderTarget = useRef()  
+  const bgRenderTarget = useRef()
   useEffect(() => {
-    bgRenderTarget.current = new THREE.WebGLRenderTarget(size.width, size.height)
+    const scale = isSafariUA() ? 0.6 : 1 // ← Safari рендерим в 60% размера
+    const w = Math.max(1, Math.floor(size.width  * scale))
+    const h = Math.max(1, Math.floor(size.height * scale))
+    bgRenderTarget.current = new THREE.WebGLRenderTarget(w, h)
     return () => bgRenderTarget.current?.dispose()
   }, [size.width, size.height])
+
 
   useFrame(() => {
     if (!bgRenderTarget.current) return
@@ -401,6 +415,8 @@ const PANELS = [
 ];
 
 function Carousel() {
+  const safari = isSafariUA()
+  const blurClass = safari ? '' : 'backdrop-blur-md'
   const n = PANELS.length
   const [active, setActive] = useState(0)
   const group = useRef()
@@ -473,7 +489,7 @@ function Carousel() {
           <button
              onClick={prev}
              disabled={!canPrev}
-             className={`pointer-events-auto h-12 w-12 rounded-full bg-white/10 border border-white/25 backdrop-blur-md transition grid place-items-center
+             className={`pointer-events-auto h-12 w-12 rounded-full bg-white/10 border border-white/25 ${blurClass}transition grid place-items-center
                ${!canPrev ? 'opacity-0 pointer-events-none' : 'hover:bg-white/15'}`}
              aria-label="Previous"
           >
@@ -482,7 +498,7 @@ function Carousel() {
           <button
              onClick={next}
              disabled={!canNext}
-             className={`pointer-events-auto h-12 w-12 rounded-full bg-white/10 border border-white/25 backdrop-blur-md transition grid place-items-center
+             className={`pointer-events-auto h-12 w-12 rounded-full bg-white/10 border border-white/25 ${blurClass} transition grid place-items-center
                ${!canNext ? 'opacity-0 pointer-events-none' : 'hover:bg-white/15'}`}
              aria-label="Next"
           >
