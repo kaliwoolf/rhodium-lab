@@ -147,7 +147,7 @@ export default function VideoGlassPanel({ videoUrl = "/video/00002.mp4" }) {
         <ambientLight intensity={2} />
         <directionalLight position={[3, 2, 3]} intensity={1.16} />
         <GlassPanel videoUrl={videoUrl} />
-        <Environment preset="sunset" />
+        {/*<Environment preset="sunset" />*/}
         <OrbitControls
           enablePan={false}
           enableZoom={false}

@@ -85,7 +85,7 @@ export default function ContactBlock() {
                     ? { mode: 'height', frac: 0.78 }
                     : { mode: 'height', frac: 0.70 }}
               />
-              <Environment preset="city" />
+              {/*<Environment preset="city" />*/}
             </Suspense>
           </Canvas>
 
