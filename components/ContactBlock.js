@@ -115,7 +115,9 @@ export default function ContactBlock() {
               />
               <div className="relative z-10 flex flex-col items-center justify-center h-full p-4">
                 <Image src="/qr-code.png" width={120} height={120} alt="QR" />
-                <p className="text-xs text-white/60 text-center mt-3 tracking-widest">[ crafted in rhodium ]</p>
+                <p className="text-xs text-white/60 text-center mt-3 tracking-widest">
+                  <span className="whitespace-nowrap">[ crafted in rhodium ]</span>
+                </p>
               </div>
             </div>
           </div>
