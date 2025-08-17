@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 export default function ScrambleHoverLink({
   text,
@@ -8,7 +8,9 @@ export default function ScrambleHoverLink({
   onClick,
   className = '',
   disabled = false,
-  preventDefaultOnClick = false, // ← новый флаг, по умолчанию не блокируем переход
+  preventDefaultOnClick = false,
+  style = {},
+  role,
 }) {
   const spanRef = useRef(null)
   const intervalRef = useRef(null)
@@ -16,17 +18,26 @@ export default function ScrambleHoverLink({
   const chars = 'АБВГДЕЁЗИКЛНОПРСТУХЦЧЬЮЯ2345679'.split('')
   const [isClient, setIsClient] = useState(false)
 
+  const isSafari = useMemo(() => {
+    if (typeof navigator === 'undefined') return false
+    const ua = navigator.userAgent
+    return /safari/i.test(ua) && !/chrome|crios|fxios|edg/i.test(ua)
+  }, [])
+
   useEffect(() => {
     setIsClient(true)
     return () => clearInterval(intervalRef.current)
   }, [])
 
   const scrambleText = (str) =>
-    str.split('').map((char) =>
-      Math.random() > 0.66
-        ? chars[Math.floor(Math.random() * chars.length)]
-        : char
-    ).join('')
+    str
+      .split('')
+      .map((char) =>
+        Math.random() > 0.66
+          ? chars[Math.floor(Math.random() * chars.length)]
+          : char
+      )
+      .join('')
 
   const startScramble = () => {
     if (disabled || !spanRef.current) return
@@ -41,20 +52,23 @@ export default function ScrambleHoverLink({
   }
 
   const handleClick = (e) => {
-    if (disabled) { e.preventDefault(); return }
+    if (disabled) {
+      e.preventDefault()
+      return
+    }
 
     // Разрешаем стандартное поведение для Cmd/Ctrl-click и средней кнопки
     if (e.metaKey || e.ctrlKey || e.button === 1) return
 
-    // Если хотим перехватить (SPA), явно включаем флаг
-    if (preventDefaultOnClick) e.preventDefault()
+    // Если явно указано или если href не задан — предотвращаем переход
+    if (preventDefaultOnClick || (!href && onClick)) {
+      e.preventDefault()
+    }
 
-    if (onClick) onClick(e)
-    // Если onClick сам вызвал e.preventDefault(), перехода не будет — уважаем это.
+    onClick?.(e)
   }
 
-  // Если href не задан — ставим '#' только когда реально disabled
-  const computedHref = disabled ? '#' : (href ?? '#')
+  const computedHref = disabled ? '#' : href ?? '#'
 
   return (
     <a
@@ -62,32 +76,38 @@ export default function ScrambleHoverLink({
       onMouseEnter={startScramble}
       onMouseLeave={stopScramble}
       onClick={handleClick}
+      onMouseDown={(e) => e.currentTarget.focus()} // Safari стабилизирует клик
       className={`inline-block cursor-pointer select-none text-xl text-center ${className}`}
       style={{
         minWidth: `${text.length + 2}ch`,
         maxWidth: `${text.length + 2}ch`,
         display: 'inline-block',
+        pointerEvents: 'auto',
+        ...(isSafari
+          ? {
+              position: 'relative',
+              zIndex: 2,
+              transform: 'translateZ(0)',
+              WebkitTapHighlightColor: 'transparent',
+            }
+          : {}),
+        ...style,
       }}
+      role={role}
       tabIndex={disabled ? -1 : 0}
       aria-disabled={disabled}
     >
-      {isClient ? (
-        <span
-          ref={spanRef}
-          className="inline-block whitespace-pre"
-          style={{
-            fontFeatureSettings: "'liga' 0, 'calt' 0",
-            letterSpacing: '0.05em',
-            width: '100%',
-          }}
-        >
-          {text}
-        </span>
-      ) : (
-        <span className="inline-block whitespace-pre" style={{ width: '100%' }}>
-          {text}
-        </span>
-      )}
+      <span
+        ref={spanRef}
+        className="inline-block whitespace-pre"
+        style={{
+          fontFeatureSettings: "'liga' 0, 'calt' 0",
+          letterSpacing: '0.05em',
+          width: '100%',
+        }}
+      >
+        {text}
+      </span>
     </a>
   )
 }
