@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import AdaptiveScrambleLink from '../components/AdaptiveScrambleLink'
 import LightningEffect from '../components/LightningEffect'
@@ -8,6 +8,11 @@ export default function HeroSection() {
   const { scrollY } = useScroll()
   const [pinned, setPinned] = useState(false)
   const [activeSection, setActiveSection] = useState('hero'); // hero, projects, contact
+  const isSafari = useMemo(() => {
+    if (typeof navigator === 'undefined') return false
+    const ua = navigator.userAgent
+    return /safari/i.test(ua) && !/chrome|crios|fxios|edg/i.test(ua)
+  }, [])
 
   const [smoothScroll, setSmoothScroll] = useState(0)
 
@@ -107,11 +112,10 @@ export default function HeroSection() {
           left: pinned ? '50%' : 'auto',
           transform: pinned ? 'translateX(-50%)' : 'none',
           zIndex: 9999,
-          width: '100%',
+          width: isSafari ? 'max-content' : '100%',
           display: 'flex',
           justifyContent: 'center',
-          pointerEvents: 'none',
-          willChange: 'transform' 
+          pointerEvents: isSafari ? 'auto' : 'none', 
         }}
       >
         <div className="relative group w-full flex justify-center pointer-events-auto">  
