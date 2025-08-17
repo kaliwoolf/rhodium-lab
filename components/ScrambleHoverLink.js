@@ -83,6 +83,8 @@ export default function ScrambleHoverLink({
         maxWidth: `${text.length + 2}ch`,
         display: 'inline-block',
         pointerEvents: 'auto',
+        outline: 'none',              // убираем обводку
+        boxShadow: 'none',  
         ...(isSafari
           ? {
               position: 'relative',
