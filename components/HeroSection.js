@@ -3,7 +3,6 @@ import { motion, useScroll, useTransform } from 'framer-motion'
 import AdaptiveScrambleLink from '../components/AdaptiveScrambleLink'
 import LightningEffect from '../components/LightningEffect'
 
-
 export default function HeroSection() {
   const { scrollY } = useScroll()
   const [pinned, setPinned] = useState(false)

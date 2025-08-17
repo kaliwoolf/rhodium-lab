@@ -2,6 +2,13 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 
+// UA-детект Safari для точечного обхода бага хит-теста
+const isSafariUA = () => {
+  if (typeof navigator === 'undefined') return false
+  const ua = navigator.userAgent
+  return /safari/i.test(ua) && !/chrome|crios|fxios|edg/i.test(ua)
+}
+
 export default function ScrambleHoverLink({
   text,
   href,
@@ -13,16 +20,11 @@ export default function ScrambleHoverLink({
   role,
 }) {
   const spanRef = useRef(null)
+  const isSafari = useMemo(isSafariUA, [])
   const intervalRef = useRef(null)
   const originalText = useRef(text)
   const chars = 'АБВГДЕЁЗИКЛНОПРСТУХЦЧЬЮЯ2345679'.split('')
   const [isClient, setIsClient] = useState(false)
-
-  const isSafari = useMemo(() => {
-    if (typeof navigator === 'undefined') return false
-    const ua = navigator.userAgent
-    return /safari/i.test(ua) && !/chrome|crios|fxios|edg/i.test(ua)
-  }, [])
 
   useEffect(() => {
     setIsClient(true)
@@ -106,6 +108,7 @@ export default function ScrambleHoverLink({
           fontFeatureSettings: "'liga' 0, 'calt' 0",
           letterSpacing: '0.05em',
           width: '100%',
+          pointerEvents: 'none',
         }}
       >
         {text}
