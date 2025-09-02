@@ -12,10 +12,10 @@ const baseCourses = [
     texture: '/textures/glass-neon.jpg'
   },
   {
-    title: 'КОД СТЫДА',
-    description: 'Онлайн-курс из 12 занятий по системной проработке механизмов стыда',
-    link: 'https://mysteriumlab.pro/code',
-    video: '/video/ks.mp4',
+    title: 'ПЕНТАКЛИ 3',
+    description: 'Прогностика и сценарии богатства',
+    link: 'https://mysteriumlab.pro/pentacles3',
+    video: '/video/p3.mp4',
     texture: '/textures/glass-noise.png'
   }, 
   {
