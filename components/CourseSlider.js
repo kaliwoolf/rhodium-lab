@@ -20,7 +20,7 @@ const baseCourses = [
   }, 
   {
     title: 'ТАРО БОТ',
-    description: 'Бот Телеграм для определения психотипа',
+    description: 'Телеграм-бот для определения психотипа',
     link: 'https://t.me/portolux',
     video: '/video/bot.mp4',
     texture: '/textures/glass-ice.jpg'
