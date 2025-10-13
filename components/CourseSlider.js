@@ -12,10 +12,10 @@ const baseCourses = [
     texture: '/textures/glass-neon.jpg'
   },
   {
-    title: 'ПЕНТАКЛИ 3',
-    description: 'Прогностика и сценарии богатства',
-    link: 'https://mysteriumlab.pro/pentacles3',
-    video: '/video/p3.mp4',
+    title: 'ТРАБЛШУТИНГ',
+    description: 'Курс навигации по неопределённости',
+    link: 'https://mysteriumlab.pro/troubleshooting',
+    video: '/video/ts.webm',
     texture: '/textures/glass-noise.png'
   }, 
   {
