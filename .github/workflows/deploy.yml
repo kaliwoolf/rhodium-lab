@@ -15,7 +15,7 @@ jobs:
       - name: Install SSH key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_ed25519
+          echo "${{ secrets.DEPLOY_KEY }}" | tr -d '\r' > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
 
       - name: Disable host key checking
@@ -26,9 +26,8 @@ jobs:
         run: |
           ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
             cd ${{ secrets.SERVER_PATH }}
-            git reset --hard
             git pull
             npm install --omit=dev
             npm run build
-            pm2 restart rhodium-lab
+            pm2 restart rhodium-lab2
           EOF
